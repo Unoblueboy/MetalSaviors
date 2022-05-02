@@ -1,0 +1,22 @@
+{
+  "METALSAVIORS.AbilityStr": "Strength",
+  "METALSAVIORS.AbilityCon": "Constitution",
+  "METALSAVIORS.AbilityDex": "Dexterity",
+  "METALSAVIORS.AbilityInt": "Intelligence",
+  "METALSAVIORS.AbilityWis": "Wisdom",
+  "METALSAVIORS.AbilityCha": "Charisma",
+
+  "METALSAVIORS.AbilityStrAbbr": "str",
+  "METALSAVIORS.AbilityConAbbr": "con",
+  "METALSAVIORS.AbilityDexAbbr": "dex",
+  "METALSAVIORS.AbilityIntAbbr": "int",
+  "METALSAVIORS.AbilityWisAbbr": "wis",
+  "METALSAVIORS.AbilityChaAbbr": "cha",
+
+  "METALSAVIORS.EffectCreate": "Create Effect",
+  "METALSAVIORS.EffectToggle": "Toggle Effect",
+  "METALSAVIORS.EffectEdit": "Edit Effect",
+  "METALSAVIORS.EffectDelete": "Delete Effect",
+
+  "METALSAVIORS.Add": "Add"
+}
