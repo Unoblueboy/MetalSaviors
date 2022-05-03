@@ -11,7 +11,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
     - name: Create Release Folder
       run: rsync -arv --exclude='.git/' --exclude='.github/' --exclude='.gitignore' --exclude='gulpfile.js' --exclude='.npmignore' --exclude='scss/*' . ./release
     - name: Switch to Release Folder
