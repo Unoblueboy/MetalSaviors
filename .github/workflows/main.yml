@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - feature/**
 
 jobs:
   build:
@@ -21,9 +22,8 @@ jobs:
         cd release
         ls -la
     - name: Bump version and push tag
-      uses: anothrNick/github-tag-action@1.39.0
+      uses: anothrNick/github-tag-action@1.36.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         INITIAL_VERSION: 0.0.0
-        WITH_V: true
         REPO_OWNER: Unoblueboy
