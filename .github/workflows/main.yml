@@ -21,8 +21,9 @@ jobs:
         cd release
         ls -la
     - name: Bump version and push tag
-      uses: anothrNick/github-tag-action@master
+      uses: anothrNick/github-tag-action@1.39.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        INITIAL_VERSION: 0.0.0
         WITH_V: true
         REPO_OWNER: Unoblueboy
