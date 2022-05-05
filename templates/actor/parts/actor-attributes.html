@@ -1,0 +1,76 @@
+{{log data.editable}}
+{{#if data.editable}}
+<table>
+<tr>
+  <th></th>
+  <th>Base Value</th>
+  <th>Other Bonuses</th>
+  <th>Total</th>
+</tr>
+{{#each data.attributes as |attribute key|}}
+<tr>
+  <td><label for="data.attributes.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="d20cs&lt;@attributes.{{key}}.value" data-label="{{attribute.label}}">{{attribute.label}}</label></td>
+  <td><input type="text" name="data.attributes.{{key}}.baseValue" value="{{attribute.baseValue}}" data-dtype="Number"/></td>
+  <td><input type="text" name="data.attributes.{{key}}.otherBonuses" value="{{attribute.otherBonuses}}" data-dtype="Number"/></td>
+  <td><input type="text" name="data.attributes.{{key}}.value" value="{{attribute.value}}" data-dtype="Number" disabled="true"/></td>
+</tr>
+{{/each}}
+</table>
+{{else}}
+{{#with data.attributes}}
+<div class="grid grid-6col">
+  <div class="attribute flexrow flex-group-center">
+    <label for="bea.value" class="resource-label rollable flexlarge align-center" data-roll="d20cs&lt;@attributes.bea.value" data-label="{{bea.label}}">{{bea.label}}</label>
+  </div>
+  <div class="attribute flexrow flex-group-center grid-span-2">
+    <input type="text" name="bea.value" value="{{bea.value}}" data-dtype="Number" disabled="true"/>
+  </div>
+  
+  <div class="attribute flexrow flex-group-center">
+    <label for="fin.value" class="resource-label rollable flexlarge align-center" data-roll="d20cs&lt;@attributes.fin.value" data-label="{{fin.label}}">{{fin.label}}</label>
+  </div>
+  <div class="attribute flexrow flex-group-center grid-span-2">
+    <input type="text" name="fin.value" value="{{fin.value}}" data-dtype="Number" disabled="true"/>
+  </div>
+</div>
+<div class="grid grid-6col">
+  <div class="attribute flexrow flex-group-center">
+    <label for="hrd.value" class="resource-label rollable flexlarge align-center" data-roll="d20cs&lt;@attributes.hrd.value" data-label="{{hrd.label}}">{{hrd.label}}</label>
+  </div>
+  <div class="attribute flexrow flex-group-center grid-span-2">
+    <input type="text" name="hrd.value" value="{{hrd.value}}" data-dtype="Number" disabled="true"/>
+  </div>
+  
+  <div class="attribute flexrow flex-group-center">
+    <label for="int.value" class="resource-label rollable flexlarge align-center" data-roll="d20cs&lt;@attributes.int.value" data-label="{{int.label}}">{{int.label}}</label>
+  </div>
+  <div class="attribute flexrow flex-group-center grid-span-2">
+    <input type="text" name="int.value" value="{{int.value}}" data-dtype="Number" disabled="true"/>
+  </div>
+</div>
+<div class="grid grid-6col">
+  <div class="attribute flexrow flex-group-center">
+    <label for="pow.value" class="resource-label rollable flexlarge align-center" data-roll="d20cs&lt;@attributes.pow.value" data-label="{{pow.label}}">{{pow.label}}</label>
+  </div>
+  <div class="attribute flexrow flex-group-center grid-span-2">
+    <input type="text" name="pow.value" value="{{pow.value}}" data-dtype="Number" disabled="true"/>
+  </div>
+  
+  <div class="attribute flexrow flex-group-center">
+    <label for="spd.value" class="resource-label rollable flexlarge align-center" data-roll="d20cs&lt;@attributes.spd.value" data-label="{{spd.label}}">{{spd.label}}</label>
+  </div>
+  <div class="attribute flexrow flex-group-center grid-span-2">
+    <input type="text" name="spd.value" value="{{spd.value}}" data-dtype="Number" disabled="true"/>
+  </div>
+</div>
+<div class="grid grid-12col">
+  <div class="grid-span-3"></div>
+    <div class="attribute flexrow flex-group-center grid-span-2">
+      <label for="wil.value" class="resource-label rollable flexlarge align-center" data-roll="d20cs&lt;@attributes.wil.value" data-label="{{wil.label}}">{{wil.label}}</label>
+    </div>
+    <div class="attribute flexrow flex-group-center grid-span-4">
+      <input type="text" name="wil.value" value="{{wil.value}}" data-dtype="Number" disabled="true"/>
+    </div>
+</div>
+{{/with}}
+{{/if}}

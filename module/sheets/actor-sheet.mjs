@@ -68,8 +68,8 @@ export class MetalSaviorsActorSheet extends ActorSheet {
    */
   _prepareCharacterData(context) {
     // Handle ability scores.
-    for (let [k, v] of Object.entries(context.data.abilities)) {
-      v.label = game.i18n.localize(CONFIG.METALSAVIORS.abilities[k]) ?? k;
+    for (let [k, v] of Object.entries(context.data.attributes)) {
+      v.label = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
     }
   }
 
@@ -136,6 +136,15 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 
     // Rollable abilities.
     html.find('.rollable').click(this._onRoll.bind(this));
+
+    // Edit Button
+    html.find('.edit-button').click(ev => {
+      const actorData = this.actor.data.toObject(false);
+      actorData.data.editable = !actorData.data.editable;
+      console.log('editable', actorData.data.editable);
+      this.actor.update(actorData);
+      // this.render();
+    });
 
     // Drag events for macros.
     if (this.actor.owner) {

@@ -1,3 +1,5 @@
+import { attributeCalculator, healthCalculator, enduranceCalculator } from "./helpers/Calculators.mjs"
+
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -6,10 +8,6 @@ export class MetalSaviorsActor extends Actor {
 
   /** @override */
   prepareData() {
-    // Prepare data for the actor. Calling the super version of this executes
-    // the following, in order: data reset (to clear active effects),
-    // prepareBaseData(), prepareEmbeddedDocuments() (including active effects),
-    // prepareDerivedData().
     super.prepareData();
   }
 
@@ -21,12 +19,6 @@ export class MetalSaviorsActor extends Actor {
 
   /**
    * @override
-   * Augment the basic actor data with additional dynamic data. Typically,
-   * you'll want to handle most of your calculated/derived data in this step.
-   * Data calculated in this step should generally not exist in template.json
-   * (such as ability modifiers rather than ability scores) and should be
-   * available both inside and outside of character sheets (such as if an actor
-   * is queried and has a roll executed directly from it).
    */
   prepareDerivedData() {
     const actorData = this.data;
@@ -36,7 +28,7 @@ export class MetalSaviorsActor extends Actor {
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
     this._prepareCharacterData(actorData);
-    this._prepareNpcData(actorData);
+    // this._prepareNpcData(actorData);
   }
 
   /**
@@ -45,14 +37,15 @@ export class MetalSaviorsActor extends Actor {
   _prepareCharacterData(actorData) {
     if (actorData.type !== 'character') return;
 
-    // Make modifications to data here. For example:
     const data = actorData.data;
 
-    // Loop through ability scores, and add their modifiers to our sheet output.
-    for (let [key, ability] of Object.entries(data.abilities)) {
-      // Calculate the modifier using d20 rules.
-      ability.mod = Math.floor((ability.value - 10) / 2);
-    }
+    console.log(data);
+
+    attributeCalculator(actorData, data);
+    healthCalculator(actorData, data);
+    enduranceCalculator(actorData, data);
+
+    console.log(actorData);
   }
 
   /**
