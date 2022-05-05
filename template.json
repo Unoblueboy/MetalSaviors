@@ -48,8 +48,28 @@
 					"otherBonuses": 0
 				}
 			},
-			"skills": {
-
+			"derivedAttributes": {
+				"damageModifier": {
+					"otherBonuses": null
+				},
+				"toHitModifier": {
+					"otherBonuses": 0
+				},
+				"skillModifier": {
+					"otherBonuses": 0
+				},
+				"reactionModifier": {
+					"otherBonuses": 0
+				},
+				"initiativeModifier": {
+					"otherBonuses": 0
+				},
+				"spacesMoved": {
+					"otherBonuses": 0
+				},
+				"cavInitiativeModifier": {
+					"otherBonuses": 0
+				}
 			}
 		},
 		"npc": {

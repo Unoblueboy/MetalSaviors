@@ -1,4 +1,8 @@
-import { attributeCalculator, healthCalculator, enduranceCalculator } from "./helpers/Calculators.mjs"
+import { 
+  attributeCalculator, 
+  healthCalculator, 
+  enduranceCalculator,
+  derivedAttributeCalculator } from "./helpers/Calculators.mjs"
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -44,6 +48,7 @@ export class MetalSaviorsActor extends Actor {
     attributeCalculator(actorData, data);
     healthCalculator(actorData, data);
     enduranceCalculator(actorData, data);
+    derivedAttributeCalculator(actorData, data);
 
     console.log(actorData);
   }
