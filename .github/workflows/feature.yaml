@@ -21,6 +21,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: true
         INITIAL_VERSION: 0.0.0
+        DEFAULT_BUMP: minor
         REPO_OWNER: Unoblueboy
     - name: Create Release
       id: create_release
@@ -32,8 +33,8 @@ jobs:
         release_name: Release ${{ steps.bump_version.outputs.new_tag }}
         draft: false
         prerelease: true
-    - name: Upload Release Asset
-      id: upload-release-asset 
+    - name: Upload Release Zip
+      id: upload-release-zip 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,3 +43,13 @@ jobs:
         asset_path: ./release.zip
         asset_name: release.zip
         asset_content_type: application/zip
+    - name: Upload Release Json
+      id: upload-release-json 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./system.json
+        asset_name: system.json
+        asset_content_type: application/json
