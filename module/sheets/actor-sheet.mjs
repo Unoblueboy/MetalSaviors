@@ -84,23 +84,31 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     // Initialize containers.
     const gear = [];
     const features = [];
+    const skills = {
+      "learnedSkills": []
+    };
 
     // Iterate through items, allocating to containers
     for (let i of context.items) {
       i.img = i.img || DEFAULT_TOKEN;
       // Append to gear.
-      if (i.type === 'item') {
-        gear.push(i);
-      }
-      // Append to features.
-      else if (i.type === 'feature') {
-        features.push(i);
+      switch(i.type){
+        case 'item':
+          gear.push(i);
+          break;
+        case 'feature':
+          features.push(i);
+          break;
+        case 'learnedSkill':
+          skills.learnedSkills.push(i);
+          break;
       }
     }
 
     // Assign and return
     context.gear = gear;
     context.features = features;
+    context.skills = skills;
    }
 
   /* -------------------------------------------- */

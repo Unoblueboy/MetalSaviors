@@ -70,6 +70,9 @@
 				"cavInitiativeModifier": {
 					"otherBonuses": 0
 				}
+			},
+			"skills": {
+
 			}
 		},
 		"npc": {
@@ -78,10 +81,13 @@
 		}
 	},
 	"Item": {
-		"types": ["item", "feature"],
+		"types": ["item", "feature", "learnedSkill"],
 		"templates": {
 			"base": {
 				"description": ""
+			},
+			"skill": {
+				"isBackgroundSkill": false
 			}
 		},
 		"item": {
@@ -92,6 +98,12 @@
 		},
 		"feature": {
 			"templates": ["base"]
+		},
+		"learnedSkill": {
+			"templates": ["base", "skill"],
+			"isEditable": false,
+			"baseValue" : 35,
+			"levelIncrease": 5
 		}
 	}
 }

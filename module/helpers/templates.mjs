@@ -11,5 +11,6 @@
     "systems/metalsaviors/templates/actor/parts/actor-items.html",
     "systems/metalsaviors/templates/actor/parts/actor-effects.html",
     "systems/metalsaviors/templates/actor/parts/actor-attributes.html",
+    "systems/metalsaviors/templates/actor/parts/actor-skills.html",
   ]);
 };

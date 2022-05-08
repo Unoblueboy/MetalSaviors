@@ -58,6 +58,15 @@ export class MetalSaviorsItemSheet extends ItemSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
+    // Edit Button
+    html.find('.edit-button').click(ev => {
+      const itemData = this.item.data.toObject(false);
+      itemData.data.isEditable = !itemData.data.isEditable;
+      console.log('editable', itemData.data.isEditable);
+      this.item.update(itemData);
+      // this.render();
+    });
+
     // Roll handlers, click handlers, etc. would go here.
   }
 }

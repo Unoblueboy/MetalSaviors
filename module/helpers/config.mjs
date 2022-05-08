@@ -6,6 +6,11 @@ METALSAVIORS.foobar = {
   'bar': 'METALSAVIORS.bar'
 };
 
+METALSAVIORS.skillTypes = [
+  'learnedSkill',
+  'atbSkill'
+]
+
 /**
  * The set of Attribute Scores used within the sytem.
  * @type {Object}
