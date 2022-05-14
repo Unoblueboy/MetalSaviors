@@ -1,5 +1,7 @@
 import {onManageActiveEffect, prepareActiveEffectCategories} from "../helpers/effects.mjs";
 
+import {generateSkillKey} from "../helpers/KeyGenerator.mjs";
+
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -39,6 +41,12 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     context.data = actorData.data;
     context.flags = actorData.flags;
 
+    // Add some rendering options to the context
+    this.renderOptions = this.renderOptions ?? {
+      isEditing: false
+    };
+    context.renderOptions = this.renderOptions;
+
     // Prepare character data and items.
     if (actorData.type == 'character') {
       this._prepareItems(context);
@@ -68,8 +76,8 @@ export class MetalSaviorsActorSheet extends ActorSheet {
    */
   _prepareCharacterData(context) {
     // Handle ability scores.
-    for (let [k, v] of Object.entries(context.data.abilities)) {
-      v.label = game.i18n.localize(CONFIG.METALSAVIORS.abilities[k]) ?? k;
+    for (let [k, v] of Object.entries(context.data.attributes)) {
+      v.label = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
     }
   }
 
@@ -84,23 +92,31 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     // Initialize containers.
     const gear = [];
     const features = [];
+    const skills = {
+      "learnedSkills": {}
+    };
 
     // Iterate through items, allocating to containers
     for (let i of context.items) {
       i.img = i.img || DEFAULT_TOKEN;
       // Append to gear.
-      if (i.type === 'item') {
-        gear.push(i);
-      }
-      // Append to features.
-      else if (i.type === 'feature') {
-        features.push(i);
+      switch(i.type){
+        case 'item':
+          gear.push(i);
+          break;
+        case 'feature':
+          features.push(i);
+          break;
+        case 'learnedSkill':
+          skills.learnedSkills[i._id] = i;
+          break;
       }
     }
 
     // Assign and return
     context.gear = gear;
     context.features = features;
+    context.skills = skills;
    }
 
   /* -------------------------------------------- */
@@ -131,11 +147,40 @@ export class MetalSaviorsActorSheet extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
+    // Delete Skill
+    html.find('.skill-delete').click(ev => {
+      const dataset = ev.currentTarget.dataset;
+      const skill = this.actor.items.get(dataset.skillId);
+      skill.delete();
+    });
+
+    // Show Hide editable skill info
+    html.find('.base-skill-main-row').click(ev => {
+      if (!this.renderOptions.skills){
+        this.renderOptions.skills = {};
+      }
+      const skillsRenderOptions = this.renderOptions.skills;
+
+      const dataset = ev.currentTarget.dataset;
+      const baseSkillName = dataset.baseSkillName;
+      if (!skillsRenderOptions[baseSkillName]){
+        skillsRenderOptions[baseSkillName] = {};
+      }
+      skillsRenderOptions[baseSkillName].renderAdditionalInfo = !skillsRenderOptions[baseSkillName].renderAdditionalInfo;
+      this.render(true);
+    });
+
     // Active Effect management
     html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
 
     // Rollable abilities.
     html.find('.rollable').click(this._onRoll.bind(this));
+
+    // Edit Button
+    html.find('.edit-button').click(ev => {
+      this.renderOptions.isEditing = !this.renderOptions.isEditing;
+      this.render(true);
+    });
 
     // Drag events for macros.
     if (this.actor.owner) {
@@ -192,6 +237,9 @@ export class MetalSaviorsActorSheet extends ActorSheet {
         const item = this.actor.items.get(itemId);
         if (item) return item.roll();
       }
+      if (dataset.rollType == 'skill') {
+        this._rollSkill(dataset.skillName)
+      }
     }
 
     // Handle rolls that supply the formula directly.
@@ -205,6 +253,20 @@ export class MetalSaviorsActorSheet extends ActorSheet {
       });
       return roll;
     }
+  }
+
+  _rollSkill(skillName) {
+    // let skills = this.actor.data.data.derivedSkills;
+    let skillKey = generateSkillKey(skillName) // .replace(" ", "_")
+    let roll = new Roll(`d100cs<=@skills.${skillKey}.value`, this.actor.getRollData());
+    const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+    const rollMode = game.settings.get('core', 'rollMode');
+    roll.toMessage({
+      speaker: speaker,
+      rollMode: rollMode,
+      flavor: `[Skill] ${skillName}`,
+    });
+    return roll;
   }
 
 }

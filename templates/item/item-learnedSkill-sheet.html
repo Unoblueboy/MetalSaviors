@@ -1,0 +1,51 @@
+{{log this}}
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="header-fields">
+      {{#if editable}}
+        <div class="resources grid grid-12col">
+          <div class="main grid-span-11">
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+          </div>
+          <div class="main grid-span-1">
+            <a class="edit-button" title="Edit Skill"><i class="fas fa-edit"></i></a>
+            <!-- <img class="edit-button" src="icons/anvil.png" title="edit" height="1" width="10"/> -->
+          </div>
+        </div>
+      {{else}}
+        <input name="name" type="text" value="{{item.name}}" placeholder="Name"/>
+      {{/if}}
+      
+      <div class="resources grid grid-2col">
+        <div class="resource flex-group-center">
+          <label for="data.baseValue" class="resource-label">Base Value</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            {{#if renderOptions.isEditing}}
+              <input type="text" name="data.baseValue" value="{{data.baseValue}}" data-dtype="Number"/>
+            {{else}}
+              <input type="text" name="data.baseValue" value="{{data.baseValue}}" data-dtype="Number" disabled="true"/>
+            {{/if}}
+          </div>
+        </div>
+
+        <div class="resource flex-group-center">
+          <label for="data.levelIncrease" class="resource-label">Increase Per Level</label>
+          <div class="resource-content flexrow flex-center flex-between">
+            {{#if renderOptions.isEditing}}
+              <input type="text" name="data.levelIncrease" value="{{data.levelIncrease}}" data-dtype="Number"/>
+            {{else}}
+              <input type="text" name="data.levelIncrease" value="{{data.levelIncrease}}" data-dtype="Number" disabled="true"/>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="sheet-body">
+    {{#if renderOptions.isEditing}}
+      <label for="data.isGenericSkill" class="resource-label">Is Generic Skill?</label>
+      <input type="checkbox" name="data.isGenericSkill" value="{{data.isGenericSkill}}" {{#checked data.isGenericSkill}}{{/checked}} />
+    {{/if}}
+  </div>
+</form>

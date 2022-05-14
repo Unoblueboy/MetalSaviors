@@ -1,69 +1,108 @@
 {
-  "Actor": {
-    "types": ["character", "npc"],
-    "templates": {
-      "base": {
-        "health": {
-          "value": 10,
-          "min": 0,
-          "max": 10
-        },
-        "power": {
-          "value": 5,
-          "min": 0,
-          "max": 5
-        },
-        "biography": ""
-      }
-    },
-    "character": {
-      "templates": ["base"],
-      "attributes": {
-        "level": {
-          "value": 1
-        }
-      },
-      "abilities": {
-        "str": {
-          "value": 10
-        },
-        "dex": {
-          "value": 10
-        },
-        "con": {
-          "value": 10
-        },
-        "int": {
-          "value": 10
-        },
-        "wis": {
-          "value": 10
-        },
-        "cha": {
-          "value": 10
-        }
-      }
-    },
-    "npc": {
-      "templates": ["base"],
-      "cr": 0
-    }
-  },
-  "Item": {
-    "types": ["item", "feature"],
-    "templates": {
-      "base": {
-        "description": ""
-      }
-    },
-    "item": {
-      "templates": ["base"],
-      "quantity": 1,
-      "weight": 0,
-      "formula": "d20 + @str.mod + ceil(@lvl / 2)"
-    },
-    "feature": {
-      "templates": ["base"]
-    }
-  }
+	"Actor": {
+		"types": ["character", "npc"],
+		"templates": {
+			"base": {
+				"health": {
+					"curValue": 5
+				},
+				"endurance": {
+					"curValue": 5,
+					"baseValue": 5
+				}
+			}
+		},
+		"character": {
+			"templates": ["base"],
+			"level": {
+				"value": 1
+			},
+			"attributes": {
+				"bea": {
+					"baseValue": 10,
+					"otherBonuses": 0
+				},
+				"fin": {
+					"baseValue": 10,
+					"otherBonuses": 0
+				},
+				"hrd": {
+					"baseValue": 10,
+					"otherBonuses": 0
+				},
+				"int": {
+					"baseValue": 10,
+					"otherBonuses": 0
+				},
+				"pow": {
+					"baseValue": 10,
+					"otherBonuses": 0
+				},
+				"spd": {
+					"baseValue": 10,
+					"otherBonuses": 0
+				},
+				"wil": {
+					"baseValue": 10,
+					"otherBonuses": 0
+				}
+			},
+			"derivedAttributes": {
+				"damageModifier": {
+					"otherBonuses": null
+				},
+				"toHitModifier": {
+					"otherBonuses": 0
+				},
+				"skillModifier": {
+					"otherBonuses": 0
+				},
+				"reactionModifier": {
+					"otherBonuses": 0
+				},
+				"initiativeModifier": {
+					"otherBonuses": 0
+				},
+				"spacesMoved": {
+					"otherBonuses": 0
+				},
+				"cavInitiativeModifier": {
+					"otherBonuses": 0
+				}
+			},
+			"skills": {
+
+			}
+		},
+		"npc": {
+			"templates": ["base"],
+			"cr": 0
+		}
+	},
+	"Item": {
+		"types": ["item", "feature", "learnedSkill"],
+		"templates": {
+			"base": {
+				"description": ""
+			},
+			"skill": {
+				"isBackgroundSkill": false,
+				"isGenericSkill": false
+			}
+		},
+		"item": {
+			"templates": ["base"],
+			"quantity": 1,
+			"weight": 0,
+			"formula": "d20 + @str.mod + ceil(@lvl / 2)"
+		},
+		"feature": {
+			"templates": ["base"]
+		},
+		"learnedSkill": {
+			"templates": ["base", "skill"],
+			"baseValue" : 35,
+			"levelIncrease": 5
+		}
+	}
 }

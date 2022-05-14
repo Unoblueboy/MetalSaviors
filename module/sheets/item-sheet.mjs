@@ -46,6 +46,12 @@ export class MetalSaviorsItemSheet extends ItemSheet {
     context.data = itemData.data;
     context.flags = itemData.flags;
 
+    // Add some rendering options to the context
+    this.renderOptions = this.renderOptions ?? {
+      isEditing: false
+    };
+    context.renderOptions = this.renderOptions;
+
     return context;
   }
 
@@ -57,6 +63,13 @@ export class MetalSaviorsItemSheet extends ItemSheet {
 
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
+
+    // Edit Button
+    html.find('.edit-button').click(ev => {
+      this.renderOptions.isEditing = !this.renderOptions.isEditing;
+      this.render(true);
+      // this.render();
+    });
 
     // Roll handlers, click handlers, etc. would go here.
   }

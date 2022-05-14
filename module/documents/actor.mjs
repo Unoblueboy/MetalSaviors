@@ -1,3 +1,12 @@
+import { 
+  attributeCalculator, 
+  healthCalculator, 
+  enduranceCalculator,
+  derivedAttributeCalculator,
+  skillsCalculator } from "./helpers/Calculators.mjs"
+
+import {generateSkillKey} from "../helpers/KeyGenerator.mjs";
+
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -6,10 +15,6 @@ export class MetalSaviorsActor extends Actor {
 
   /** @override */
   prepareData() {
-    // Prepare data for the actor. Calling the super version of this executes
-    // the following, in order: data reset (to clear active effects),
-    // prepareBaseData(), prepareEmbeddedDocuments() (including active effects),
-    // prepareDerivedData().
     super.prepareData();
   }
 
@@ -17,16 +22,80 @@ export class MetalSaviorsActor extends Actor {
   prepareBaseData() {
     // Data modifications in this step occur before processing embedded
     // documents or derived data.
+    const actorData = this.data;
+    const itemsData = [...this.items].map(x => x.data);
+    this._prepareCharacterSkillsData(actorData, itemsData)
+  }
+
+  _prepareCharacterSkillsData(actorData, itemsData){
+    if (actorData.type !== 'character') return;
+
+    let differentialUpdate = {};
+    
+    // Check for new items
+    for (const item of itemsData){
+      if (CONFIG.METALSAVIORS.skillTypes.includes(item.type)){
+        const itemName = item.name;
+        console.log(itemName)
+        let idList = [...Object.keys((actorData.data.skills[itemName] ?? {}))]
+        const newSkill={
+          id: item._id,
+          name: itemName,
+          background: '',
+          backgroundBonuses: 0,
+          isBackgroundSkill: false
+        };
+
+        if (!Object.keys(actorData.data.skills).includes(itemName)){
+          actorData.data.skills[itemName] = {baseStats: {
+            baseValue: item.data.baseValue,
+            levelIncrease: item.data.levelIncrease
+          }};
+          actorData.data.skills[itemName][item._id] = newSkill;
+          differentialUpdate[`data.skills.${itemName}`] = {
+            "baseStats": {
+              baseValue: item.data.baseValue,
+            levelIncrease: item.data.levelIncrease
+            },
+            [`${item._id}`]: newSkill
+          };
+          // differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
+        } else if (!idList.includes(item._id)) {
+          actorData.data.skills[itemName][item._id] = newSkill;
+          differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
+        }
+      }
+    }
+
+    // check for deletions
+    for (const baseItemName of [...Object.keys(actorData.data.skills)]){
+      const baseItemCollection = actorData.data.skills[baseItemName];
+      console.log(baseItemCollection);
+      for (const [id, baseItemData] of Object.entries(baseItemCollection)) {
+        if (id === "baseStats") {
+          continue;
+        }
+
+        var item = this.items.get(id);
+        if (!item) {
+          delete baseItemCollection[id];
+          differentialUpdate[`data.skills.${baseItemName}.-=${id}`] = "Yeeted";
+        }
+      }
+      //may have baseStats Key
+      if (Object.keys(baseItemCollection).length <= 1) {
+        differentialUpdate[`data.skills.-=${baseItemName}`] = "Yeeted";
+        delete actorData.data.skills[baseItemName];
+      } 
+    }
+    if (Object.keys(differentialUpdate).length > 0) {
+      this.update(differentialUpdate);
+    }
+    console.log("differentialUpdate", differentialUpdate);
   }
 
   /**
    * @override
-   * Augment the basic actor data with additional dynamic data. Typically,
-   * you'll want to handle most of your calculated/derived data in this step.
-   * Data calculated in this step should generally not exist in template.json
-   * (such as ability modifiers rather than ability scores) and should be
-   * available both inside and outside of character sheets (such as if an actor
-   * is queried and has a roll executed directly from it).
    */
   prepareDerivedData() {
     const actorData = this.data;
@@ -36,7 +105,7 @@ export class MetalSaviorsActor extends Actor {
     // Make separate methods for each Actor type (character, npc, etc.) to keep
     // things organized.
     this._prepareCharacterData(actorData);
-    this._prepareNpcData(actorData);
+    // this._prepareNpcData(actorData);
   }
 
   /**
@@ -45,14 +114,13 @@ export class MetalSaviorsActor extends Actor {
   _prepareCharacterData(actorData) {
     if (actorData.type !== 'character') return;
 
-    // Make modifications to data here. For example:
     const data = actorData.data;
 
-    // Loop through ability scores, and add their modifiers to our sheet output.
-    for (let [key, ability] of Object.entries(data.abilities)) {
-      // Calculate the modifier using d20 rules.
-      ability.mod = Math.floor((ability.value - 10) / 2);
-    }
+    attributeCalculator(actorData, data);
+    healthCalculator(actorData, data);
+    enduranceCalculator(actorData, data);
+    derivedAttributeCalculator(actorData, data);
+    skillsCalculator(actorData, data);
   }
 
   /**
@@ -70,7 +138,8 @@ export class MetalSaviorsActor extends Actor {
    * Override getRollData() that's supplied to rolls.
    */
   getRollData() {
-    const data = super.getRollData();
+    // Deep Copy data so it doesn't get imported into the character
+    const data = foundry.utils.deepClone(super.getRollData());
 
     // Prepare character roll data.
     this._getCharacterRollData(data);
@@ -85,11 +154,12 @@ export class MetalSaviorsActor extends Actor {
   _getCharacterRollData(data) {
     if (this.data.type !== 'character') return;
 
-    // Copy the ability scores to the top level, so that rolls can use
-    // formulas like `@str.mod + 4`.
-    if (data.abilities) {
-      for (let [k, v] of Object.entries(data.abilities)) {
-        data[k] = foundry.utils.deepClone(v);
+    if (data.derivedSkills) {
+      delete data.skills;
+      data.skills = {};
+      for (let [k, v] of Object.entries(data.derivedSkills)) {
+        let newKey = generateSkillKey(k); // .replace(" ", "_")
+        data.skills[newKey] = foundry.utils.deepClone(v);
       }
     }
 

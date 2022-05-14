@@ -1,0 +1,72 @@
+{{log this}}
+{{#if renderOptions.isEditing}}
+<h3>Learned Skills</h3>
+<table>
+  <tr>
+    <th width="30%">Base Skill Name</th>
+    <th>Base Value</th>
+    <th>Increase Per Level</th>
+  </tr>
+  {{#each data.skills as |baseSkillObjects baseSkillName|}}
+    <tr>
+      <td class="base-skill-main-row" data-base-skill-name="{{baseSkillName}}" width="30%">
+      <h4>{{baseSkillName}}</h4>
+      </td>
+      <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.baseValue" value="{{baseSkillObjects.baseStats.baseValue}}" data-dtype="Number"/></td>
+      <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.levelIncrease" value="{{baseSkillObjects.baseStats.levelIncrease}}" data-dtype="Number"/></td>
+    </tr>
+    {{#if (lookup (lookup ../renderOptions.skills baseSkillName) "renderAdditionalInfo")}}
+      <tr>
+        <td colspan="3">
+          <table>
+            <tr>
+              <th>Skill Name</th>
+              <th>Background</th>
+              <th>Bonuses from Background</th>
+              <th>Is Background Skill</th>
+              <th></th>
+            </tr>
+            {{#each this as |skill id|}}
+              {{#if (ne id "baseStats")}}
+                <tr>
+                  {{#with (lookup ../../skills.learnedSkills id) as |baseSkill|}}
+                    {{#if baseSkill.data.isGenericSkill}}
+                      <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String"/></td>
+                    {{else}}
+                      <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String" disabled="true"/></td>
+                    {{/if}}
+                  {{/with}}
+                  <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.background" value="{{skill.background}}" data-dtype="String"/></td>
+                  <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.backgroundBonuses" value="{{skill.backgroundBonuses}}" data-dtype="Number"/></td>
+                  <td><input type="checkbox" name="data.skills.{{baseSkillName}}.{{id}}.isBackgroundSkill" {{#checked skill.isBackgroundSkill}}{{/checked}}/></td>
+                  <td><a class="skill-control skill-delete" data-skill-id="{{id}}" title="Delete Item"><i class="fas fa-trash"></i></a></td>
+                </tr>
+              {{/if}}
+            {{/each}}
+          </table>
+        </td>
+      </tr>
+    {{/if}}
+  {{/each}}
+</table>
+{{else}}
+<ol class="items-list">
+  <li class="item flexrow items-header">
+    <div class="item-name">Name</div>
+    <div class="item-value">Value</div>
+    <div class="item-roll">
+    </div>
+  </li>
+  {{#each data.derivedSkills as |skill id|}}
+    <li class="item flexrow" data-item-id="{{skill._id}}">
+      <div class="item-name">
+        <h4>{{skill.name}}</h4>
+      </div>
+      <div class="item-value">{{skill.value}}%</div>
+      <div class="item-roll">
+        <a class="item-roll rollable" data-roll-type="skill" data-skill-name="{{skill.name}}"><i class="fas fa-dice-d20"></i></a>
+      </div>
+    </li>
+  {{/each}}
+</ol>
+{{/if}}

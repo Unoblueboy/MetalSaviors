@@ -2,7 +2,7 @@
   "name": "metalsaviors",
   "title": "Metal Saviors",
   "description": "The Metal Saviors system for FoundryVTT!",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "minimumCoreVersion": "0.8.6",
   "compatibleCoreVersion": "9",
   "author": "Notepad Anon",
@@ -19,10 +19,10 @@
   ],
   "gridDistance": 5,
   "gridUnits": "ft",
-  "primaryTokenAttribute": "health",
+  "primaryTokenAttribute": "endurance",
   "secondaryTokenAttribute": "power",
   "url": "",
   "manifest": "",
-  "download": "",
+  "download": "https://github.com/Unoblueboy/MetalSaviors/releases/latest/release.zip",
   "license": "LICENSE.txt"
 }

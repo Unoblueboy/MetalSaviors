@@ -6,24 +6,31 @@ METALSAVIORS.foobar = {
   'bar': 'METALSAVIORS.bar'
 };
 
+METALSAVIORS.skillTypes = [
+  'learnedSkill',
+  'atbSkill'
+]
+
 /**
- * The set of Ability Scores used within the sytem.
+ * The set of Attribute Scores used within the sytem.
  * @type {Object}
  */
- METALSAVIORS.abilities = {
-  "str": "METALSAVIORS.AbilityStr",
-  "dex": "METALSAVIORS.AbilityDex",
-  "con": "METALSAVIORS.AbilityCon",
-  "int": "METALSAVIORS.AbilityInt",
-  "wis": "METALSAVIORS.AbilityWis",
-  "cha": "METALSAVIORS.AbilityCha"
+ METALSAVIORS.attributes = {
+  "bea": "METALSAVIORS.AttributeBea",
+  "fin": "METALSAVIORS.AttributeFin",
+  "hrd": "METALSAVIORS.AttributeHrd",
+  "int": "METALSAVIORS.AttributeInt",
+  "pow": "METALSAVIORS.AttributePow",
+  "spd": "METALSAVIORS.AttributeSpd",
+  "wil": "METALSAVIORS.AttributeWil"
 };
 
-METALSAVIORS.abilityAbbreviations = {
-  "str": "METALSAVIORS.AbilityStrAbbr",
-  "dex": "METALSAVIORS.AbilityDexAbbr",
-  "con": "METALSAVIORS.AbilityConAbbr",
-  "int": "METALSAVIORS.AbilityIntAbbr",
-  "wis": "METALSAVIORS.AbilityWisAbbr",
-  "cha": "METALSAVIORS.AbilityChaAbbr"
+METALSAVIORS.attributeAbbreviations = {
+  "bea": "METALSAVIORS.AttributeBeaAbbr",
+  "fin": "METALSAVIORS.AttributeFinAbbr",
+  "hrd": "METALSAVIORS.AttributeHrdAbbr",
+  "int": "METALSAVIORS.AttributeIntAbbr",
+  "pow": "METALSAVIORS.AttributePowAbbr",
+  "spd": "METALSAVIORS.AttributeSpdAbbr",
+  "wil": "METALSAVIORS.AttributeWilAbbr"
 };
