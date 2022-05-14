@@ -14,7 +14,6 @@
 		},
 		"character": {
 			"templates": ["base"],
-			"editable": false,
 			"level": {
 				"value": 1
 			},
@@ -87,7 +86,8 @@
 				"description": ""
 			},
 			"skill": {
-				"isBackgroundSkill": false
+				"isBackgroundSkill": false,
+				"isGenericSkill": false
 			}
 		},
 		"item": {
@@ -101,7 +101,6 @@
 		},
 		"learnedSkill": {
 			"templates": ["base", "skill"],
-			"isEditable": false,
 			"baseValue" : 35,
 			"levelIncrease": 5
 		}

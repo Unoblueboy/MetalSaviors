@@ -186,12 +186,16 @@ export function skillsCalculator(actorData, data) {
   const skills = data.skills;
   const dSkills = {};
 
-  for (const skillArray of Object.values(skills)){
-    for (const skillData of skillArray) {
+  for (const baseSkillsObject of Object.values(skills)){
+    for (const [id, skillData] of Object.entries(baseSkillsObject)) {
       const skillName = skillData.name;
-      const baseSkill = actorData.items.get(skillData.id);
+      const baseSkill = actorData.items.get(id);
+      
+      if (!baseSkill) {
+        continue
+      }
+      
       const baseSkillData = baseSkill.data.data;
-      console.log(baseSkill)
       if (!Object.keys(dSkills).includes(skillName)) {
         dSkills[skillName] = {
           "name": skillName,

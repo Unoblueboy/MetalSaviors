@@ -30,63 +30,48 @@ export class MetalSaviorsActor extends Actor {
   _prepareCharacterSkillsData(actorData, itemsData){
     if (actorData.type !== 'character') return;
 
-    let updateOccurred = false;
     let differentialUpdate = {};
     
     // Check for new items
-    let insertionItemNames = new Set();
     for (const item of itemsData){
       if (CONFIG.METALSAVIORS.skillTypes.includes(item.type)){
         const itemName = item.name;
-        let idList = (actorData.data.skills[itemName] ?? []).map(x => x.id)
+        let idList = [...Object.keys((actorData.data.skills[itemName] ?? {}))]
+        const newSkill={
+          id: item._id,
+          name: itemName,
+          background: '',
+          backgroundBonuses: 0,
+          isBackgroundSkill: false
+        };
 
         if (!Object.keys(actorData.data.skills).includes(itemName)){
-          actorData.data.skills[itemName] = [{
-            id: item._id,
-            name: item.name,
-          }]
-          insertionItemNames.add(itemName);
-          updateOccurred = true;
+          actorData.data.skills[itemName] = {};
+          actorData.data.skills[itemName][item._id] = newSkill;
         } else if (!idList.includes(item._id)) {
-          actorData.data.skills[itemName].push(
-            {
-            id: item._id,
-            name: item.name,
-            }
-          )
-          insertionItemNames.add(itemName);
-          updateOccurred = true;
+          actorData.data.skills[itemName][item._id] = newSkill;
+          differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
         }
       }
     }
-    insertionItemNames.forEach(itemName => {
-      differentialUpdate[`data.skills.${itemName}`] = [...actorData.data.skills[itemName]];
-    });
 
     // check for deletions
     for (const baseItemName of [...Object.keys(actorData.data.skills)]){
-      const baseItemArray = actorData.data.skills[baseItemName];
-      let deletionOccurred = false;
-      for (let i = baseItemArray.length-1; i>= 0; i--) {
-        let baseItemData = baseItemArray[i]
-        var item = this.items.get(baseItemData.id);
+      const baseItemCollection = actorData.data.skills[baseItemName];
+      console.log(baseItemCollection);
+      for (const [id, baseItemData] of Object.entries(baseItemCollection)) {
+        var item = this.items.get(id);
         if (!item) {
-          baseItemArray.splice(i, 1);
-          updateOccurred = true;
-          deletionOccurred = true;
+          delete baseItemCollection[id];
+          differentialUpdate[`data.skills.${baseItemName}.-=${id}`] = "Yeeted";
         }
       }
-      if (baseItemArray.length == 0) {
+      if (Object.keys(baseItemCollection).length == 0) {
         differentialUpdate[`data.skills.-=${baseItemName}`] = "Yeeted";
         delete actorData.data.skills[baseItemName];
-        updateOccurred = true;
-      } else if (deletionOccurred) {
-        differentialUpdate[`data.skills.${baseItemName}`] = baseItemArray;
-      }
+      } 
     }
-
-    console.log("END _prepareCharacterItemsData", actorData.data, "\n", differentialUpdate, "\n", updateOccurred);
-    if (updateOccurred) {
+    if (Object.keys(differentialUpdate).length > 0) {
       this.update(differentialUpdate);
     }
   }
@@ -118,8 +103,6 @@ export class MetalSaviorsActor extends Actor {
     enduranceCalculator(actorData, data);
     derivedAttributeCalculator(actorData, data);
     skillsCalculator(actorData, data);
-
-    console.log("END _prepareCharacterData", actorData);
   }
 
   /**

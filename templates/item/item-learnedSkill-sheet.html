@@ -20,7 +20,7 @@
         <div class="resource flex-group-center">
           <label for="data.baseValue" class="resource-label">Base Value</label>
           <div class="resource-content flexrow flex-center flex-between">
-            {{#if data.isEditable}}
+            {{#if renderOptions.isEditing}}
               <input type="text" name="data.baseValue" value="{{data.baseValue}}" data-dtype="Number"/>
             {{else}}
               <input type="text" name="data.baseValue" value="{{data.baseValue}}" data-dtype="Number" disabled="true"/>
@@ -31,7 +31,7 @@
         <div class="resource flex-group-center">
           <label for="data.levelIncrease" class="resource-label">Increase Per Level</label>
           <div class="resource-content flexrow flex-center flex-between">
-            {{#if data.isEditable}}
+            {{#if renderOptions.isEditing}}
               <input type="text" name="data.levelIncrease" value="{{data.levelIncrease}}" data-dtype="Number"/>
             {{else}}
               <input type="text" name="data.levelIncrease" value="{{data.levelIncrease}}" data-dtype="Number" disabled="true"/>

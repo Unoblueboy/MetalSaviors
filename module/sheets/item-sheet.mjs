@@ -46,6 +46,12 @@ export class MetalSaviorsItemSheet extends ItemSheet {
     context.data = itemData.data;
     context.flags = itemData.flags;
 
+    // Add some rendering options to the context
+    this.renderOptions = this.renderOptions ?? {
+      isEditing: false
+    };
+    context.renderOptions = this.renderOptions;
+
     return context;
   }
 
@@ -60,10 +66,8 @@ export class MetalSaviorsItemSheet extends ItemSheet {
 
     // Edit Button
     html.find('.edit-button').click(ev => {
-      const itemData = this.item.data.toObject(false);
-      itemData.data.isEditable = !itemData.data.isEditable;
-      console.log('editable', itemData.data.isEditable);
-      this.item.update(itemData);
+      this.renderOptions.isEditing = !this.renderOptions.isEditing;
+      this.render(true);
       // this.render();
     });
 

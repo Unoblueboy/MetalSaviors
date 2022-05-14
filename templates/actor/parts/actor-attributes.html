@@ -1,20 +1,19 @@
-{{log data.editable}}
-{{#if data.editable}}
+{{#if renderOptions.isEditing}}
 <table>
-<tr>
-  <th></th>
-  <th>Base Value</th>
-  <th>Other Bonuses</th>
-  <th>Total</th>
-</tr>
-{{#each data.attributes as |attribute key|}}
-<tr>
-  <td><label for="data.attributes.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="d20cs&lt;@attributes.{{key}}.value" data-label="{{attribute.label}}">{{attribute.label}}</label></td>
-  <td><input type="text" name="data.attributes.{{key}}.baseValue" value="{{attribute.baseValue}}" data-dtype="Number"/></td>
-  <td><input type="text" name="data.attributes.{{key}}.otherBonuses" value="{{attribute.otherBonuses}}" data-dtype="Number"/></td>
-  <td><input type="text" name="data.attributes.{{key}}.value" value="{{attribute.value}}" data-dtype="Number" disabled="true"/></td>
-</tr>
-{{/each}}
+  <tr>
+    <th></th>
+    <th>Base Value</th>
+    <th>Other Bonuses</th>
+    <th>Total</th>
+  </tr>
+  {{#each data.attributes as |attribute key|}}
+  <tr>
+    <td><label for="data.attributes.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll="d20cs&lt;@attributes.{{key}}.value" data-label="{{attribute.label}}">{{attribute.label}}</label></td>
+    <td><input type="text" name="data.attributes.{{key}}.baseValue" value="{{attribute.baseValue}}" data-dtype="Number"/></td>
+    <td><input type="text" name="data.attributes.{{key}}.otherBonuses" value="{{attribute.otherBonuses}}" data-dtype="Number"/></td>
+    <td><input type="text" name="data.attributes.{{key}}.value" value="{{attribute.value}}" data-dtype="Number" disabled="true"/></td>
+  </tr>
+  {{/each}}
 </table>
 {{else}}
 {{#with data.attributes}}
