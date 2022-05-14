@@ -191,10 +191,10 @@ export function skillsCalculator(actorData, data) {
       const skillName = skillData.name;
       const baseSkill = actorData.items.get(id);
       
-      if (!baseSkill) {
+      if (!baseSkill || id==="baseSkill") {
         continue
       }
-      
+
       const baseSkillData = baseSkill.data.data;
       if (!Object.keys(dSkills).includes(skillName)) {
         dSkills[skillName] = {

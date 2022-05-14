@@ -47,9 +47,19 @@ export class MetalSaviorsActor extends Actor {
         };
 
         if (!Object.keys(actorData.data.skills).includes(itemName)){
-          actorData.data.skills[itemName] = {};
+          actorData.data.skills[itemName] = {baseStats: {
+            baseValue: item.data.baseValue,
+            levelIncrease: item.data.levelIncrease
+          }};
           actorData.data.skills[itemName][item._id] = newSkill;
-          differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
+          differentialUpdate[`data.skills.${itemName}`] = {
+            "baseStats": {
+              baseValue: item.data.baseValue,
+            levelIncrease: item.data.levelIncrease
+            },
+            [`${item._id}`]: newSkill
+          };
+          // differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
         } else if (!idList.includes(item._id)) {
           actorData.data.skills[itemName][item._id] = newSkill;
           differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
@@ -62,13 +72,18 @@ export class MetalSaviorsActor extends Actor {
       const baseItemCollection = actorData.data.skills[baseItemName];
       console.log(baseItemCollection);
       for (const [id, baseItemData] of Object.entries(baseItemCollection)) {
+        if (id === "baseStats") {
+          continue;
+        }
+
         var item = this.items.get(id);
         if (!item) {
           delete baseItemCollection[id];
           differentialUpdate[`data.skills.${baseItemName}.-=${id}`] = "Yeeted";
         }
       }
-      if (Object.keys(baseItemCollection).length == 0) {
+      //may have baseStats Key
+      if (Object.keys(baseItemCollection).length <= 1) {
         differentialUpdate[`data.skills.-=${baseItemName}`] = "Yeeted";
         delete actorData.data.skills[baseItemName];
       } 
@@ -76,6 +91,7 @@ export class MetalSaviorsActor extends Actor {
     if (Object.keys(differentialUpdate).length > 0) {
       this.update(differentialUpdate);
     }
+    console.log("differentialUpdate", differentialUpdate);
   }
 
   /**

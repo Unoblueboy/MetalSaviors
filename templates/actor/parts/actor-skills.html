@@ -12,6 +12,8 @@
       <td class="base-skill-main-row" data-base-skill-name="{{baseSkillName}}" width="30%">
       <h4>{{baseSkillName}}</h4>
       </td>
+      <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.baseValue" value="{{baseSkillObjects.baseStats.baseValue}}" data-dtype="Number"/></td>
+      <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.levelIncrease" value="{{baseSkillObjects.baseStats.levelIncrease}}" data-dtype="Number"/></td>
     </tr>
     {{#if (lookup (lookup ../renderOptions.skills baseSkillName) "renderAdditionalInfo")}}
       <tr>
@@ -25,19 +27,21 @@
               <th></th>
             </tr>
             {{#each this as |skill id|}}
-              <tr>
-                {{#with (lookup ../../skills.learnedSkills id) as |baseSkill|}}
-                  {{#if baseSkill.data.isGenericSkill}}
-                    <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String"/></td>
-                  {{else}}
-                    <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String" disabled="true"/></td>
-                  {{/if}}
-                {{/with}}
-                <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.background" value="{{skill.background}}" data-dtype="String"/></td>
-                <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.backgroundBonuses" value="{{skill.backgroundBonuses}}" data-dtype="Number"/></td>
-                <td><input type="checkbox" name="data.skills.{{baseSkillName}}.{{id}}.isBackgroundSkill" {{#checked skill.isBackgroundSkill}}{{/checked}}/></td>
-                <td><a class="skill-control skill-delete" data-skill-id="{{id}}" title="Delete Item"><i class="fas fa-trash"></i></a></td>
-              </tr>
+              {{#if (ne id "baseStats")}}
+                <tr>
+                  {{#with (lookup ../../skills.learnedSkills id) as |baseSkill|}}
+                    {{#if baseSkill.data.isGenericSkill}}
+                      <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String"/></td>
+                    {{else}}
+                      <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String" disabled="true"/></td>
+                    {{/if}}
+                  {{/with}}
+                  <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.background" value="{{skill.background}}" data-dtype="String"/></td>
+                  <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.backgroundBonuses" value="{{skill.backgroundBonuses}}" data-dtype="Number"/></td>
+                  <td><input type="checkbox" name="data.skills.{{baseSkillName}}.{{id}}.isBackgroundSkill" {{#checked skill.isBackgroundSkill}}{{/checked}}/></td>
+                  <td><a class="skill-control skill-delete" data-skill-id="{{id}}" title="Delete Item"><i class="fas fa-trash"></i></a></td>
+                </tr>
+              {{/if}}
             {{/each}}
           </table>
         </td>
