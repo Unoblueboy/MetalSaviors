@@ -1,3 +1,3 @@
 export function generateSkillKey(skillName){
-    return skillName.replace(" ", "_").replace(":", "_");
+    return skillName.replaceAll(/[ :\.;]/g, "_")
 }
