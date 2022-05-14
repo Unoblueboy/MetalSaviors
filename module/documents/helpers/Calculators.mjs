@@ -181,3 +181,43 @@ function _calculateCavInitiativeModifier(finesse, speed){
   }
   return 3;
 }
+
+export function skillsCalculator(actorData, data) {
+  const skills = data.skills;
+  const dSkills = {};
+
+  for (const skillArray of Object.values(skills)){
+    for (const skillData of skillArray) {
+      const skillName = skillData.name;
+      const baseSkill = actorData.items.get(skillData.id);
+      const baseSkillData = baseSkill.data.data;
+      console.log(baseSkill)
+      if (!Object.keys(dSkills).includes(skillName)) {
+        dSkills[skillName] = {
+          "name": skillName,
+          "baseValue": baseSkillData.baseValue,
+          "levelIncrease": baseSkillData.levelIncrease,
+          "numAcquired": 1,
+        };
+      } else {
+        dSkills[skillName]["numAcquired"] += 1;
+      }
+    }
+  }
+
+  for (const derivedSkill of Object.values(dSkills)){
+    derivedSkill.value = _calculateSkillValue(derivedSkill, data)
+  }
+
+  data.derivedSkills = dSkills;
+}
+
+function _calculateSkillValue(derivedSkill, data) {
+  let lvl = data.level.value;
+  let derivedAttributes = data.derivedAttributes;
+  let numAcquiredBonus = (derivedSkill.numAcquired - 1) * 10
+  return derivedSkill.baseValue 
+  + numAcquiredBonus 
+  + derivedSkill.levelIncrease * lvl
+  + derivedAttributes.skillModifier.value;
+}

@@ -2,7 +2,8 @@ import {
   attributeCalculator, 
   healthCalculator, 
   enduranceCalculator,
-  derivedAttributeCalculator } from "./helpers/Calculators.mjs"
+  derivedAttributeCalculator,
+  skillsCalculator } from "./helpers/Calculators.mjs"
 
 import { ActorSkill } from "./helpers/ActorSkill.mjs";
 
@@ -23,18 +24,14 @@ export class MetalSaviorsActor extends Actor {
     // documents or derived data.
     const actorData = this.data;
     const itemsData = [...this.items].map(x => x.data);
-    this._prepareCharacterItemsData(actorData, itemsData)
-
-    console.log("END prepareBaseData", itemsData);
+    this._prepareCharacterSkillsData(actorData, itemsData)
   }
 
-  _prepareCharacterItemsData(actorData, itemsData){
+  _prepareCharacterSkillsData(actorData, itemsData){
     if (actorData.type !== 'character') return;
 
     let updateOccurred = false;
     let differentialUpdate = {};
-
-    console.log("BEGIN _prepareCharacterItemsData", JSON.parse(JSON.stringify(actorData.data)), updateOccurred);
     
     // Check for new items
     let insertionItemNames = new Set();
@@ -120,6 +117,7 @@ export class MetalSaviorsActor extends Actor {
     healthCalculator(actorData, data);
     enduranceCalculator(actorData, data);
     derivedAttributeCalculator(actorData, data);
+    skillsCalculator(actorData, data);
 
     console.log("END _prepareCharacterData", actorData);
   }
@@ -139,7 +137,8 @@ export class MetalSaviorsActor extends Actor {
    * Override getRollData() that's supplied to rolls.
    */
   getRollData() {
-    const data = super.getRollData();
+    // Deep Copy data so it doesn't get imported into the character
+    const data = foundry.utils.deepClone(super.getRollData());
 
     // Prepare character roll data.
     this._getCharacterRollData(data);
@@ -154,11 +153,12 @@ export class MetalSaviorsActor extends Actor {
   _getCharacterRollData(data) {
     if (this.data.type !== 'character') return;
 
-    // Copy the ability scores to the top level, so that rolls can use
-    // formulas like `@str.mod + 4`.
-    if (data.abilities) {
-      for (let [k, v] of Object.entries(data.abilities)) {
-        data[k] = foundry.utils.deepClone(v);
+    if (data.derivedSkills) {
+      delete data.skills;
+      data.skills = {};
+      for (let [k, v] of Object.entries(data.derivedSkills)) {
+        let newKey = k.replace(" ", "_")
+        data.skills[newKey] = foundry.utils.deepClone(v);
       }
     }
 

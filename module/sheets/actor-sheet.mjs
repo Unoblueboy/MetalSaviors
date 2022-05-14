@@ -147,11 +147,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 
     // Edit Button
     html.find('.edit-button').click(ev => {
-      const actorData = this.actor.data.toObject(false);
-      actorData.data.editable = !actorData.data.editable;
-      console.log('editable', actorData.data.editable);
-      this.actor.update(actorData);
-      // this.render();
+      this.actor.update({"data.editable": !this.actor.data.data.editable});
     });
 
     // Drag events for macros.
@@ -209,6 +205,9 @@ export class MetalSaviorsActorSheet extends ActorSheet {
         const item = this.actor.items.get(itemId);
         if (item) return item.roll();
       }
+      if (dataset.rollType == 'skill') {
+        this._rollSkill(dataset.skillName)
+      }
     }
 
     // Handle rolls that supply the formula directly.
@@ -222,6 +221,21 @@ export class MetalSaviorsActorSheet extends ActorSheet {
       });
       return roll;
     }
+  }
+
+  _rollSkill(skillName) {
+    // let skills = this.actor.data.data.derivedSkills;
+    let skillKey = skillName.replace(" ", "_")
+    let roll = new Roll(`d100cs<=@skills.${skillKey}.value`, this.actor.getRollData());
+    // console.log(this.actor.getRollData(), skill);
+    const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+    const rollMode = game.settings.get('core', 'rollMode');
+    roll.toMessage({
+      speaker: speaker,
+      rollMode: rollMode,
+      flavor: `[Skill] ${skillName}`,
+    });
+    return roll;
   }
 
 }
