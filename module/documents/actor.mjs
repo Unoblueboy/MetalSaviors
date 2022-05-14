@@ -5,7 +5,7 @@ import {
   derivedAttributeCalculator,
   skillsCalculator } from "./helpers/Calculators.mjs"
 
-import { ActorSkill } from "./helpers/ActorSkill.mjs";
+import {generateSkillKey} from "../helpers/KeyGenerator.mjs";
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -36,6 +36,7 @@ export class MetalSaviorsActor extends Actor {
     for (const item of itemsData){
       if (CONFIG.METALSAVIORS.skillTypes.includes(item.type)){
         const itemName = item.name;
+        console.log(itemName)
         let idList = [...Object.keys((actorData.data.skills[itemName] ?? {}))]
         const newSkill={
           id: item._id,
@@ -48,6 +49,7 @@ export class MetalSaviorsActor extends Actor {
         if (!Object.keys(actorData.data.skills).includes(itemName)){
           actorData.data.skills[itemName] = {};
           actorData.data.skills[itemName][item._id] = newSkill;
+          differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
         } else if (!idList.includes(item._id)) {
           actorData.data.skills[itemName][item._id] = newSkill;
           differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
@@ -140,7 +142,7 @@ export class MetalSaviorsActor extends Actor {
       delete data.skills;
       data.skills = {};
       for (let [k, v] of Object.entries(data.derivedSkills)) {
-        let newKey = k.replace(" ", "_")
+        let newKey = generateSkillKey(k); // .replace(" ", "_")
         data.skills[newKey] = foundry.utils.deepClone(v);
       }
     }

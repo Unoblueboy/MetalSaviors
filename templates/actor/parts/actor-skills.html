@@ -1,3 +1,4 @@
+{{log this}}
 {{#if renderOptions.isEditing}}
 <h3>Learned Skills</h3>
 <table>
@@ -14,8 +15,7 @@
     </tr>
     {{#if (lookup (lookup ../renderOptions.skills baseSkillName) "renderAdditionalInfo")}}
       <tr>
-        <td></td>
-        <td colspan="2">
+        <td colspan="3">
           <table>
             <tr>
               <th>Skill Name</th>
@@ -26,7 +26,13 @@
             </tr>
             {{#each this as |skill id|}}
               <tr>
-                <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String" disabled="{{baseSkill.isGenericSkill}}"/></td>
+                {{#with (lookup ../../skills.learnedSkills id) as |baseSkill|}}
+                  {{#if baseSkill.data.isGenericSkill}}
+                    <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String"/></td>
+                  {{else}}
+                    <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String" disabled="true"/></td>
+                  {{/if}}
+                {{/with}}
                 <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.background" value="{{skill.background}}" data-dtype="String"/></td>
                 <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.backgroundBonuses" value="{{skill.backgroundBonuses}}" data-dtype="Number"/></td>
                 <td><input type="checkbox" name="data.skills.{{baseSkillName}}.{{id}}.isBackgroundSkill" {{#checked skill.isBackgroundSkill}}{{/checked}}/></td>

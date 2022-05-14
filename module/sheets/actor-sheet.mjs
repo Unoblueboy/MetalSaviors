@@ -1,5 +1,7 @@
 import {onManageActiveEffect, prepareActiveEffectCategories} from "../helpers/effects.mjs";
 
+import {generateSkillKey} from "../helpers/KeyGenerator.mjs";
+
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -255,7 +257,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 
   _rollSkill(skillName) {
     // let skills = this.actor.data.data.derivedSkills;
-    let skillKey = skillName.replace(" ", "_")
+    let skillKey = generateSkillKey(skillName) // .replace(" ", "_")
     let roll = new Roll(`d100cs<=@skills.${skillKey}.value`, this.actor.getRollData());
     const speaker = ChatMessage.getSpeaker({ actor: this.actor });
     const rollMode = game.settings.get('core', 'rollMode');

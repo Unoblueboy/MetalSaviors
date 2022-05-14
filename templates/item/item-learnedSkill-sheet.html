@@ -9,7 +9,8 @@
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
           </div>
           <div class="main grid-span-1">
-            <img class="edit-button" src="icons/anvil.png" title="edit" height="1" width="10"/>
+            <a class="edit-button" title="Edit Skill"><i class="fas fa-edit"></i></a>
+            <!-- <img class="edit-button" src="icons/anvil.png" title="edit" height="1" width="10"/> -->
           </div>
         </div>
       {{else}}
@@ -41,4 +42,10 @@
       </div>
     </div>
   </header>
+  <div class="sheet-body">
+    {{#if renderOptions.isEditing}}
+      <label for="data.isGenericSkill" class="resource-label">Is Generic Skill?</label>
+      <input type="checkbox" name="data.isGenericSkill" value="{{data.isGenericSkill}}" {{#checked data.isGenericSkill}}{{/checked}} />
+    {{/if}}
+  </div>
 </form>
