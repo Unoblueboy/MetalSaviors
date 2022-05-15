@@ -187,25 +187,22 @@ export function skillsCalculator(actorData, data) {
   const dSkills = {};
 
   for (const baseSkillsObject of Object.values(skills)){
+    for (const [skillName, baseSkillData] of Object.entries(baseSkillsObject.baseStats)) {
+      dSkills[skillName] = {
+        ...baseSkillData,
+        "name": skillName,
+        "numAcquired": 0,
+      }
+    }
+
     for (const [id, skillData] of Object.entries(baseSkillsObject)) {
       const skillName = skillData.name;
-      const baseSkill = actorData.items.get(id);
       
-      if (!baseSkill || id==="baseSkill") {
-        continue
+      if (id === "baseStats") {
+        continue;
       }
 
-      const baseSkillData = baseSkill.data.data;
-      if (!Object.keys(dSkills).includes(skillName)) {
-        dSkills[skillName] = {
-          "name": skillName,
-          "baseValue": baseSkillData.baseValue,
-          "levelIncrease": baseSkillData.levelIncrease,
-          "numAcquired": 1,
-        };
-      } else {
-        dSkills[skillName]["numAcquired"] += 1;
-      }
+      dSkills[skillName]["numAcquired"] += 1;
     }
   }
 
@@ -214,14 +211,21 @@ export function skillsCalculator(actorData, data) {
   }
 
   data.derivedSkills = dSkills;
+
+  console.log("dskills", dSkills, "skills", skills);
 }
 
 function _calculateSkillValue(derivedSkill, data) {
+  if (derivedSkill.override) {
+    return derivedSkill.overrideValue;
+  }
+  
   let lvl = data.level.value;
   let derivedAttributes = data.derivedAttributes;
   let numAcquiredBonus = (derivedSkill.numAcquired - 1) * 10
   return derivedSkill.baseValue 
-  + numAcquiredBonus 
+  + numAcquiredBonus
+  + derivedSkill.otherBonuses
   + derivedSkill.levelIncrease * lvl
   + derivedAttributes.skillModifier.value;
 }

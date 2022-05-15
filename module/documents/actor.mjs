@@ -31,63 +31,99 @@ export class MetalSaviorsActor extends Actor {
     if (actorData.type !== 'character') return;
 
     let differentialUpdate = {};
-    
+    const allSkillItems = itemsData.filter(itm => CONFIG.METALSAVIORS.skillTypes.includes(itm.type))
     // Check for new items
-    for (const item of itemsData){
-      if (CONFIG.METALSAVIORS.skillTypes.includes(item.type)){
-        const itemName = item.name;
-        console.log(itemName)
-        let idList = [...Object.keys((actorData.data.skills[itemName] ?? {}))]
-        const newSkill={
-          id: item._id,
-          name: itemName,
-          background: '',
-          backgroundBonuses: 0,
-          isBackgroundSkill: false
-        };
+    for (const item of allSkillItems){
+      const baseItemName = item.name;
+      const itemId = item._id;
 
-        if (!Object.keys(actorData.data.skills).includes(itemName)){
-          actorData.data.skills[itemName] = {baseStats: {
-            baseValue: item.data.baseValue,
-            levelIncrease: item.data.levelIncrease
-          }};
-          actorData.data.skills[itemName][item._id] = newSkill;
-          differentialUpdate[`data.skills.${itemName}`] = {
-            "baseStats": {
+      let idList = [...Object.keys((actorData.data.skills[baseItemName] ?? {}))]
+      const newSkill={
+        id: itemId,
+        name: baseItemName,
+        background: '',
+        backgroundBonuses: 0,
+        isBackgroundSkill: false
+      };
+
+      if (!Object.keys(actorData.data.skills).includes(baseItemName)){
+        // New Base Item Added that wasn't previously there
+        actorData.data.skills[baseItemName] = {
+          baseStats: {
+            [`${baseItemName}`] : {
               baseValue: item.data.baseValue,
-            levelIncrease: item.data.levelIncrease
-            },
-            [`${item._id}`]: newSkill
-          };
-          // differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
-        } else if (!idList.includes(item._id)) {
-          actorData.data.skills[itemName][item._id] = newSkill;
-          differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
+              levelIncrease: item.data.levelIncrease,
+              otherBonuses: 0,
+              override: false,
+              overrideValue: 0,
+            }
+          }
+        };
+        actorData.data.skills[baseItemName][itemId] = newSkill;
+        differentialUpdate[`data.skills.${baseItemName}`] = {
+          baseStats: {
+            [`${baseItemName}`] : {
+              baseValue: item.data.baseValue,
+              levelIncrease: item.data.levelIncrease,
+              otherBonuses: 0,
+              override: false,
+              overrideValue: 0,
+            }
+          },
+          [`${itemId}`]: newSkill
+        };
+        continue;
+      }
+      if (!idList.includes(itemId)) {
+        // New Base Item Added was previously there
+        actorData.data.skills[baseItemName][itemId] = newSkill;
+        differentialUpdate[`data.skills.${baseItemName}.${itemId}`] = newSkill;
+        continue;
+      }
+      
+      // Base Item existed previously, check for skill name updates
+      const itemName = actorData.data.skills[baseItemName][itemId].name;
+      if ((itemName !== baseItemName) && !Object.keys(actorData.data.skills[baseItemName].baseStats).includes(itemName)) {
+        actorData.data.skills[baseItemName].baseStats[itemName] = {
+          baseValue: item.data.baseValue,
+          levelIncrease: item.data.levelIncrease,
+          otherBonuses: 0,
+          override: false,
+          overrideValue: 0,
         }
       }
     }
 
     // check for deletions
     for (const baseItemName of [...Object.keys(actorData.data.skills)]){
-      const baseItemCollection = actorData.data.skills[baseItemName];
-      console.log(baseItemCollection);
-      for (const [id, baseItemData] of Object.entries(baseItemCollection)) {
+      const itemCollection = actorData.data.skills[baseItemName];
+      console.log(itemCollection);
+      for (const [id, itemData] of Object.entries(itemCollection)) {
         if (id === "baseStats") {
+          for (const itemName of Object.keys(itemData)) {
+            if (Object.values(itemCollection).every(itm => itm.name !== itemName)){
+              delete actorData.data.skills[baseItemName].baseStats[itemName];
+              differentialUpdate[`data.skills.${baseItemName}.baseStats.-=${itemName}`] = "Yeeted";
+            }
+          }
           continue;
         }
 
-        var item = this.items.get(id);
-        if (!item) {
-          delete baseItemCollection[id];
+        var baseItem = this.items.get(id);
+        if (!baseItem) {
+          delete itemCollection[id];
           differentialUpdate[`data.skills.${baseItemName}.-=${id}`] = "Yeeted";
         }
       }
       //may have baseStats Key
-      if (Object.keys(baseItemCollection).length <= 1) {
+      if (Object.keys(itemCollection).length <= 1) {
         differentialUpdate[`data.skills.-=${baseItemName}`] = "Yeeted";
         delete actorData.data.skills[baseItemName];
-      } 
+      }
+
+      // TODO: Consider deletion of keys in BaseStats for generic skills
     }
+    
     if (Object.keys(differentialUpdate).length > 0) {
       this.update(differentialUpdate);
     }

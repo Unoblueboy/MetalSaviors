@@ -1,4 +1,4 @@
-{{log this}}
+{{log skillsData}}
 {{#if renderOptions.isEditing}}
 <h3>Learned Skills</h3>
 <table>
@@ -10,18 +10,18 @@
     <th>Override?</th>
     <th>Override Value</th>
   </tr>
-  {{#each data.skills as |baseSkillObjects baseSkillName|}}
+  {{#each skillsData as |baseSkillObjects baseSkillName|}}
     <tr>
-      <td class="base-skill-main-row" data-base-skill-name="{{baseSkillName}}" width="30%">
-      <h4>{{baseSkillName}}</h4>
+      <td class="base-skill-main-row" data-skill-name="{{baseSkillObjects.baseStats.name}}" width="30%">
+      <h4>{{baseSkillObjects.baseStats.name}}</h4>
       </td>
-      <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.baseValue" value="{{baseSkillObjects.baseStats.baseValue}}" data-dtype="Number"/></td>
-      <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.otherBonuses" value="{{baseSkillObjects.baseStats.otherBonuses}}" data-dtype="Number"/></td>
-      <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.levelIncrease" value="{{baseSkillObjects.baseStats.levelIncrease}}" data-dtype="Number"/></td>
-      <td><input type="checkbox" name="data.skills.{{baseSkillName}}.baseStats.override" value="{{baseSkillObjects.baseStats.override}}" {{#checked baseSkillObjects.baseStats.override}}{{/checked}}/></td>
-      <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.overrideValue" value="{{baseSkillObjects.baseStats.overrideValue}}" data-dtype="Number"/></td>
+      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.baseStats.{{baseSkillObjects.baseStats.name}}.baseValue" value="{{baseSkillObjects.baseStats.baseValue}}" data-dtype="Number"/></td>
+      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.baseStats.{{baseSkillObjects.baseStats.name}}.otherBonuses" value="{{baseSkillObjects.baseStats.otherBonuses}}" data-dtype="Number"/></td>
+      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.baseStats.{{baseSkillObjects.baseStats.name}}.levelIncrease" value="{{baseSkillObjects.baseStats.levelIncrease}}" data-dtype="Number"/></td>
+      <td><input type="checkbox" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.baseStats.{{baseSkillObjects.baseStats.name}}.override" value="{{baseSkillObjects.baseStats.override}}" {{#checked baseSkillObjects.baseStats.override}}{{/checked}}/></td>
+      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.baseStats.{{baseSkillObjects.baseStats.name}}.overrideValue" value="{{baseSkillObjects.baseStats.overrideValue}}" data-dtype="Number"/></td>
     </tr>
-    {{#if (lookup (lookup ../renderOptions.skills baseSkillName) "renderAdditionalInfo")}}
+    {{#if (lookup (lookup ../renderOptions.skills baseSkillObjects.baseStats.name) "renderAdditionalInfo")}}
       <tr>
         <td colspan="100">
           <table>
@@ -37,14 +37,14 @@
                 <tr>
                   {{#with (lookup ../../skills.learnedSkills id) as |baseSkill|}}
                     {{#if baseSkill.data.isGenericSkill}}
-                      <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String"/></td>
+                      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String"/></td>
                     {{else}}
-                      <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String" disabled="true"/></td>
+                      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String" disabled="true"/></td>
                     {{/if}}
                   {{/with}}
-                  <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.background" value="{{skill.background}}" data-dtype="String"/></td>
-                  <td><input type="text" name="data.skills.{{baseSkillName}}.{{id}}.backgroundBonuses" value="{{skill.backgroundBonuses}}" data-dtype="Number"/></td>
-                  <td><input type="checkbox" name="data.skills.{{baseSkillName}}.{{id}}.isBackgroundSkill" {{#checked skill.isBackgroundSkill}}{{/checked}}/></td>
+                  <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.{{id}}.background" value="{{skill.background}}" data-dtype="String"/></td>
+                  <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.{{id}}.backgroundBonuses" value="{{skill.backgroundBonuses}}" data-dtype="Number"/></td>
+                  <td><input type="checkbox" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.{{id}}.isBackgroundSkill" {{#checked skill.isBackgroundSkill}}{{/checked}}/></td>
                   <td><a class="skill-control skill-delete" data-skill-id="{{id}}" title="Delete Item"><i class="fas fa-trash"></i></a></td>
                 </tr>
               {{/if}}

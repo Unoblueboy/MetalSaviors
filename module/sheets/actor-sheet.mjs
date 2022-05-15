@@ -117,6 +117,34 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     context.gear = gear;
     context.features = features;
     context.skills = skills;
+
+    context.skillsData = {}
+    // TODO: rearrange skills for data manipulation
+    for (const [baseSkillName, skillCollection] of Object.entries(context.data.skills)) {
+      console.log("skillCollection", skillCollection)
+      for (const [skillName, baseStats] of Object.entries(skillCollection.baseStats)) {
+        context.skillsData[skillName] = {
+          "baseStats": {
+            ...baseStats,
+            name: skillName,
+            baseName: baseSkillName,
+          }
+        }
+        for (const [skillId, skill] of Object.entries(skillCollection)) {
+          if (skillId === "baseStats") {
+            continue;
+          }
+
+          if (skill.name !== skillName) {
+            console.log(skillName, skill);
+            continue;
+          }
+
+          context.skillsData[skillName][skillId] = skill;
+        }
+        
+      }
+    }
    }
 
   /* -------------------------------------------- */
@@ -162,11 +190,11 @@ export class MetalSaviorsActorSheet extends ActorSheet {
       const skillsRenderOptions = this.renderOptions.skills;
 
       const dataset = ev.currentTarget.dataset;
-      const baseSkillName = dataset.baseSkillName;
-      if (!skillsRenderOptions[baseSkillName]){
-        skillsRenderOptions[baseSkillName] = {};
+      const skillName = dataset.skillName;
+      if (!skillsRenderOptions[skillName]){
+        skillsRenderOptions[skillName] = {};
       }
-      skillsRenderOptions[baseSkillName].renderAdditionalInfo = !skillsRenderOptions[baseSkillName].renderAdditionalInfo;
+      skillsRenderOptions[skillName].renderAdditionalInfo = !skillsRenderOptions[skillName].renderAdditionalInfo;
       this.render(true);
     });
 
