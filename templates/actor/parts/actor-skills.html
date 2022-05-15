@@ -5,7 +5,10 @@
   <tr>
     <th width="30%">Base Skill Name</th>
     <th>Base Value</th>
+    <th>Other Bonuses</th>
     <th>Increase Per Level</th>
+    <th>Override?</th>
+    <th>Override Value</th>
   </tr>
   {{#each data.skills as |baseSkillObjects baseSkillName|}}
     <tr>
@@ -13,11 +16,14 @@
       <h4>{{baseSkillName}}</h4>
       </td>
       <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.baseValue" value="{{baseSkillObjects.baseStats.baseValue}}" data-dtype="Number"/></td>
+      <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.otherBonuses" value="{{baseSkillObjects.baseStats.otherBonuses}}" data-dtype="Number"/></td>
       <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.levelIncrease" value="{{baseSkillObjects.baseStats.levelIncrease}}" data-dtype="Number"/></td>
+      <td><input type="checkbox" name="data.skills.{{baseSkillName}}.baseStats.override" value="{{baseSkillObjects.baseStats.override}}" {{#checked baseSkillObjects.baseStats.override}}{{/checked}}/></td>
+      <td><input type="text" name="data.skills.{{baseSkillName}}.baseStats.overrideValue" value="{{baseSkillObjects.baseStats.overrideValue}}" data-dtype="Number"/></td>
     </tr>
     {{#if (lookup (lookup ../renderOptions.skills baseSkillName) "renderAdditionalInfo")}}
       <tr>
-        <td colspan="3">
+        <td colspan="100">
           <table>
             <tr>
               <th>Skill Name</th>
