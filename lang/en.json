@@ -15,6 +15,22 @@
   "METALSAVIORS.AttributeSpdAbbr": "spd",
   "METALSAVIORS.AttributeWilAbbr": "wil",
 
+  "METALSAVIORS.AttributeDamageModifier": "Damage Modifier",
+  "METALSAVIORS.AttributeToHitModifier": "To Hit Modifier",
+  "METALSAVIORS.AttributeSkillModifier": "Skill Modifier",
+  "METALSAVIORS.AttributeReactionModifier": "Reaction Modifier",
+  "METALSAVIORS.AttributeInitiativeModifier": "Initiative Modifier",
+  "METALSAVIORS.AttributeSpacesMoved": "Spaces Moved",
+  "METALSAVIORS.AttributeCavInitiativeModifier": "CAV Initiative Modifier",
+
+  "METALSAVIORS.AttributeDamageModifierAbbr": "damageModifier",
+  "METALSAVIORS.AttributeToHitModifierAbbr": "toHitModifier",
+  "METALSAVIORS.AttributeSkillModifierAbbr": "skillModifier",
+  "METALSAVIORS.AttributeReactionModifierAbbr": "reactionModifier",
+  "METALSAVIORS.AttributeInitiativeModifierAbbr": "initiativeModifier",
+  "METALSAVIORS.AttributeSpacesMovedAbbr": "spacesMoved",
+  "METALSAVIORS.AttributeCavInitiativeModifierAbbr": "cavInitiativeModifier",
+
   "METALSAVIORS.EffectCreate": "Create Effect",
   "METALSAVIORS.EffectToggle": "Toggle Effect",
   "METALSAVIORS.EffectEdit": "Edit Effect",

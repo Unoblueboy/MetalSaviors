@@ -80,7 +80,7 @@
 		}
 	},
 	"Item": {
-		"types": ["item", "feature", "learnedSkill"],
+		"types": ["item", "feature", "learnedSkill", "atbSkill"],
 		"templates": {
 			"base": {
 				"description": ""
@@ -103,6 +103,30 @@
 			"templates": ["base", "skill"],
 			"baseValue" : 35,
 			"levelIncrease": 5
+		},
+		"atbSkill": {
+			"templates": ["base", "skill"],
+			"attributeBonuses": {
+				"bea": 0,
+				"fin": 0,
+				"hrd": 0,
+				"int": 0,
+				"pow": 0,
+				"spd": 0,
+				"wil": 0
+			},
+			"derivedAttributeBonuses": {
+				"damageModifier": 0,
+				"toHitModifier": 0,
+				"skillModifier": 0,
+				"reactionModifier": 0,
+				"initiativeModifier": 0,
+				"spacesMoved": 0,
+				"cavInitiativeModifier": 0
+			},
+			"skillBonuses": {
+
+			}
 		}
 	}
 }

@@ -34,3 +34,23 @@ METALSAVIORS.attributeAbbreviations = {
   "spd": "METALSAVIORS.AttributeSpdAbbr",
   "wil": "METALSAVIORS.AttributeWilAbbr"
 };
+
+METALSAVIORS.derivedAttributes = {
+  "damageModifier": "METALSAVIORS.AttributeDamageModifier",
+  "toHitModifier": "METALSAVIORS.AttributeToHitModifier",
+  "skillModifier": "METALSAVIORS.AttributeSkillModifier",
+  "reactionModifier": "METALSAVIORS.AttributeReactionModifier",
+  "initiativeModifier": "METALSAVIORS.AttributeInitiativeModifier",
+  "spacesMoved": "METALSAVIORS.AttributeSpacesMoved",
+  "cavInitiativeModifier": "METALSAVIORS.AttributeCavInitiativeModifier",
+};
+
+METALSAVIORS.derivedAttributesAbbreviations = {
+  "damageModifier": "METALSAVIORS.AttributeDamageModifierAbbr",
+  "toHitModifier": "METALSAVIORS.AttributeToHitModifierAbbr",
+  "skillModifier": "METALSAVIORS.AttributeSkillModifierAbbr",
+  "reactionModifier": "METALSAVIORS.AttributeReactionModifierAbbr",
+  "initiativeModifier": "METALSAVIORS.AttributeInitiativeModifierAbbr",
+  "spacesMoved": "METALSAVIORS.AttributeSpacesMovedAbbr",
+  "cavInitiativeModifier": "METALSAVIORS.AttributeCavInitiativeModifierAbbr",
+};
