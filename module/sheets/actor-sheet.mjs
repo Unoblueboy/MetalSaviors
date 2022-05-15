@@ -118,12 +118,18 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     context.features = features;
     context.skills = skills;
 
-    context.skillsData = {}
-    // TODO: rearrange skills for data manipulation
+    context.skillsData = {
+      learnedSkills: {}
+    }
+    // rearrange skills for data manipulation
     for (const [baseSkillName, skillCollection] of Object.entries(context.data.skills)) {
       console.log("skillCollection", skillCollection)
       for (const [skillName, baseStats] of Object.entries(skillCollection.baseStats)) {
-        context.skillsData[skillName] = {
+        if (skillName === "skillType") {
+          continue;
+        }
+        
+        context.skillsData.learnedSkills[skillName] = {
           "baseStats": {
             ...baseStats,
             name: skillName,
@@ -140,7 +146,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
             continue;
           }
 
-          context.skillsData[skillName][skillId] = skill;
+          context.skillsData.learnedSkills[skillName][skillId] = skill;
         }
         
       }

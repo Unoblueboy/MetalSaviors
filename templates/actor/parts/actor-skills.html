@@ -10,7 +10,7 @@
     <th>Override?</th>
     <th>Override Value</th>
   </tr>
-  {{#each skillsData as |baseSkillObjects baseSkillName|}}
+  {{#each skillsData.learnedSkills as |baseSkillObjects baseSkillName|}}
     <tr>
       <td class="base-skill-main-row" data-skill-name="{{baseSkillObjects.baseStats.name}}" width="30%">
       <h4>{{baseSkillObjects.baseStats.name}}</h4>

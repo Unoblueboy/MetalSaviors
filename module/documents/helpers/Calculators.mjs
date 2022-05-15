@@ -187,7 +187,15 @@ export function skillsCalculator(actorData, data) {
   const dSkills = {};
 
   for (const baseSkillsObject of Object.values(skills)){
+    console.log("baseSkillsObject", baseSkillsObject);
+    if (baseSkillsObject.baseStats.skillType !== "learnedSkill") {
+      continue;
+    }
+
     for (const [skillName, baseSkillData] of Object.entries(baseSkillsObject.baseStats)) {
+      if (skillName === "skillType") {
+        continue;
+      }
       dSkills[skillName] = {
         ...baseSkillData,
         "name": skillName,
@@ -219,7 +227,7 @@ function _calculateSkillValue(derivedSkill, data) {
   if (derivedSkill.override) {
     return derivedSkill.overrideValue;
   }
-  
+
   let lvl = data.level.value;
   let derivedAttributes = data.derivedAttributes;
   let numAcquiredBonus = (derivedSkill.numAcquired - 1) * 10

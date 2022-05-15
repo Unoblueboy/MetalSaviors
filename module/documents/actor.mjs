@@ -38,38 +38,16 @@ export class MetalSaviorsActor extends Actor {
       const itemId = item._id;
 
       let idList = [...Object.keys((actorData.data.skills[baseItemName] ?? {}))]
-      const newSkill={
-        id: itemId,
-        name: baseItemName,
-        background: '',
-        backgroundBonuses: 0,
-        isBackgroundSkill: false
-      };
+      const newSkill=this._generateNewSkill(item);
 
       if (!Object.keys(actorData.data.skills).includes(baseItemName)){
         // New Base Item Added that wasn't previously there
         actorData.data.skills[baseItemName] = {
-          baseStats: {
-            [`${baseItemName}`] : {
-              baseValue: item.data.baseValue,
-              levelIncrease: item.data.levelIncrease,
-              otherBonuses: 0,
-              override: false,
-              overrideValue: 0,
-            }
-          }
+          baseStats: this._generateBaseData(item),
         };
         actorData.data.skills[baseItemName][itemId] = newSkill;
         differentialUpdate[`data.skills.${baseItemName}`] = {
-          baseStats: {
-            [`${baseItemName}`] : {
-              baseValue: item.data.baseValue,
-              levelIncrease: item.data.levelIncrease,
-              otherBonuses: 0,
-              override: false,
-              overrideValue: 0,
-            }
-          },
+          baseStats: this._generateBaseData(item),
           [`${itemId}`]: newSkill
         };
         continue;
@@ -101,6 +79,10 @@ export class MetalSaviorsActor extends Actor {
       for (const [id, itemData] of Object.entries(itemCollection)) {
         if (id === "baseStats") {
           for (const itemName of Object.keys(itemData)) {
+            if (itemName == "skillType") {
+              continue;
+            }
+
             if (Object.values(itemCollection).every(itm => itm.name !== itemName)){
               delete actorData.data.skills[baseItemName].baseStats[itemName];
               differentialUpdate[`data.skills.${baseItemName}.baseStats.-=${itemName}`] = "Yeeted";
@@ -128,6 +110,29 @@ export class MetalSaviorsActor extends Actor {
       this.update(differentialUpdate);
     }
     console.log("differentialUpdate", differentialUpdate);
+  }
+
+  _generateBaseData(item) {
+    return {
+      [`${item.name}`] :{
+        baseValue: item.data.baseValue,
+        levelIncrease: item.data.levelIncrease,
+        otherBonuses: 0,
+        override: false,
+        overrideValue: 0,
+      },
+      skillType: item.type
+    };
+  }
+
+  _generateNewSkill(item) {
+    return {
+      id: item._id,
+      name: item.name,
+      background: '',
+      backgroundBonuses: 0,
+      isBackgroundSkill: false
+    };
   }
 
   /**
