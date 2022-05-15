@@ -43,6 +43,8 @@ jobs:
         asset_path: ./release.zip
         asset_name: release.zip
         asset_content_type: application/zip
+    - name: Update Manifest URL for pre-releases
+      run: python ./.github/workflows/update_system_manifest.py ${{ steps.create_release.outputs.html_url }}
     - name: Upload Release Json
       id: upload-release-json 
       uses: actions/upload-release-asset@v1
@@ -50,6 +52,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./system.json
+        asset_path: ./updated_system.json
         asset_name: system.json
         asset_content_type: application/json
