@@ -10,7 +10,7 @@ system_manifest = {}
 with open('system.json', 'r') as file:
      system_manifest = json.load(file)
 
-download_html = html.replace("releases/", "releases/download/")
+download_html = html.replace("releases/tag/", "releases/download/")
 system_manifest["download"] = f"{download_html}/release.zip"
 
 with open("updated_system.json", "w") as outfile:
