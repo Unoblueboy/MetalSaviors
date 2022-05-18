@@ -1,7 +1,31 @@
 export function attributeCalculator(actorData, data){
-    for (let [key, attribute] of Object.entries(data.attributes)) {
-        attribute.value = attribute.baseValue + attribute.otherBonuses;
-      }
+  const attributeDicts = {}
+  for (let [key, attribute] of Object.entries(data.attributes)) {
+    const attributeDict = {
+      ...attribute,
+      "bonusesFromAtbSkills": 0,
+    };
+    attributeDicts[key] = attributeDict;
+  }
+
+  for (const item of actorData.items) {
+    if (item.type !== "atbSkill") {
+      continue;
+    }
+
+    const itemData = item.data
+    for (const [name, bonus] of Object.entries(itemData.data.attributeBonuses)) {
+      attributeDicts[name].bonusesFromAtbSkills += bonus
+    }
+  }
+
+  for (let [key, attributeDict] of Object.entries(attributeDicts)) {
+    data.attributes[key].value = _calculateAttributeValue(attributeDict, data);
+  }
+}
+
+function _calculateAttributeValue(attributeDict, data) {
+  return attributeDict.baseValue + attributeDict.otherBonuses + attributeDict.bonusesFromAtbSkills
 }
 
 export function healthCalculator(actorData, data){
@@ -200,6 +224,7 @@ export function skillsCalculator(actorData, data) {
         ...baseSkillData,
         "name": skillName,
         "numAcquired": 0,
+        "bonusesFromAtbSkills": 0,
       }
     }
 
@@ -212,6 +237,22 @@ export function skillsCalculator(actorData, data) {
 
       dSkills[skillName]["numAcquired"] += 1;
     }
+  }
+
+  for (const item of actorData.items) {
+    if (item.type !== "atbSkill") {
+      continue;
+    }
+
+    const itemData = item.data
+    console.log("itemData", itemData)
+    const skillName = Object.keys(itemData.data.skillBonuses)[0]
+    const skillBonus = Object.values(itemData.data.skillBonuses)[0]
+
+    if (Object.keys(dSkills).includes(skillName)) {
+      dSkills[skillName].bonusesFromAtbSkills += skillBonus
+    }
+
   }
 
   for (const derivedSkill of Object.values(dSkills)){
@@ -233,6 +274,7 @@ function _calculateSkillValue(derivedSkill, data) {
   let numAcquiredBonus = (derivedSkill.numAcquired - 1) * 10
   return derivedSkill.baseValue 
   + numAcquiredBonus
+  + derivedSkill.bonusesFromAtbSkills
   + derivedSkill.otherBonuses
   + derivedSkill.levelIncrease * lvl
   + derivedAttributes.skillModifier.value;

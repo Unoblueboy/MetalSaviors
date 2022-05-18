@@ -61,6 +61,7 @@ export class MetalSaviorsItemSheet extends ItemSheet {
   }
 
   _prepareAtbSkills(context) {
+    if (this.item.type !== "atbSkill") return;
     for (const [attribute, bonus] of Object.entries(context.data.attributeBonuses)) {
       context.data.attributeBonuses[attribute] = {value: bonus}
       context.data.attributeBonuses[attribute].label = game.i18n.localize(CONFIG.METALSAVIORS.attributes[attribute]) ?? attribute;

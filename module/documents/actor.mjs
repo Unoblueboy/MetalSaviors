@@ -31,7 +31,7 @@ export class MetalSaviorsActor extends Actor {
     if (actorData.type !== 'character') return;
 
     let differentialUpdate = {};
-    const allSkillItems = itemsData.filter(itm => CONFIG.METALSAVIORS.skillTypes.includes(itm.type))
+    const allSkillItems = itemsData.filter(itm => itm.type === "learnedSkill")
     // Check for new items
     for (const item of allSkillItems){
       const baseItemName = item.name;

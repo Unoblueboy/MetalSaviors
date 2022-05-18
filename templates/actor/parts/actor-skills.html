@@ -1,6 +1,6 @@
 {{log skillsData}}
-{{#if renderOptions.isEditing}}
 <h3>Learned Skills</h3>
+{{#if renderOptions.isEditing}}
 <table>
   <tr>
     <th width="30%">Base Skill Name</th>
@@ -76,3 +76,22 @@
   {{/each}}
 </ol>
 {{/if}}
+
+<h3>Attribute Skills</h3>
+<ol class="items-list">
+  <li class="item flexrow items-header">
+    <div class="item-name">Name</div>
+    <div class="item-controls"></div>
+  </li>
+  {{#each skills.atbSkills as |skill id|}}
+    <li class="item flexrow" data-item-id="{{skill._id}}">
+      <div class="item-name">
+        <h4>{{skill.name}}</h4>
+      </div>
+      <div class="item-controls">
+        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+  {{/each}}
+</ol>
