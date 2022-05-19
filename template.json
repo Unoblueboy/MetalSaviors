@@ -101,8 +101,10 @@
 		},
 		"learnedSkill": {
 			"templates": ["base", "skill"],
-			"baseValue" : 35,
-			"levelIncrease": 5
+			"baseValue": 35,
+			"levelIncrease": 5,
+			"otherBonuses": 0,
+			"numAcquisitions": 1
 		},
 		"atbSkill": {
 			"templates": ["base", "skill"],

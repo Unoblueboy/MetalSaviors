@@ -16,6 +16,7 @@ export class MetalSaviorsActor extends Actor {
   /** @override */
   prepareData() {
     super.prepareData();
+    console.log("Prepare Actor Data");
   }
 
   /** @override */

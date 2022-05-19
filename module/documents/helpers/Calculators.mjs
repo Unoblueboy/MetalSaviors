@@ -279,3 +279,42 @@ function _calculateSkillValue(derivedSkill, data) {
   + derivedSkill.levelIncrease * lvl
   + derivedAttributes.skillModifier.value;
 }
+
+/**
+ * Audio/Video Conferencing Configuration Sheet
+ * 
+ *
+ * @param {object} [skillData]  The Skill Data
+ * @param {object} [actorData]  The Actor Data
+ * 
+ * @returns {number} The skill Value
+ */
+export function CalculateSkillValue(skillData, actorData) {
+  console.log(skillData, actorData);
+  const lvl = actorData.data?.level?.value || 1;
+  const skillModifier = actorData.data?.derivedAttributes?.skillModifier?.value || 0;
+  const numAcquiredBonus = (skillData.data.numAcquisitions - 1) * 10;
+
+  const bonusesFromAtbSkills = _calculateBonusesFromAtbSkills(skillData.name, actorData);
+
+  console.log(
+    skillData.data.baseValue,
+    numAcquiredBonus,
+    bonusesFromAtbSkills,
+    skillData.data.otherBonuses,
+    skillData.data.levelIncrease,
+    lvl,
+    skillModifier
+  );
+
+  return skillData.data.baseValue 
+  + numAcquiredBonus
+  + bonusesFromAtbSkills
+  + skillData.data.otherBonuses
+  + skillData.data.levelIncrease * lvl
+  + skillModifier;
+}
+
+function _calculateBonusesFromAtbSkills(skillName, actorData) {
+  return 0;
+}

@@ -4,6 +4,7 @@ import { MetalSaviorsItem } from "./documents/item.mjs";
 // Import sheet classes.
 import { MetalSaviorsActorSheet } from "./sheets/actor-sheet.mjs";
 import { MetalSaviorsItemSheet } from "./sheets/item-sheet.mjs";
+import { MetalSaviorsSkillSheet } from "./sheets/skill-sheet.mjs";
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { METALSAVIORS } from "./helpers/config.mjs";
@@ -43,6 +44,7 @@ Hooks.once('init', async function() {
   Actors.registerSheet("metalsaviors", MetalSaviorsActorSheet, { makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("metalsaviors", MetalSaviorsItemSheet, { makeDefault: true });
+  Items.registerSheet("metalsaviors", MetalSaviorsSkillSheet, { types: ["learnedSkill", "atbSkill"], makeDefault: true });
 
   // Preload Handlebars templates.
   return preloadHandlebarsTemplates();
