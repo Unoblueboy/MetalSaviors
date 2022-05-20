@@ -6,6 +6,7 @@ import {
   skillsCalculator } from "./helpers/Calculators.mjs"
 
 import {generateSkillKey} from "../helpers/KeyGenerator.mjs";
+import { SkillHelper } from "./helpers/SkillHelper.mjs";
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -13,127 +14,34 @@ import {generateSkillKey} from "../helpers/KeyGenerator.mjs";
  */
 export class MetalSaviorsActor extends Actor {
 
+  static VerifySkillAddition(actor, sheet, data) {    
+    if (data.type !== 'Item') return;
+
+    const item = game.items.get(data.id);
+
+    if (!item) return;
+
+    if (item.type !== 'learnedSkill') return;
+
+    const sameNameSkills = actor.items.filter(x => x.name === item.name);
+
+    if (sameNameSkills.length === 0) return;
+
+    if (sameNameSkills.length > 1) {
+      console.log(`Expected there to be at most 1 skill with same name but ${sameNameSkills.length} found`)
+    }
+
+    const origSkill = sameNameSkills[0];
+    const origSkillData = origSkill.data;
+
+    origSkill.update({"data.numAcquisitions": origSkillData.data.numAcquisitions + 1})
+    return false;
+  }
+
   /** @override */
   prepareData() {
     super.prepareData();
-    console.log("Prepare Actor Data");
-  }
-
-  /** @override */
-  prepareBaseData() {
-    // Data modifications in this step occur before processing embedded
-    // documents or derived data.
-    const actorData = this.data;
-    const itemsData = [...this.items].map(x => x.data);
-    this._prepareCharacterSkillsData(actorData, itemsData)
-  }
-
-  _prepareCharacterSkillsData(actorData, itemsData){
-    if (actorData.type !== 'character') return;
-
-    let differentialUpdate = {};
-    const allSkillItems = itemsData.filter(itm => itm.type === "learnedSkill")
-    // Check for new items
-    for (const item of allSkillItems){
-      const baseItemName = item.name;
-      const itemId = item._id;
-
-      let idList = [...Object.keys((actorData.data.skills[baseItemName] ?? {}))]
-      const newSkill=this._generateNewSkill(item);
-
-      if (!Object.keys(actorData.data.skills).includes(baseItemName)){
-        // New Base Item Added that wasn't previously there
-        actorData.data.skills[baseItemName] = {
-          baseStats: this._generateBaseData(item),
-        };
-        actorData.data.skills[baseItemName][itemId] = newSkill;
-        differentialUpdate[`data.skills.${baseItemName}`] = {
-          baseStats: this._generateBaseData(item),
-          [`${itemId}`]: newSkill
-        };
-        continue;
-      }
-      if (!idList.includes(itemId)) {
-        // New Base Item Added was previously there
-        actorData.data.skills[baseItemName][itemId] = newSkill;
-        differentialUpdate[`data.skills.${baseItemName}.${itemId}`] = newSkill;
-        continue;
-      }
-      
-      // Base Item existed previously, check for skill name updates
-      const itemName = actorData.data.skills[baseItemName][itemId].name;
-      if ((itemName !== baseItemName) && !Object.keys(actorData.data.skills[baseItemName].baseStats).includes(itemName)) {
-        actorData.data.skills[baseItemName].baseStats[itemName] = {
-          baseValue: item.data.baseValue,
-          levelIncrease: item.data.levelIncrease,
-          otherBonuses: 0,
-          override: false,
-          overrideValue: 0,
-        }
-      }
-    }
-
-    // check for deletions
-    for (const baseItemName of [...Object.keys(actorData.data.skills)]){
-      const itemCollection = actorData.data.skills[baseItemName];
-      console.log(itemCollection);
-      for (const [id, itemData] of Object.entries(itemCollection)) {
-        if (id === "baseStats") {
-          for (const itemName of Object.keys(itemData)) {
-            if (itemName == "skillType") {
-              continue;
-            }
-
-            if (Object.values(itemCollection).every(itm => itm.name !== itemName)){
-              delete actorData.data.skills[baseItemName].baseStats[itemName];
-              differentialUpdate[`data.skills.${baseItemName}.baseStats.-=${itemName}`] = "Yeeted";
-            }
-          }
-          continue;
-        }
-
-        var baseItem = this.items.get(id);
-        if (!baseItem) {
-          delete itemCollection[id];
-          differentialUpdate[`data.skills.${baseItemName}.-=${id}`] = "Yeeted";
-        }
-      }
-      //may have baseStats Key
-      if (Object.keys(itemCollection).length <= 1) {
-        differentialUpdate[`data.skills.-=${baseItemName}`] = "Yeeted";
-        delete actorData.data.skills[baseItemName];
-      }
-
-      // TODO: Consider deletion of keys in BaseStats for generic skills
-    }
-    
-    if (Object.keys(differentialUpdate).length > 0) {
-      this.update(differentialUpdate);
-    }
-    console.log("differentialUpdate", differentialUpdate);
-  }
-
-  _generateBaseData(item) {
-    return {
-      [`${item.name}`] :{
-        baseValue: item.data.baseValue,
-        levelIncrease: item.data.levelIncrease,
-        otherBonuses: 0,
-        override: false,
-        overrideValue: 0,
-      },
-      skillType: item.type
-    };
-  }
-
-  _generateNewSkill(item) {
-    return {
-      id: item._id,
-      name: item.name,
-      background: '',
-      backgroundBonuses: 0,
-      isBackgroundSkill: false
-    };
+    console.log("Prepare Data", JSON.parse(JSON.stringify(this.data)));
   }
 
   /**
@@ -163,6 +71,15 @@ export class MetalSaviorsActor extends Actor {
     enduranceCalculator(actorData, data);
     derivedAttributeCalculator(actorData, data);
     skillsCalculator(actorData, data);
+
+    // Learned skills values need to be recalculated to take into account the derived attribute
+    this._recalculateLearnedSkillsValue();
+  }
+
+  _recalculateLearnedSkillsValue() {
+    for (const item of this.items.filter(x => x.type === "learnedSkill")) {
+      SkillHelper.prepareDerivedLearnedSkillData(item);
+    }
   }
 
   /**

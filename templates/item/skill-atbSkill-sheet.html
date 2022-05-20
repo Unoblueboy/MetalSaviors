@@ -1,2 +1,75 @@
+{{log this}}
 <form class="{{cssClass}}" autocomplete="off">
-</form>
+    <header class="sheet-header">
+      <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+      <div class="header-fields">
+        {{#if editable}}
+          <div class="resources grid grid-12col">
+            <div class="main grid-span-11">
+              <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+            </div>
+            <div class="main grid-span-1">
+              <a class="edit-button" title="Edit Skill"><i class="fas fa-edit"></i></a>
+            </div>
+          </div>
+        {{else}}
+          <input name="name" type="text" value="{{item.name}}" placeholder="Name"/>
+        {{/if}}
+      </div>
+    </header>
+    <div class="sheet-body">
+        <div>
+          <h2>Attribute Bonuses</h2>
+          <table>
+            <tr>
+              <th>Attribute Name</th>
+              <th>Attribute Bonus</th>          
+            </tr>
+            {{#each data.attributeBonuses as |data name|}}
+              <tr>
+                <td>{{data.label}}</td>
+                <td><input type="text" name="data.attributeBonuses.{{name}}"  value="{{data.value}}" data-dtype="Number"/></td>
+              </tr>
+            {{/each}}
+          </table>
+        </div>
+        <div>
+          <h2>Derived Attribute Bonuses</h2>
+          <table>
+            <tr>
+              <th>Derived Attribute Name</th>
+              <th>Derived Attribute Bonus</th>          
+            </tr>
+            {{#each data.derivedAttributeBonuses as |data name|}}
+              <tr>
+                <td>{{data.label}}</td>
+                <td><input type="text" name="data.derivedAttributeBonuses.{{name}}"  value="{{data.value}}" data-dtype="Number"/></td>
+              </tr>
+            {{/each}}
+          </table>
+        </div>
+        <div>
+          <h2>Skill Bonuses</h2>
+          <table>
+            <tr>
+              <th>SKill Name</th>
+              <th>Skill Bonus</th>
+              <th></th>
+            </tr>
+            {{#each data.skillBonuses as |bonus name|}}
+              <tr>
+                <td>{{name}}</td>
+                <td><input name="data.skillBonuses.{{name}}" type="text" value="{{bonus}}" data-dtype="Number"/></td>
+                <td><a class="delete-skill-bonus" title="Delete Skill Bonus" data-skill-name="{{name}}"><i class="fas fa-trash"></i></a></td>
+              </tr>
+            {{/each}}
+            <tr>
+              <td><input type="text" data-dtype="String"/></td>
+              <td></td>
+              <td><a class="add-skill-bonus" title="Add Skill Bonus"><i class="fas fa-plus"></i></a></td>
+            </tr>
+          </table>
+        </div>
+    </div>
+  </form>
+  

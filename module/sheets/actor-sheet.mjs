@@ -79,6 +79,10 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     for (let [k, v] of Object.entries(context.data.attributes)) {
       v.label = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
     }
+
+    for (const [key, derivedAttribute] of Object.entries(context.data.derivedAttributes)) {
+      derivedAttribute.label = game.i18n.localize(CONFIG.METALSAVIORS.derivedAttributes[key]) ?? key;
+    }
   }
 
   /**
@@ -124,36 +128,6 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 
     context.skillsData = {
       learnedSkills: {}
-    }
-    // rearrange skills for data manipulation
-    for (const [baseSkillName, skillCollection] of Object.entries(context.data.skills)) {
-      console.log("skillCollection", skillCollection)
-      for (const [skillName, baseStats] of Object.entries(skillCollection.baseStats)) {
-        if (skillName === "skillType") {
-          continue;
-        }
-        
-        context.skillsData.learnedSkills[skillName] = {
-          "baseStats": {
-            ...baseStats,
-            name: skillName,
-            baseName: baseSkillName,
-          }
-        }
-        for (const [skillId, skill] of Object.entries(skillCollection)) {
-          if (skillId === "baseStats") {
-            continue;
-          }
-
-          if (skill.name !== skillName) {
-            console.log(skillName, skill);
-            continue;
-          }
-
-          context.skillsData.learnedSkills[skillName][skillId] = skill;
-        }
-        
-      }
     }
    }
 
@@ -274,9 +248,6 @@ export class MetalSaviorsActorSheet extends ActorSheet {
         const itemId = element.closest('.item').dataset.itemId;
         const item = this.actor.items.get(itemId);
         if (item) return item.roll();
-      }
-      if (dataset.rollType == 'skill') {
-        this._rollSkill(dataset.skillName)
       }
     }
 

@@ -1,81 +1,28 @@
-{{log skillsData}}
 <h3>Learned Skills</h3>
-{{#if renderOptions.isEditing}}
-<table>
-  <tr>
-    <th width="30%">Base Skill Name</th>
-    <th>Base Value</th>
-    <th>Other Bonuses</th>
-    <th>Increase Per Level</th>
-    <th>Override?</th>
-    <th>Override Value</th>
-  </tr>
-  {{#each skillsData.learnedSkills as |baseSkillObjects baseSkillName|}}
-    <tr>
-      <td class="base-skill-main-row" data-skill-name="{{baseSkillObjects.baseStats.name}}" width="30%">
-      <h4>{{baseSkillObjects.baseStats.name}}</h4>
-      </td>
-      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.baseStats.{{baseSkillObjects.baseStats.name}}.baseValue" value="{{baseSkillObjects.baseStats.baseValue}}" data-dtype="Number"/></td>
-      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.baseStats.{{baseSkillObjects.baseStats.name}}.otherBonuses" value="{{baseSkillObjects.baseStats.otherBonuses}}" data-dtype="Number"/></td>
-      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.baseStats.{{baseSkillObjects.baseStats.name}}.levelIncrease" value="{{baseSkillObjects.baseStats.levelIncrease}}" data-dtype="Number"/></td>
-      <td><input type="checkbox" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.baseStats.{{baseSkillObjects.baseStats.name}}.override" value="{{baseSkillObjects.baseStats.override}}" {{#checked baseSkillObjects.baseStats.override}}{{/checked}}/></td>
-      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.baseStats.{{baseSkillObjects.baseStats.name}}.overrideValue" value="{{baseSkillObjects.baseStats.overrideValue}}" data-dtype="Number"/></td>
-    </tr>
-    {{#if (lookup (lookup ../renderOptions.skills baseSkillObjects.baseStats.name) "renderAdditionalInfo")}}
-      <tr>
-        <td colspan="100">
-          <table>
-            <tr>
-              <th>Skill Name</th>
-              <th>Background</th>
-              <th>Bonuses from Background</th>
-              <th>Is Background Skill</th>
-              <th></th>
-            </tr>
-            {{#each this as |skill id|}}
-              {{#if (ne id "baseStats")}}
-                <tr>
-                  {{#with (lookup ../../skills.learnedSkills id) as |baseSkill|}}
-                    {{#if baseSkill.data.isGenericSkill}}
-                      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String"/></td>
-                    {{else}}
-                      <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.{{id}}.name" value="{{skill.name}}" data-dtype="String" disabled="true"/></td>
-                    {{/if}}
-                  {{/with}}
-                  <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.{{id}}.background" value="{{skill.background}}" data-dtype="String"/></td>
-                  <td><input type="text" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.{{id}}.backgroundBonuses" value="{{skill.backgroundBonuses}}" data-dtype="Number"/></td>
-                  <td><input type="checkbox" name="data.skills.{{baseSkillObjects.baseStats.baseName}}.{{id}}.isBackgroundSkill" {{#checked skill.isBackgroundSkill}}{{/checked}}/></td>
-                  <td><a class="skill-control skill-delete" data-skill-id="{{id}}" title="Delete Item"><i class="fas fa-trash"></i></a></td>
-                </tr>
-              {{/if}}
-            {{/each}}
-          </table>
-        </td>
-      </tr>
-    {{/if}}
-  {{/each}}
-</table>
-{{else}}
 <ol class="items-list">
   <li class="item flexrow items-header">
+    <div class="item-roll"></div>
     <div class="item-name">Name</div>
     <div class="item-value">Value</div>
-    <div class="item-roll">
-    </div>
+    <div class="item-controls"></div>
   </li>
-  {{#each data.derivedSkills as |skill id|}}
+  {{#each skills.learnedSkills as |skill id|}}
     <li class="item flexrow" data-item-id="{{skill._id}}">
+      <div class="item-roll">
+        <a class="item-roll rollable" data-roll-type="item"><i class="fas fa-dice-d20"></i></a>
+      </div>
       <div class="item-name">
         <h4>{{skill.name}}</h4>
       </div>
-      <div class="item-value">{{skill.value}}%</div>
-      <div class="item-roll">
-        <a class="item-roll rollable" data-roll-type="skill" data-skill-name="{{skill.name}}"><i class="fas fa-dice-d20"></i></a>
+      <div class="item-value item-prop">{{skill.data.value}}%</div>
+      
+      <div class="item-controls">
+        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
       </div>
     </li>
   {{/each}}
 </ol>
-{{/if}}
 
 <h3>Attribute Skills</h3>
 <ol class="items-list">

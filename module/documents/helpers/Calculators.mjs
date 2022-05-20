@@ -44,43 +44,63 @@ export function derivedAttributeCalculator(actorData, data){
   let dAttributes = data.derivedAttributes;
   let attributes = data.attributes;
 
+  let bonusToAttrDict = {
+    damageModifier: 0,
+    toHitModifier: 0,
+    skillModifier: 0,
+    reactionModifier: 0,
+    initiativeModifier: 0,
+    spacesMoved: 0,
+    cavInitiativeModifier: 0,
+  }
+
+  const atbSkills = actorData.items?.filter(x => x.type === "atbSkill") ?? [];
+
+  for (const atbSkill of atbSkills) {
+    for (const [k,v] of Object.entries(atbSkill.data.data.derivedAttributeBonuses)) {
+      bonusToAttrDict[k] += v
+    }
+  }
+  console.log("Derived Attribute Calculator", bonusToAttrDict)
+
   dAttributes.damageModifier.baseValue = _calculateBaseDamageModifier(attributes.pow.value);
-  if (dAttributes.damageModifier.otherBonuses !== null) {
-    dAttributes.damageModifier.value = `${dAttributes.damageModifier.baseValue} + ${dAttributes.damageModifier.otherBonuses}`;
-  }
-  else{
-    dAttributes.damageModifier.value = dAttributes.damageModifier.baseValue;
-  }
+  dAttributes.damageModifier.value = _validateDamageModifier(dAttributes.damageModifier);
 
   dAttributes.toHitModifier.baseValue = _calculateToHitModifier(attributes.pow.value);
   dAttributes.toHitModifier.value = 
     dAttributes.toHitModifier.baseValue + 
-    dAttributes.toHitModifier.otherBonuses;
+    dAttributes.toHitModifier.otherBonuses + 
+    bonusToAttrDict.toHitModifier;
 
   dAttributes.skillModifier.baseValue = _calculateSkillModifier(attributes.int.value);
   dAttributes.skillModifier.value = 
     dAttributes.skillModifier.baseValue + 
-    dAttributes.skillModifier.otherBonuses;
+    dAttributes.skillModifier.otherBonuses + 
+    bonusToAttrDict.skillModifier;
 
   dAttributes.reactionModifier.baseValue = _calculateReactionModifier(attributes.bea.value);
   dAttributes.reactionModifier.value = 
     dAttributes.reactionModifier.baseValue + 
-    dAttributes.reactionModifier.otherBonuses;
+    dAttributes.reactionModifier.otherBonuses + 
+    bonusToAttrDict.reactionModifier;
 
   dAttributes.initiativeModifier.baseValue = _calculateInitiativeModifier(attributes.spd.value);
   dAttributes.initiativeModifier.value = 
     dAttributes.initiativeModifier.baseValue + 
-    dAttributes.initiativeModifier.otherBonuses;
+    dAttributes.initiativeModifier.otherBonuses + 
+    bonusToAttrDict.initiativeModifier;
 
   dAttributes.spacesMoved.baseValue = _calculateSpacesMoved(attributes.spd.value);
   dAttributes.spacesMoved.value = 
     dAttributes.spacesMoved.baseValue + 
-    dAttributes.spacesMoved.otherBonuses;
+    dAttributes.spacesMoved.otherBonuses + 
+    bonusToAttrDict.spacesMoved;
 
   dAttributes.cavInitiativeModifier.baseValue = _calculateCavInitiativeModifier(attributes.fin.value, attributes.spd.value);
   dAttributes.cavInitiativeModifier.value = 
     dAttributes.cavInitiativeModifier.baseValue + 
-    dAttributes.cavInitiativeModifier.otherBonuses;
+    dAttributes.cavInitiativeModifier.otherBonuses + 
+    bonusToAttrDict.cavInitiativeModifier;
 }
 
 function _calculateBaseDamageModifier(power){
@@ -94,6 +114,20 @@ function _calculateBaseDamageModifier(power){
     return "2d6";
   }
   return "3d6";
+}
+
+function _validateDamageModifier(damageModifier) {
+  if (!damageModifier.otherBonuses) {
+    return damageModifier.baseValue;
+  }
+  
+  let formula = `${damageModifier.baseValue} + ${damageModifier.otherBonuses}`
+  
+  if (!Roll.validate(formula)){
+    return damageModifier.baseValue;
+  }
+
+  return formula;
 }
 
 function _calculateToHitModifier(power){
@@ -186,7 +220,7 @@ function _calculateSpacesMoved(speed){
 }
 
 function _calculateCavInitiativeModifier(finesse, speed){
-  let avg = Math.round((finesse+speed)/2)
+  let avg = Math.floor((finesse+speed)/2)
 
   if (avg <= 0){
     return -6;
@@ -284,28 +318,25 @@ function _calculateSkillValue(derivedSkill, data) {
  * Audio/Video Conferencing Configuration Sheet
  * 
  *
- * @param {object} [skillData]  The Skill Data
- * @param {object} [actorData]  The Actor Data
+ * @param {object} [skill]  The Skill
+ * @param {object} [actor]  The Actor Data
  * 
  * @returns {number} The skill Value
  */
-export function CalculateSkillValue(skillData, actorData) {
-  console.log(skillData, actorData);
+export function CalculateSkillValue(skill, actor) {
+  const skillData = skill.data;
+
+  if (skillData.data.override.active) {
+    return skillData.data.override.value;
+  }
+
+  const actorData = _getActorData(actor);
   const lvl = actorData.data?.level?.value || 1;
+  
   const skillModifier = actorData.data?.derivedAttributes?.skillModifier?.value || 0;
   const numAcquiredBonus = (skillData.data.numAcquisitions - 1) * 10;
 
-  const bonusesFromAtbSkills = _calculateBonusesFromAtbSkills(skillData.name, actorData);
-
-  console.log(
-    skillData.data.baseValue,
-    numAcquiredBonus,
-    bonusesFromAtbSkills,
-    skillData.data.otherBonuses,
-    skillData.data.levelIncrease,
-    lvl,
-    skillModifier
-  );
+  const bonusesFromAtbSkills = _calculateSkillBonusesFromAtbSkills(skillData.name, actorData);
 
   return skillData.data.baseValue 
   + numAcquiredBonus
@@ -315,6 +346,31 @@ export function CalculateSkillValue(skillData, actorData) {
   + skillModifier;
 }
 
-function _calculateBonusesFromAtbSkills(skillName, actorData) {
-  return 0;
+function _getActorData(actor) {
+  if (!!actor.data) return actor.data;
+
+  return {
+    data: {
+      level:{
+        value: 1
+      },
+      derivedAttributes:{
+        skillModifier:{
+          value: 0
+        }
+      }
+    }
+  }
+}
+
+function _calculateSkillBonusesFromAtbSkills(skillName, actorData) {
+  const atbSkills = actorData.items?.filter(x => x.type === "atbSkill") ?? [];
+  let bonus = 0;
+
+  for (const atbSkill of atbSkills) {
+    if (Object.keys(atbSkill.data.data.skillBonuses).includes(skillName)) {
+      bonus += atbSkill.data.data.skillBonuses[skillName];
+    }
+  }
+  return bonus;
 }

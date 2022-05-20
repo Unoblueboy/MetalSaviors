@@ -49,7 +49,7 @@
 			},
 			"derivedAttributes": {
 				"damageModifier": {
-					"otherBonuses": null
+					"otherBonuses": ""
 				},
 				"toHitModifier": {
 					"otherBonuses": 0
@@ -84,10 +84,6 @@
 		"templates": {
 			"base": {
 				"description": ""
-			},
-			"skill": {
-				"isBackgroundSkill": false,
-				"isGenericSkill": false
 			}
 		},
 		"item": {
@@ -100,14 +96,18 @@
 			"templates": ["base"]
 		},
 		"learnedSkill": {
-			"templates": ["base", "skill"],
+			"templates": ["base"],
 			"baseValue": 35,
 			"levelIncrease": 5,
 			"otherBonuses": 0,
-			"numAcquisitions": 1
+			"numAcquisitions": 1,
+			"override": {
+				"active": false,
+				"value": 0
+			}
 		},
 		"atbSkill": {
-			"templates": ["base", "skill"],
+			"templates": ["base"],
 			"attributeBonuses": {
 				"bea": 0,
 				"fin": 0,

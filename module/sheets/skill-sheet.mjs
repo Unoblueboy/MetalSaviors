@@ -9,6 +9,12 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
         return `${path}/skill-${this.item.data.type}-sheet.html`;
     }
 
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            classes: ["metalsaviors", "sheet", "item"]
+        });
+    }
+
     /* -------------------------------------------- */
 
     /** @override */
@@ -16,8 +22,12 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
         // Retrieve base data structure.
         const context = super.getData();
 
+        console.log("Get Skill Data" ,foundry.utils.deepClone(context));
+        console.log("Base Skill Data" ,foundry.utils.deepClone(this.item.data));
+
         // Use a safe clone of the item data for further operations.
-        const itemData = context.item.data;
+        // const itemData = foundry.utils.deepClone(context.item.data);
+        const itemData = JSON.parse(JSON.stringify(context.item.data));
 
         // Retrieve the roll data for TinyMCE editors.
         context.rollData = {};
@@ -68,5 +78,24 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
         if (!this.isEditable) return;
 
         // Roll handlers, click handlers, etc. would go here.
+        html.find('.delete-skill-bonus').click(ev => {
+            const dataset = ev.currentTarget.dataset;
+            console.log(ev.currentTarget);
+            const skillName = dataset.skillName;
+            console.log(skillName);
+            this.item.update({[`data.skillBonuses.-=${skillName}`]: "Yeeted"})
+        });
+    
+        html.find('.add-skill-bonus').click(ev => {
+            const target = ev.currentTarget;
+            const input = $(target).parent().parent().find("td input")[0];
+            const inpValue = input?.value;
+    
+            if (!inpValue || inpValue ==="") {
+            return;
+            }
+    
+            this.item.update({[`data.skillBonuses.${inpValue}`]: 0})
+        });
     }
 }
