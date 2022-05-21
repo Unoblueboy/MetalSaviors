@@ -49,7 +49,7 @@
   "primaryTokenAttribute": "endurance",
   "secondaryTokenAttribute": "health",
   "url": "",
-  "manifest": "",
+  "manifest": "https://github.com/Unoblueboy/MetalSaviors/releases/latest/download/system.json",
   "download": "https://github.com/Unoblueboy/MetalSaviors/releases/latest/download/release.zip",
   "license": "LICENSE.txt"
 }
