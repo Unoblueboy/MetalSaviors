@@ -17,20 +17,20 @@
 
       <div class="resources grid grid-2col">
         <div class="resource flex-group-center">
-          <label for="data.endurance.curValue" class="resource-label">Endurance</label>
+          <label for="data.endurance.value" class="resource-label">Endurance</label>
           <div class="resource-content flexrow flex-center flex-between">
-          <input type="text" name="data.endurance.curValue" value="{{data.endurance.curValue}}" data-dtype="Number"/>
+          <input type="text" name="data.endurance.value" value="{{data.endurance.value}}" data-dtype="Number"/>
           <span> / </span>
-          <input type="text" name="data.endurance.maxValue" value="{{data.endurance.maxValue}}" data-dtype="Number" disabled="true"/>
+          <input type="text" name="data.endurance.max" value="{{data.endurance.max}}" data-dtype="Number"/>
           </div>
         </div>
 
         <div class="resource flex-group-center">
-          <label for="data.health.curValue" class="resource-label">Health</label>
+          <label for="data.health.value" class="resource-label">Health</label>
           <div class="resource-content flexrow flex-center flex-between">
-          <input type="text" name="data.health.curValue" value="{{data.health.curValue}}" data-dtype="Number"/>
+          <input type="text" name="data.health.value" value="{{data.health.value}}" data-dtype="Number"/>
           <span> / </span>
-          <input type="text" name="data.health.maxValue" value="{{data.health.maxValue}}" data-dtype="Number" disabled="true"/>
+          <input type="text" name="data.health.max" value="{{data.health.max}}" data-dtype="Number"/>
           </div>
         </div>
 
@@ -62,7 +62,7 @@
     <div class="tab features" data-group="primary" data-tab="features">
       
       <section>
-        {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.html"}}
+        {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"}}
       </section>
     </div>
 
@@ -74,17 +74,17 @@
 
     {{!-- Skill Tab --}}
     <div class="tab skills" data-group="primary" data-tab="skills">
-       {{> "systems/metalsaviors/templates/actor/parts/actor-skills.html"}}
+       {{> "systems/metalsaviors/templates/actor/parts/actor-skills.hbs"}}
     </div>
 
     {{!-- Owned Items Tab --}}
     <div class="tab items" data-group="primary" data-tab="items">
-       {{> "systems/metalsaviors/templates/actor/parts/actor-items.html"}}
+       {{> "systems/metalsaviors/templates/actor/parts/actor-items.hbs"}}
     </div>
 
     {{!-- Active Effects Tab --}}
     <div class="tab effects flexcol" data-group="primary" data-tab="effects">
-      {{> "systems/metalsaviors/templates/actor/parts/actor-effects.html"}}
+      {{> "systems/metalsaviors/templates/actor/parts/actor-effects.hbs"}}
     </div>
 
   </section>

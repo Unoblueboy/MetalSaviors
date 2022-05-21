@@ -2,14 +2,43 @@
   "name": "metalsaviors",
   "title": "Metal Saviors",
   "description": "The Metal Saviors system for FoundryVTT!",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "minimumCoreVersion": "0.8.6",
   "compatibleCoreVersion": "9",
   "author": "Notepad Anon",
   "esmodules": ["module/metalsaviors.mjs"],
   "styles": ["css/metalsaviors.css"],
   "scripts": [],
-  "packs": [],
+  "packs": [{
+    "name": "attribute-skills",
+    "label": "Attribute Skills",
+    "path": "packs/attribute-skills.db",
+    "type": "Item"
+  },
+  {
+    "name": "combat-training",
+    "label": "Combat Training",
+    "path": "packs/combat-training.db",
+    "type": "Item"
+  },
+  {
+    "name": "learned-skills",
+    "label": "Learned Skills",
+    "path": "packs/learned-skills.db",
+    "type": "Item"
+  },
+  {
+    "name": "pilot-licenses",
+    "label": "Pilot Licenses",
+    "path": "packs/pilot-licenses.db",
+    "type": "Item"
+  },
+  {
+    "name": "weapon-proficiencies",
+    "label": "Weapon Proficiencies",
+    "path": "packs/weapon-proficiencies.db",
+    "type": "Item"
+  }],
   "languages": [{
     "lang": "en",
     "name": "English",
@@ -18,7 +47,7 @@
   "gridDistance": 5,
   "gridUnits": "ft",
   "primaryTokenAttribute": "endurance",
-  "secondaryTokenAttribute": "power",
+  "secondaryTokenAttribute": "health",
   "url": "",
   "manifest": "",
   "download": "https://github.com/Unoblueboy/MetalSaviors/releases/latest/download/release.zip",
