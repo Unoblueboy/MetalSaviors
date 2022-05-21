@@ -61,7 +61,6 @@ export function derivedAttributeCalculator(actorData, data){
       bonusToAttrDict[k] += v
     }
   }
-  console.log("Derived Attribute Calculator", bonusToAttrDict)
 
   dAttributes.damageModifier.baseValue = _calculateBaseDamageModifier(attributes.pow.value);
   dAttributes.damageModifier.value = _validateDamageModifier(dAttributes.damageModifier);
