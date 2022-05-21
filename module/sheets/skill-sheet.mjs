@@ -5,13 +5,14 @@
 export class MetalSaviorsSkillSheet extends ItemSheet {
     /** @override */
     get template() {
-        const path = "systems/metalsaviors/templates/item";
-        return `${path}/skill-${this.item.data.type}-sheet.html`;
+        const path = "systems/metalsaviors/templates/item/skill";
+        return `${path}/skill-${this.item.data.type}-sheet.hbs`;
     }
 
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
-            classes: ["metalsaviors", "sheet", "item"]
+            classes: ["metalsaviors", "sheet", "item"],
+            height: 250
         });
     }
 

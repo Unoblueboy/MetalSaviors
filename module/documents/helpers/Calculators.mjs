@@ -28,18 +28,6 @@ function _calculateAttributeValue(attributeDict, data) {
   return attributeDict.baseValue + attributeDict.otherBonuses + attributeDict.bonusesFromAtbSkills
 }
 
-export function healthCalculator(actorData, data){
-  data.health.maxValue = data.attributes.hrd.value;
-  data.health.max = data.health.maxValue;
-  data.health.value = data.health.curValue;
-}
-
-export function enduranceCalculator(actorData, data){
-  data.endurance.maxValue = data.endurance.baseValue + data.attributes.hrd.value;
-  data.endurance.max = data.endurance.maxValue;
-  data.endurance.value = data.endurance.curValue;
-}
-
 export function derivedAttributeCalculator(actorData, data){
   let dAttributes = data.derivedAttributes;
   let attributes = data.attributes;
@@ -244,7 +232,6 @@ export function skillsCalculator(actorData, data) {
   const dSkills = {};
 
   for (const baseSkillsObject of Object.values(skills)){
-    console.log("baseSkillsObject", baseSkillsObject);
     if (baseSkillsObject.baseStats.skillType !== "learnedSkill") {
       continue;
     }
@@ -278,7 +265,6 @@ export function skillsCalculator(actorData, data) {
     }
 
     const itemData = item.data
-    console.log("itemData", itemData)
     const skillName = Object.keys(itemData.data.skillBonuses)[0]
     const skillBonus = Object.values(itemData.data.skillBonuses)[0]
 
@@ -293,8 +279,6 @@ export function skillsCalculator(actorData, data) {
   }
 
   data.derivedSkills = dSkills;
-
-  console.log("dskills", dSkills, "skills", skills);
 }
 
 function _calculateSkillValue(derivedSkill, data) {

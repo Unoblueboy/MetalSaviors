@@ -12,7 +12,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["metalsaviors", "sheet", "actor"],
-      template: "systems/metalsaviors/templates/actor/actor-sheet.html",
+      template: "systems/metalsaviors/templates/actor/actor-sheet.hbs",
       width: 600,
       height: 600,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "features" }]
@@ -21,7 +21,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 
   /** @override */
   get template() {
-    return `systems/metalsaviors/templates/actor/actor-${this.actor.data.type}-sheet.html`;
+    return `systems/metalsaviors/templates/actor/actor-${this.actor.data.type}-sheet.hbs`;
   }
 
   /* -------------------------------------------- */
@@ -98,8 +98,11 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     const features = [];
     const skills = {
       "learnedSkills": {},
-      "atbSkills": {}
+      "atbSkills": {},
+      "combatTraining": {},
+      "weaponProficiencies": {}
     };
+    const pilotLicenses = {}
 
     // Iterate through items, allocating to containers
     for (let i of context.items) {
@@ -118,6 +121,15 @@ export class MetalSaviorsActorSheet extends ActorSheet {
         case 'atbSkill':
           skills.atbSkills[i._id] = i;
           break;
+        case 'combatTraining':
+          skills.combatTraining[i._id] = i;
+          break;
+        case 'weaponProficiency':
+          skills.weaponProficiencies[i._id] = i;
+          break;
+        case 'pilotLicense':
+          pilotLicenses[i._id] = i;
+          break;
       }
     }
 
@@ -125,10 +137,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     context.gear = gear;
     context.features = features;
     context.skills = skills;
-
-    context.skillsData = {
-      learnedSkills: {}
-    }
+    context.pilotLicenses = pilotLicenses;
    }
 
   /* -------------------------------------------- */

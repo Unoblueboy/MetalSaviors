@@ -7,10 +7,10 @@
   return loadTemplates([
 
     // Actor partials.
-    "systems/metalsaviors/templates/actor/parts/actor-features.html",
-    "systems/metalsaviors/templates/actor/parts/actor-items.html",
-    "systems/metalsaviors/templates/actor/parts/actor-effects.html",
-    "systems/metalsaviors/templates/actor/parts/actor-attributes.html",
-    "systems/metalsaviors/templates/actor/parts/actor-skills.html",
+    "systems/metalsaviors/templates/actor/parts/actor-features.hbs",
+    "systems/metalsaviors/templates/actor/parts/actor-items.hbs",
+    "systems/metalsaviors/templates/actor/parts/actor-effects.hbs",
+    "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs",
+    "systems/metalsaviors/templates/actor/parts/actor-skills.hbs",
   ]);
 };

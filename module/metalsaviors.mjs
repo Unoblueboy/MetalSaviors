@@ -44,7 +44,12 @@ Hooks.once('init', async function() {
   Actors.registerSheet("metalsaviors", MetalSaviorsActorSheet, { makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("metalsaviors", MetalSaviorsItemSheet, { makeDefault: true });
-  Items.registerSheet("metalsaviors", MetalSaviorsSkillSheet, { types: ["learnedSkill", "atbSkill"], makeDefault: true });
+  Items.registerSheet(
+    "metalsaviors", 
+    MetalSaviorsSkillSheet, 
+    { 
+      types: ["learnedSkill", "atbSkill","combatTraining","weaponProficiency","pilotLicense"], 
+      makeDefault: true });
 
   // Preload Handlebars templates.
   return preloadHandlebarsTemplates();
@@ -77,7 +82,8 @@ Hooks.once("ready", async function() {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => createItemMacro(data, slot));
 
-  Hooks.on("dropActorSheetData", (actor, sheet, data) => MetalSaviorsActor.VerifySkillAddition(actor, sheet, data));
+  Hooks.on("dropActorSheetData", (actor, sheet, data) => MetalSaviorsActor.EnforceStrictItemUniqueness(actor, sheet, data));
+  Hooks.on("dropActorSheetData", (actor, sheet, data) => MetalSaviorsActor.EnforceItemUniqueness(actor, sheet, data));
 });
 
 /* -------------------------------------------- */

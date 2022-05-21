@@ -4,11 +4,12 @@
 		"templates": {
 			"base": {
 				"health": {
-					"curValue": 5
+					"value": 5,
+					"max": 5
 				},
 				"endurance": {
-					"curValue": 5,
-					"baseValue": 5
+					"value": 5,
+					"max": 5
 				}
 			}
 		},
@@ -80,7 +81,7 @@
 		}
 	},
 	"Item": {
-		"types": ["item", "feature", "learnedSkill", "atbSkill"],
+		"types": ["item", "feature", "learnedSkill", "atbSkill", "combatTraining", "weaponProficiency", "pilotLicense"],
 		"templates": {
 			"base": {
 				"description": ""
@@ -129,6 +130,16 @@
 			"skillBonuses": {
 
 			}
+		},
+		"combatTraining": {
+			"templates": ["base"],
+			"actionsPerRound": 1
+		},
+		"weaponProficiency": {
+			"templates": ["base"]
+		},
+		"pilotLicense": {
+			"templates": ["base"]
 		}
 	}
 }

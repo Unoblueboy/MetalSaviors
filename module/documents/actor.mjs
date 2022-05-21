@@ -1,7 +1,5 @@
 import { 
   attributeCalculator, 
-  healthCalculator, 
-  enduranceCalculator,
   derivedAttributeCalculator,
   skillsCalculator } from "./helpers/Calculators.mjs"
 
@@ -14,34 +12,61 @@ import { SkillHelper } from "./helpers/SkillHelper.mjs";
  */
 export class MetalSaviorsActor extends Actor {
 
-  static VerifySkillAddition(actor, sheet, data) {    
+  static EnforceItemUniqueness(actor, sheet, data) {    
     if (data.type !== 'Item') return;
 
     const item = game.items.get(data.id);
 
     if (!item) return;
 
-    if (item.type !== 'learnedSkill') return;
+    if (!['learnedSkill', 'weaponProficiency', 'pilotLicense'].includes(item.type)) return;
 
-    const sameNameSkills = actor.items.filter(x => x.name === item.name);
+    const sameNameTypeItems = actor.items.filter(x => (x.name === item.name) && (x.type === item.type));
 
-    if (sameNameSkills.length === 0) return;
+    if (sameNameTypeItems.length === 0) return;
 
-    if (sameNameSkills.length > 1) {
-      console.log(`Expected there to be at most 1 skill with same name but ${sameNameSkills.length} found`)
+    if (sameNameTypeItems.length > 1) {
+      console.log(`Expected there to be at most 1 ${item.type} with same name but ${sameNameTypeItems.length} found`)
     }
 
-    const origSkill = sameNameSkills[0];
-    const origSkillData = origSkill.data;
+    if (item.type === 'learnedSkill') {
+      const origItem = sameNameTypeItems[0];
+      const origItemData = origItem.data;
+      origItem.update({"data.numAcquisitions": origItemData.data.numAcquisitions + 1})
+    }
+    return false;
+  }
 
-    origSkill.update({"data.numAcquisitions": origSkillData.data.numAcquisitions + 1})
+  static EnforceStrictItemUniqueness(actor, sheet, data) {
+    if (data.type !== 'Item') return;
+
+    const item = game.items.get(data.id);
+
+    if (!item) return;
+
+    if (!['combatTraining'].includes(item.type)) return;
+
+    const sameTypeItems = actor.items.filter(x => x.type === item.type);
+
+    if (sameTypeItems.length === 0) return;
+
+    if (sameTypeItems.length > 1) {
+      console.log(`Expected there to be at most 1 ${item.type} with same name but ${sameTypeItems.length} found`)
+    }
+
+    const origItem = sameTypeItems[0];
+    origItem.update({
+      "name": item.name,
+      "data.actionsPerRound": item.data.data.actionsPerRound,
+      "data.description": item.data.data.description
+    });
+
     return false;
   }
 
   /** @override */
   prepareData() {
     super.prepareData();
-    console.log("Prepare Data", JSON.parse(JSON.stringify(this.data)));
   }
 
   /**
@@ -67,8 +92,6 @@ export class MetalSaviorsActor extends Actor {
     const data = actorData.data;
 
     attributeCalculator(actorData, data);
-    healthCalculator(actorData, data);
-    enduranceCalculator(actorData, data);
     derivedAttributeCalculator(actorData, data);
     skillsCalculator(actorData, data);
 
