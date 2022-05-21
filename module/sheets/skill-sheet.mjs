@@ -12,7 +12,7 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             classes: ["metalsaviors", "sheet", "item"],
-            height: 250
+            height: 350
         });
     }
 
@@ -24,8 +24,7 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
         const context = super.getData();
 
         // Use a safe clone of the item data for further operations.
-        // const itemData = foundry.utils.deepClone(context.item.data);
-        const itemData = JSON.parse(JSON.stringify(context.item.data));
+        const itemData = context.item.data;
 
         // Retrieve the roll data for TinyMCE editors.
         context.rollData = {};
@@ -34,7 +33,7 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
             context.rollData = actor.getRollData();
         }
 
-        context.data = itemData.data;
+        context.data = foundry.utils.deepClone(itemData.data);
 
         // Add localisation data for attributeSkills
         this._prepareAtbSkills(context);
