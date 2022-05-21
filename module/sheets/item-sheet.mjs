@@ -33,7 +33,7 @@ export class MetalSaviorsItemSheet extends ItemSheet {
     const context = super.getData();
 
     // Use a safe clone of the item data for further operations.
-    const itemData = context.item.data;
+    const itemData = JSON.parse(JSON.stringify(context.item.data));
 
     // Retrieve the roll data for TinyMCE editors.
     context.rollData = {};
@@ -55,6 +55,7 @@ export class MetalSaviorsItemSheet extends ItemSheet {
     return context;
   }
 
+
   /* -------------------------------------------- */
 
   /** @override */
@@ -68,9 +69,7 @@ export class MetalSaviorsItemSheet extends ItemSheet {
     html.find('.edit-button').click(ev => {
       this.renderOptions.isEditing = !this.renderOptions.isEditing;
       this.render(true);
-      // this.render();
     });
-
     // Roll handlers, click handlers, etc. would go here.
   }
 }

@@ -79,6 +79,10 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     for (let [k, v] of Object.entries(context.data.attributes)) {
       v.label = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
     }
+
+    for (const [key, derivedAttribute] of Object.entries(context.data.derivedAttributes)) {
+      derivedAttribute.label = game.i18n.localize(CONFIG.METALSAVIORS.derivedAttributes[key]) ?? key;
+    }
   }
 
   /**
@@ -93,7 +97,8 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     const gear = [];
     const features = [];
     const skills = {
-      "learnedSkills": {}
+      "learnedSkills": {},
+      "atbSkills": {}
     };
 
     // Iterate through items, allocating to containers
@@ -110,6 +115,9 @@ export class MetalSaviorsActorSheet extends ActorSheet {
         case 'learnedSkill':
           skills.learnedSkills[i._id] = i;
           break;
+        case 'atbSkill':
+          skills.atbSkills[i._id] = i;
+          break;
       }
     }
 
@@ -117,6 +125,10 @@ export class MetalSaviorsActorSheet extends ActorSheet {
     context.gear = gear;
     context.features = features;
     context.skills = skills;
+
+    context.skillsData = {
+      learnedSkills: {}
+    }
    }
 
   /* -------------------------------------------- */
@@ -162,11 +174,11 @@ export class MetalSaviorsActorSheet extends ActorSheet {
       const skillsRenderOptions = this.renderOptions.skills;
 
       const dataset = ev.currentTarget.dataset;
-      const baseSkillName = dataset.baseSkillName;
-      if (!skillsRenderOptions[baseSkillName]){
-        skillsRenderOptions[baseSkillName] = {};
+      const skillName = dataset.skillName;
+      if (!skillsRenderOptions[skillName]){
+        skillsRenderOptions[skillName] = {};
       }
-      skillsRenderOptions[baseSkillName].renderAdditionalInfo = !skillsRenderOptions[baseSkillName].renderAdditionalInfo;
+      skillsRenderOptions[skillName].renderAdditionalInfo = !skillsRenderOptions[skillName].renderAdditionalInfo;
       this.render(true);
     });
 
@@ -237,9 +249,6 @@ export class MetalSaviorsActorSheet extends ActorSheet {
         const item = this.actor.items.get(itemId);
         if (item) return item.roll();
       }
-      if (dataset.rollType == 'skill') {
-        this._rollSkill(dataset.skillName)
-      }
     }
 
     // Handle rolls that supply the formula directly.
@@ -256,17 +265,51 @@ export class MetalSaviorsActorSheet extends ActorSheet {
   }
 
   _rollSkill(skillName) {
-    // let skills = this.actor.data.data.derivedSkills;
-    let skillKey = generateSkillKey(skillName) // .replace(" ", "_")
+    let skillKey = generateSkillKey(skillName)
     let roll = new Roll(`d100cs<=@skills.${skillKey}.value`, this.actor.getRollData());
     const speaker = ChatMessage.getSpeaker({ actor: this.actor });
     const rollMode = game.settings.get('core', 'rollMode');
+
+    roll.evaluate({async:false});
+    
+    
+    const stringContent = this._getRollSkillStringContent(roll);
     roll.toMessage({
+      content: stringContent,
       speaker: speaker,
       rollMode: rollMode,
       flavor: `[Skill] ${skillName}`,
     });
     return roll;
+  }
+
+  _getRollSkillStringContent(roll) {
+    const dieRoll = roll.terms[0].results[0].result;
+    
+    const isSuccess = roll.total === 1;
+    const isCritical = (dieRoll % 11) === 0;
+    const resultString = (isCritical ? "Critical " : "") + (isSuccess ? "Success" : "Failure")
+    const stringContent = `<div class="dice-roll"><div class="dice-result">
+    <div class="dice-formula">${roll.formula}</div>
+    <div class="dice-tooltip" style="display: none;">
+<section class="tooltip-part">
+    <div class="dice">
+        <header class="part-header flexrow">
+            <span class="part-formula">${roll.formula}</span>
+            
+            <span class="part-total">${resultString}</span>
+        </header>
+        <ol class="dice-rolls">
+            <li class="roll die d100${isSuccess ? " success" : ""}">${dieRoll}</li>
+        </ol>
+    </div>
+</section>
+</div>
+
+    <h4 class="dice-total">${resultString}</h4>
+</div></div>`;
+
+    return stringContent;
   }
 
 }

@@ -1,3 +1,5 @@
+import { SkillHelper } from "./helpers/SkillHelper.mjs";
+
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
@@ -10,6 +12,10 @@ export class MetalSaviorsItem extends Item {
     // As with the actor class, items are documents that can have their data
     // preparation methods overridden (such as prepareBaseData()).
     super.prepareData();
+  }
+
+  prepareDerivedData() {
+    SkillHelper.prepareDerivedLearnedSkillData(this);
   }
 
   /**
@@ -32,6 +38,10 @@ export class MetalSaviorsItem extends Item {
    */
   async roll() {
     const item = this.data;
+
+    if (this.type === "learnedSkill") {
+      return SkillHelper.roll(this);
+    }
 
     // Initialize chat data.
     const speaker = ChatMessage.getSpeaker({ actor: this.actor });

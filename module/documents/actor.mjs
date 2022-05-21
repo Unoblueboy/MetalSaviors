@@ -6,6 +6,7 @@ import {
   skillsCalculator } from "./helpers/Calculators.mjs"
 
 import {generateSkillKey} from "../helpers/KeyGenerator.mjs";
+import { SkillHelper } from "./helpers/SkillHelper.mjs";
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -13,85 +14,34 @@ import {generateSkillKey} from "../helpers/KeyGenerator.mjs";
  */
 export class MetalSaviorsActor extends Actor {
 
+  static VerifySkillAddition(actor, sheet, data) {    
+    if (data.type !== 'Item') return;
+
+    const item = game.items.get(data.id);
+
+    if (!item) return;
+
+    if (item.type !== 'learnedSkill') return;
+
+    const sameNameSkills = actor.items.filter(x => x.name === item.name);
+
+    if (sameNameSkills.length === 0) return;
+
+    if (sameNameSkills.length > 1) {
+      console.log(`Expected there to be at most 1 skill with same name but ${sameNameSkills.length} found`)
+    }
+
+    const origSkill = sameNameSkills[0];
+    const origSkillData = origSkill.data;
+
+    origSkill.update({"data.numAcquisitions": origSkillData.data.numAcquisitions + 1})
+    return false;
+  }
+
   /** @override */
   prepareData() {
     super.prepareData();
-  }
-
-  /** @override */
-  prepareBaseData() {
-    // Data modifications in this step occur before processing embedded
-    // documents or derived data.
-    const actorData = this.data;
-    const itemsData = [...this.items].map(x => x.data);
-    this._prepareCharacterSkillsData(actorData, itemsData)
-  }
-
-  _prepareCharacterSkillsData(actorData, itemsData){
-    if (actorData.type !== 'character') return;
-
-    let differentialUpdate = {};
-    
-    // Check for new items
-    for (const item of itemsData){
-      if (CONFIG.METALSAVIORS.skillTypes.includes(item.type)){
-        const itemName = item.name;
-        console.log(itemName)
-        let idList = [...Object.keys((actorData.data.skills[itemName] ?? {}))]
-        const newSkill={
-          id: item._id,
-          name: itemName,
-          background: '',
-          backgroundBonuses: 0,
-          isBackgroundSkill: false
-        };
-
-        if (!Object.keys(actorData.data.skills).includes(itemName)){
-          actorData.data.skills[itemName] = {baseStats: {
-            baseValue: item.data.baseValue,
-            levelIncrease: item.data.levelIncrease
-          }};
-          actorData.data.skills[itemName][item._id] = newSkill;
-          differentialUpdate[`data.skills.${itemName}`] = {
-            "baseStats": {
-              baseValue: item.data.baseValue,
-            levelIncrease: item.data.levelIncrease
-            },
-            [`${item._id}`]: newSkill
-          };
-          // differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
-        } else if (!idList.includes(item._id)) {
-          actorData.data.skills[itemName][item._id] = newSkill;
-          differentialUpdate[`data.skills.${itemName}.${item._id}`] = newSkill;
-        }
-      }
-    }
-
-    // check for deletions
-    for (const baseItemName of [...Object.keys(actorData.data.skills)]){
-      const baseItemCollection = actorData.data.skills[baseItemName];
-      console.log(baseItemCollection);
-      for (const [id, baseItemData] of Object.entries(baseItemCollection)) {
-        if (id === "baseStats") {
-          continue;
-        }
-
-        var item = this.items.get(id);
-        if (!item) {
-          delete baseItemCollection[id];
-          differentialUpdate[`data.skills.${baseItemName}.-=${id}`] = "Yeeted";
-        }
-      }
-      //may have baseStats Key
-      if (Object.keys(baseItemCollection).length <= 1) {
-        differentialUpdate[`data.skills.-=${baseItemName}`] = "Yeeted";
-        delete actorData.data.skills[baseItemName];
-      } 
-    }
-    if (Object.keys(differentialUpdate).length > 0) {
-      this.update(differentialUpdate);
-    }
-    console.log("differentialUpdate", differentialUpdate);
+    console.log("Prepare Data", JSON.parse(JSON.stringify(this.data)));
   }
 
   /**
@@ -121,6 +71,15 @@ export class MetalSaviorsActor extends Actor {
     enduranceCalculator(actorData, data);
     derivedAttributeCalculator(actorData, data);
     skillsCalculator(actorData, data);
+
+    // Learned skills values need to be recalculated to take into account the derived attribute
+    this._recalculateLearnedSkillsValue();
+  }
+
+  _recalculateLearnedSkillsValue() {
+    for (const item of this.items.filter(x => x.type === "learnedSkill")) {
+      SkillHelper.prepareDerivedLearnedSkillData(item);
+    }
   }
 
   /**

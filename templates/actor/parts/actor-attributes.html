@@ -72,4 +72,24 @@
     </div>
 </div>
 {{/with}}
+<table>
+  <tr>
+    <th></th>
+    <th>Other Bonuses</th>
+    <th>Total</th>
+  </tr>
+  {{#each data.derivedAttributes as |attribute key|}}
+    <tr>
+      <td><label for="data.derivedAttributes.{{key}}.value" class="resource-label flexlarge align-left">{{attribute.label}}</label></td>
+      <td>
+        {{#if (eq key "damageModifier")}}
+          <input type="text" name="data.derivedAttributes.{{key}}.otherBonuses" value="{{attribute.otherBonuses}}" data-dtype="String"/>
+        {{else}}
+          <input type="text" name="data.derivedAttributes.{{key}}.otherBonuses" value="{{attribute.otherBonuses}}" data-dtype="Number"/>
+        {{/if}}        
+        </td>
+      <td><input type="text" name="data.derivedAttributes.{{key}}.value" value="{{attribute.value}}" data-dtype="Number" disabled="true"/></td>
+    </tr>
+  {{/each}}
+</table>
 {{/if}}
