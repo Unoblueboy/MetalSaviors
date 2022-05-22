@@ -1,0 +1,223 @@
+<form class="{{cssClass}}" autocomplete="off">
+	<header class="sheet-header">
+		<div class="header-fields">
+			<h1 class="charname"><input
+					name="name"
+					type="text"
+					value="{{item.name}}"
+					placeholder="Name"
+				/></h1>
+		</div>
+	</header>
+	<hr />
+	<div class="sheet-body">
+		<table>
+			<tr>
+				<th>Limb</th>
+				<th>Current Health</th>
+				<th>Max Health</th>
+			</tr>
+			{{#each data.health as |limb name|}}
+				<tr>
+					<td>{{name}}</td>
+					<td><input
+							type="text"
+							name="data.health.{{name}}.value"
+							value="{{limb.value}}"
+							data-dtype="Number"
+						/></td>
+					<td><input
+							type="text"
+							name="data.health.{{name}}.max"
+							value="{{limb.max}}"
+							data-dtype="Number"
+						/></td>
+				</tr>
+			{{/each}}
+		</table>
+		<div>MSR:
+			<input
+				type="text"
+				name="data.MSR"
+				value="{{data.MSR}}"
+				data-dtype="Number"
+			/></div>
+		<div>Detonation Damage:
+			<input
+				type="text"
+				name="data.detonationDamage"
+				value="{{data.detonationDamage}}"
+				data-dtype="String"
+			/></div>
+		<div>
+			<h4>Speeds</h4>
+			<div>Standard Speed
+				<input
+					type="text"
+					name="data.speed.standardSpeed"
+					value="{{data.speed.standardSpeed}}"
+					data-dtype="String"
+				/></div>
+			<div>Boost Speed
+				<input
+					type="text"
+					name="data.speed.boostSpeed"
+					value="{{data.speed.boostSpeed}}"
+					data-dtype="String"
+				/></div>
+			<div>
+				Combat Speeds
+				<table>
+					<tr>
+						<th></th>
+						<th>Halt</th>
+						<th>Walking</th>
+						<th>Pacing</th>
+						<th>Galloping</th>
+						<th>Sprinting</th>
+					</tr>
+					<tr>
+						<th>Hit Bonus</th>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.halt.hitBonus"
+								value="{{data.speed.combatSpeeds.halt.hitBonus}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.walk.hitBonus"
+								value="{{data.speed.combatSpeeds.walk.hitBonus}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.pace.hitBonus"
+								value="{{data.speed.combatSpeeds.pace.hitBonus}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.gallop.hitBonus"
+								value="{{data.speed.combatSpeeds.gallop.hitBonus}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.sprint.hitBonus"
+								value="{{data.speed.combatSpeeds.sprint.hitBonus}}"
+								data-dtype="Number"
+							/></td>
+					</tr>
+					<tr>
+						<th>Momentum</th>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.halt.momentum"
+								value="{{data.speed.combatSpeeds.halt.momentum}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.walk.momentum"
+								value="{{data.speed.combatSpeeds.walk.momentum}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.pace.momentum"
+								value="{{data.speed.combatSpeeds.pace.momentum}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.gallop.momentum"
+								value="{{data.speed.combatSpeeds.gallop.momentum}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.sprint.momentum"
+								value="{{data.speed.combatSpeeds.sprint.momentum}}"
+								data-dtype="Number"
+							/></td>
+					</tr>
+					<tr>
+						<th>Spaces Moved</th>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.halt.spacesMoved"
+								value="{{data.speed.combatSpeeds.halt.spacesMoved}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.walk.spacesMoved"
+								value="{{data.speed.combatSpeeds.walk.spacesMoved}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.pace.spacesMoved"
+								value="{{data.speed.combatSpeeds.pace.spacesMoved}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.gallop.spacesMoved"
+								value="{{data.speed.combatSpeeds.gallop.spacesMoved}}"
+								data-dtype="Number"
+							/></td>
+						<td><input
+								type="text"
+								name="data.speed.combatSpeeds.sprint.spacesMoved"
+								value="{{data.speed.combatSpeeds.sprint.spacesMoved}}"
+								data-dtype="Number"
+							/></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div>Required License:
+			<input
+				type="text"
+				name="data.requiredLicense"
+				value="{{data.requiredLicense}}"
+				data-dtype="String"
+			/></div>
+		<div>
+			<h4>CAV Unit Piloting</h4>
+			<table>
+				<tr>
+					<th>Skill</th>
+					<th>Bonus</th>
+				</tr>
+				{{#each data.cavUnitPiloting as |bonus name|}}
+					<tr>
+						<td class="cav-skill-name"><input
+								type="text"
+								value="{{name}}"
+								data-dtype="String"
+							/></td>
+						<td><input
+								type="text"
+								name="data.cavUnitPiloting.{{name}}"
+								value="{{bonus}}"
+								data-dtype="Number"
+							/></td>
+					</tr>
+				{{/each}}
+			</table>
+		</div>
+		<div class="tab">
+			{{editor
+				content=data.description
+				target="data.description"
+				rollData=rollData
+				button=true
+				owner=owner
+				editable=editable
+			}}
+		</div>
+	</div>
+</form>

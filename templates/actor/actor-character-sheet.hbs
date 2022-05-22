@@ -53,6 +53,9 @@
     <a class="item" data-tab="skills">Skills</a>
     <a class="item" data-tab="items">Items</a>
     <a class="item" data-tab="effects">Effects</a>
+    {{#each cavs as |cav id|}}
+      <a class="item" data-tab="cav_{{cav._id}}">{{cav.name}}</a>
+    {{/each}}
   </nav>
 
   {{!-- Sheet Body --}}
@@ -86,6 +89,14 @@
     <div class="tab effects flexcol" data-group="primary" data-tab="effects">
       {{> "systems/metalsaviors/templates/actor/parts/actor-effects.hbs"}}
     </div>
+
+    {{!-- CAVs Tabs --}}
+    {{#each cavs as |cav id|}}
+      {{log cav}}
+      <div class="tab cav flexcol" data-group="primary" data-tab="cav_{{cav._id}}">
+        {{> "systems/metalsaviors/templates/actor/parts/actor-cav.hbs" data=cav.data cavId=cav._id}}
+      </div>
+    {{/each}}
 
   </section>
 </form>
