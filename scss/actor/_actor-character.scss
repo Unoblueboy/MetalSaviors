@@ -1,0 +1,131 @@
+.window-app .window-content {
+	padding: 0px;
+}
+
+form.character {
+	@include flex-container($direction: row);
+}
+
+div.window-app.metalsaviors.sheet.actor {
+	min-width: 600px;
+	min-height: 800px;
+}
+
+.sidebar {
+	height: 100%; /* Full-height: remove this if you want "auto" height */
+	width: 160px; /* Set the width of the sidebar */
+	position: relative;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	padding: 20px 20px 20px 20px;
+	@include flex-container;
+}
+
+.main-body {
+	width: 100%;
+	flex: 1;
+	padding: 10px;
+}
+
+.main-body-group {
+	@include flex-container($direction: row);
+	padding: 10px;
+	* {
+		flex: 1;
+	}
+}
+
+.sheet-body {
+	@include flex-container($direction: row);
+	padding: 10px;
+	* {
+		flex: 1;
+	}
+	.column1,
+	.column2 {
+		@include flex-container($direction: column);
+		padding: 5px;
+	}
+}
+
+tr.table-break {
+	min-width: 4px;
+	border-top: thin solid;
+	border-bottom: thin solid;
+	background-color: rgba(255, 255, 255, 0);
+}
+
+.interactive {
+	cursor: pointer;
+}
+
+.atb {
+	padding: 5px 0px 5px 0px;
+
+	&:hover {
+		.atb-popup {
+			max-height: 100px;
+		}
+	}
+}
+
+.atb-popup {
+	display: block;
+	position: relative;
+	background-color: antiquewhite;
+	z-index: 30;
+	width: 300px;
+	transition: max-height 1s;
+	max-height: 0px;
+	overflow: hidden;
+	@include flex-container($direction: row);
+
+	div {
+		padding: 5px;
+	}
+}
+
+table.skills-table {
+	border-collapse: collapse;
+}
+
+img.profile-img {
+	vertical-align: text-top;
+}
+
+.attributes {
+	padding-top: 5px;
+}
+
+.pilot-header {
+	flex: 0;
+}
+
+.pilot-licenses {
+	flex: 0;
+}
+
+.items-header {
+	flex: 0;
+}
+
+.items {
+	flex: 0;
+}
+
+.weap-prof-header {
+	flex: 0;
+}
+
+.weap-profs {
+	flex: 0;
+}
+
+.skills-header {
+	flex: 0;
+}
+
+.skills {
+	flex: 0;
+}

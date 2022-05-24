@@ -105,6 +105,8 @@ export class MetalSaviorsActor extends Actor {
 
 		attributeCalculator(actorData, data);
 		derivedAttributeCalculator(actorData, data);
+		data.nsr.value =
+			(data.nsr.baseValue || 0) + (data.nsr.otherBonuses || 0);
 
 		// Learned skills values need to be recalculated to take into account the derived attribute
 		this._calculateLearnedSkillsValue();

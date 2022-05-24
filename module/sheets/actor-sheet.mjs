@@ -14,9 +14,6 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
 			classes: ["metalsaviors", "sheet", "actor"],
-			template: "systems/metalsaviors/templates/actor/actor-sheet.hbs",
-			width: 600,
-			height: 600,
 			tabs: [
 				{
 					navSelector: ".sheet-tabs",
@@ -24,6 +21,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 					initial: "features",
 				},
 			],
+			submitOnChange: false,
 		});
 	}
 
@@ -113,11 +111,11 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		const skills = {
 			learnedSkills: {},
 			atbSkills: {},
-			combatTraining: {},
 			weaponProficiencies: {},
 		};
 		const pilotLicenses = {};
 		const cavs = [];
+		let combatTraining = null;
 
 		// Iterate through items, allocating to containers
 		for (let i of context.items) {
@@ -137,7 +135,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 					skills.atbSkills[i._id] = i;
 					break;
 				case "combatTraining":
-					skills.combatTraining[i._id] = i;
+					combatTraining = i;
 					break;
 				case "weaponProficiency":
 					skills.weaponProficiencies[i._id] = i;
@@ -155,6 +153,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		context.gear = gear;
 		context.features = features;
 		context.skills = skills;
+		context.combatTraining = combatTraining;
 		context.pilotLicenses = pilotLicenses;
 		context.cavs = cavs;
 	}
@@ -176,53 +175,14 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		// Everything below here is only needed if the sheet is editable
 		if (!this.isEditable) return;
 
-		// Add Inventory Item
-		html.find(".item-create").click(this._onItemCreate.bind(this));
-
-		// Delete Inventory Item
-		html.find(".item-delete").click((ev) => {
-			const li = $(ev.currentTarget).parents(".item");
-			const item = this.actor.items.get(li.data("itemId"));
-			item.delete();
-			li.slideUp(200, () => this.render(false));
-		});
-
-		// Delete Skill
-		html.find(".skill-delete").click((ev) => {
-			const dataset = ev.currentTarget.dataset;
-			const skill = this.actor.items.get(dataset.skillId);
-			skill.delete();
-		});
-
-		// Show Hide editable skill info
-		html.find(".base-skill-main-row").click((ev) => {
-			if (!this.renderOptions.skills) {
-				this.renderOptions.skills = {};
-			}
-			const skillsRenderOptions = this.renderOptions.skills;
-
-			const dataset = ev.currentTarget.dataset;
-			const skillName = dataset.skillName;
-			if (!skillsRenderOptions[skillName]) {
-				skillsRenderOptions[skillName] = {};
-			}
-			skillsRenderOptions[skillName].renderAdditionalInfo =
-				!skillsRenderOptions[skillName].renderAdditionalInfo;
-			this.render(true);
-		});
-
-		// Active Effect management
-		html.find(".effect-control").click((ev) =>
-			onManageActiveEffect(ev, this.actor)
-		);
-
 		// Rollable abilities.
 		html.find(".rollable").click(this._onRoll.bind(this));
 
-		// Edit Button
-		html.find(".edit-button").click((ev) => {
-			this.renderOptions.isEditing = !this.renderOptions.isEditing;
-			this.render(true);
+		html.find(".exit-submit").mouseleave((event) => {
+			const form = $(event.target).closest("form");
+			if (form) {
+				form.submit();
+			}
 		});
 
 		// Drag events for macros.
@@ -236,31 +196,14 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		}
 	}
 
-	/**
-	 * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
-	 * @param {Event} event   The originating click event
-	 * @private
-	 */
-	async _onItemCreate(event) {
-		event.preventDefault();
-		const header = event.currentTarget;
-		// Get the type of item to create.
-		const type = header.dataset.type;
-		// Grab any data associated with this control.
-		const data = duplicate(header.dataset);
-		// Initialize a default name.
-		const name = `New ${type.capitalize()}`;
-		// Prepare the item object.
-		const itemData = {
-			name: name,
-			type: type,
-			data: data,
-		};
-		// Remove the type from the dataset since it's in the itemData.type prop.
-		delete itemData.data["type"];
+	/** @override */
+	async _onChangeInput(event) {
+		const el = event.target;
+		if (!el.classList.contains("update-actor")) {
+			return;
+		}
 
-		// Finally, create the item!
-		return await Item.create(itemData, { parent: this.actor });
+		this._onSubmit(event);
 	}
 
 	/**

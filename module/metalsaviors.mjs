@@ -89,6 +89,40 @@ Handlebars.registerHelper("toLowerCase", function (str) {
 	return str.toLowerCase();
 });
 
+Handlebars.registerHelper("len", function (json) {
+	return Object.keys(json).length;
+});
+
+Handlebars.registerHelper("and", function (cond1, cond2) {
+	return cond1 && cond2;
+});
+
+Handlebars.registerHelper("or", function (cond1, cond2) {
+	return cond1 || cond2;
+});
+
+Handlebars.registerHelper("not", function (cond) {
+	return !cond;
+});
+
+Handlebars.registerHelper("any", function (...args) {
+	for (var i = 0; i < args.length - 1; i++) {
+		if (args[i]) {
+			return true;
+		}
+	}
+	return false;
+});
+
+Handlebars.registerHelper("all", function (...args) {
+	for (var i = 0; i < args.length - 1; i++) {
+		if (!args[i]) {
+			return false;
+		}
+	}
+	return true;
+});
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */

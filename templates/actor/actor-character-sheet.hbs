@@ -1,103 +1,96 @@
-<form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
-
-  {{!-- Sheet Header --}}
-  <header class="sheet-header">
-    <img style="vertical-align: text-top;" class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
-    <div class="header-fields">
-      <div class="resources grid grid-12col">
-        <div class="main grid-span-11">
-          <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+<form class="{{cssClass}} {{actor.type}}" autocomplete="off">
+	<div class="sidebar">
+		<div>
+			<img
+				class="profile-img"
+				src="{{actor.img}}"
+				data-edit="img"
+				title="{{actor.name}}"
+			/>
+		</div>
+		<div class="attributes">
+            {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"}}
         </div>
-        <div class="main grid-span-1">
-          <span>
-            <a class="edit-button"><i class="fas fa-edit fa-xl"></i></a>
-          </span>
+	</div>
+    <div class="main-body">
+        <header>
+            <div class="main-body-group">
+                <div class="flexcol">
+                    <div>Character Name</div>
+                    <div><input class="update-actor" name="name" type="text" value="{{actor.name}}" placeholder="Name"/></div>
+                </div>
+                <div class="flexcol">
+                    <div>Call Sign</div>
+                    <div><input class="update-actor" name="data.callsign" type="text" value="{{data.callsign}}" placeholder="Call Sign"/></div>
+                </div>
+            </div>
+
+            <div class="main-body-group">
+                <div class="flexcol">
+                    <div>Endurance</div>
+                    <div class="flexrow">
+                        <div><input class="update-actor" type="text" name="data.endurance.value" value="{{data.endurance.value}}" data-dtype="Number"/></div>
+                        <div class="flex0">/</div>
+                        <div><input class="update-actor" type="text" name="data.endurance.max" value="{{data.endurance.max}}" data-dtype="Number"/></div>
+                    </div>
+                </div>
+                <div class="flexcol">
+                    <div>Health</div>
+                    <div class="flexrow">
+                        <div><input class="update-actor" type="text" name="data.health.value" value="{{data.health.value}}" data-dtype="Number"/></div>
+                        <div class="flex0">/</div>
+                        <div><input class="update-actor" type="text" name="data.health.max" value="{{data.health.max}}" data-dtype="Number"/></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-body-group">
+                <div class="flexrow flex6">
+                    <div class="flexcol">
+                        <div>NSR</div>
+                        <div><input type="text" value="{{data.nsr.value}}" data-dtype="Number" disabled="true"/></div>
+                    </div>
+                    <div class="flexcol">
+                        <div>Actions/Round</div>
+                        {{#if combatTraining}}
+                            <div><input type="text" value="{{combatTraining.data.actionsPerRound}}" data-dtype="Number" disabled="true"> </div>
+                        {{else}}
+                            <div><input type="text" value="No Training" data-dtype="Number" disabled="true"> </div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="flex 1"></div>
+                <div class="flexrow flex6">
+                    <div class="flexcol">
+                        <div>Level</div>
+                        <div><input class="update-actor" type="text" name="data.level.value" value="{{data.level.value}}" data-dtype="Number"/></div>
+                    </div>
+                    <div class="flexcol">
+                        <div>Experience</div>
+                        <div><input class="update-actor" type="text" name="data.level.exp" value="{{data.level.exp}}" data-dtype="Number"/></div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-body-group">
+                {{#each data.derivedAttributes as |dAttribute name|}}
+                    <div class="flexcol flex1">
+                        <div>{{dAttribute.label}}</div>
+                        {{#if (eq name "damageModifier")}}
+                            <div><input type="text" value="{{dAttribute.value}}" data-dtype="String" disabled="true"/></div>
+                        {{else}}
+                            <div><input type="text" value="{{dAttribute.value}}" data-dtype="Number" disabled="true"/></div>
+                        {{/if}}
+                    </div>
+                {{/each}}
+            </div>
+        </header>
+        <div class="sheet-body flexrow">
+            <div class="column1">
+                {{> "systems/metalsaviors/templates/actor/parts/actor-items.hbs"}}
+            </div>
+            <div class="column2">
+                {{> "systems/metalsaviors/templates/actor/parts/actor-skills.hbs"}}
+            </div>
         </div>
-      </div>
-
-      <div class="resources grid grid-2col">
-        <div class="resource flex-group-center">
-          <label for="data.endurance.value" class="resource-label">Endurance</label>
-          <div class="resource-content flexrow flex-center flex-between">
-          <input type="text" name="data.endurance.value" value="{{data.endurance.value}}" data-dtype="Number"/>
-          <span> / </span>
-          <input type="text" name="data.endurance.max" value="{{data.endurance.max}}" data-dtype="Number"/>
-          </div>
-        </div>
-
-        <div class="resource flex-group-center">
-          <label for="data.health.value" class="resource-label">Health</label>
-          <div class="resource-content flexrow flex-center flex-between">
-          <input type="text" name="data.health.value" value="{{data.health.value}}" data-dtype="Number"/>
-          <span> / </span>
-          <input type="text" name="data.health.max" value="{{data.health.max}}" data-dtype="Number"/>
-          </div>
-        </div>
-
-        <div class="resource flex-group-center">
-          <label for="data.level.value" class="resource-label">Level</label>
-          <div class="resource-content flexrow flex-center flex-between">
-          <input type="text" name="data.level.value" value="{{data.level.value}}" data-dtype="Number"/>
-          </div>
-        </div>
-
-      </div>
     </div>
-  </header>
-
-  {{!-- Sheet Tab Navigation --}}
-  <nav class="sheet-tabs tabs" data-group="primary">
-    {{!-- Default tab is specified in actor-sheet.mjs --}}
-    <a class="item" data-tab="features">Features</a>
-    <a class="item" data-tab="description">Description</a>
-    <a class="item" data-tab="skills">Skills</a>
-    <a class="item" data-tab="items">Items</a>
-    <a class="item" data-tab="effects">Effects</a>
-    {{#each cavs as |cav id|}}
-      <a class="item" data-tab="cav_{{cav._id}}">{{cav.name}}</a>
-    {{/each}}
-  </nav>
-
-  {{!-- Sheet Body --}}
-  <section class="sheet-body">
-
-    {{!-- Owned Features Tab --}}
-    <div class="tab features" data-group="primary" data-tab="features">
-      
-      <section>
-        {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"}}
-      </section>
-    </div>
-
-    {{!-- Biography Tab --}}
-    <div class="tab biography" data-group="primary" data-tab="description">
-      {{!-- If you want TinyMCE editors to output inline rolls when rendered, you need to pass the actor's roll data to the rollData property. --}}
-      {{editor content=data.biography target="data.biography" rollData=rollData button=true owner=owner editable=editable}}
-    </div>
-
-    {{!-- Skill Tab --}}
-    <div class="tab skills" data-group="primary" data-tab="skills">
-       {{> "systems/metalsaviors/templates/actor/parts/actor-skills.hbs"}}
-    </div>
-
-    {{!-- Owned Items Tab --}}
-    <div class="tab items" data-group="primary" data-tab="items">
-       {{> "systems/metalsaviors/templates/actor/parts/actor-items.hbs"}}
-    </div>
-
-    {{!-- Active Effects Tab --}}
-    <div class="tab effects flexcol" data-group="primary" data-tab="effects">
-      {{> "systems/metalsaviors/templates/actor/parts/actor-effects.hbs"}}
-    </div>
-
-    {{!-- CAVs Tabs --}}
-    {{#each cavs as |cav id|}}
-      {{log cav}}
-      <div class="tab cav flexcol" data-group="primary" data-tab="cav_{{cav._id}}">
-        {{> "systems/metalsaviors/templates/actor/parts/actor-cav.hbs" data=cav.data cavId=cav._id}}
-      </div>
-    {{/each}}
-
-  </section>
 </form>
-
