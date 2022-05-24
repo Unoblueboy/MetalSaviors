@@ -106,7 +106,7 @@ div.window-app.metalsaviors.sheet.actor {
   padding: 10px;
 }
 
-.main-body-group * {
+.main-body-group div {
   -webkit-box-flex: 1;
   -ms-flex: 1;
   flex: 1;
@@ -124,12 +124,6 @@ div.window-app.metalsaviors.sheet.actor {
   -ms-flex-align: stretch;
   align-items: stretch;
   padding: 10px;
-}
-
-.sheet-body * {
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
 }
 
 .sheet-body .column1,
@@ -158,15 +152,42 @@ tr.table-break {
   cursor: pointer;
 }
 
+.item-row:hover *.item-controls {
+  max-width: 100px;
+}
+
+.item-controls {
+  max-width: 0px;
+  -webkit-transition: max-width 1s;
+  -o-transition: max-width 1s;
+  transition: max-width 1s;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .atb {
   padding: 5px 0px 5px 0px;
 }
 
-.atb:hover .atb-popup {
+.exit-submit:hover .base-bonus-popup {
   max-height: 100px;
 }
 
-.atb-popup {
+.div-cell-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+
+.div-cell-wrapper div {
+  display: inline-block;
+}
+
+.base-bonus-popup {
   display: block;
   position: relative;
   background-color: antiquewhite;
@@ -189,8 +210,17 @@ tr.table-break {
   align-items: stretch;
 }
 
-.atb-popup div {
+.base-bonus-popup div {
   padding: 5px;
+}
+
+.nsr .base-bonus-popup {
+  position: absolute;
+}
+
+.derived-atbs .base-bonus-popup {
+  position: absolute;
+  width: 100px;
 }
 
 table.skills-table {

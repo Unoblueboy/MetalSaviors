@@ -46,9 +46,33 @@
 
             <div class="main-body-group">
                 <div class="flexrow flex6">
-                    <div class="flexcol">
+                    <div class="flexcol nsr">
                         <div>NSR</div>
-                        <div><input type="text" value="{{data.nsr.value}}" data-dtype="Number" disabled="true"/></div>
+                        <div class="exit-submit">
+                            <div><input type="text" value="{{data.nsr.value}}" data-dtype="Number" disabled="true"/></div>
+                            <div class="base-bonus-popup">
+                                <div class="flexcol">
+                                    <div>Base Value</div>
+                                    <div><input
+                                            type="text"
+                                            title="Base Value"
+                                            name="data.nsr.baseValue"
+                                            value="{{data.nsr.baseValue}}"
+                                            data-dtype="Number"
+                                        /></div>
+                                </div>
+                                <div class="flexcol">
+                                    <div>Other Bonuses</div>
+                                    <div><input
+                                            type="text"
+                                            title="Other Bonuses"
+                                            name="data.nsr.otherBonuses"
+                                            value="{{data.nsr.otherBonuses}}"
+                                            data-dtype="Number"
+                                        /></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="flexcol">
                         <div>Actions/Round</div>
@@ -71,15 +95,41 @@
                     </div>
                 </div>
             </div>
-            <div class="main-body-group">
+            <div class="main-body-group derived-atbs">
                 {{#each data.derivedAttributes as |dAttribute name|}}
                     <div class="flexcol flex1">
-                        <div>{{dAttribute.label}}</div>
-                        {{#if (eq name "damageModifier")}}
-                            <div><input type="text" value="{{dAttribute.value}}" data-dtype="String" disabled="true"/></div>
-                        {{else}}
-                            <div><input type="text" value="{{dAttribute.value}}" data-dtype="Number" disabled="true"/></div>
-                        {{/if}}
+                        <div class="flex1">{{dAttribute.label}}</div>
+                        <div class="exit-submit flex0">
+                            {{#if (eq name "damageModifier")}}
+                                <div ><input type="text" value="{{dAttribute.value}}" data-dtype="String" disabled="true"/></div>
+                                <div class="base-bonus-popup">
+                                    <div class="flexcol">
+                                        <div>Other Bonuses</div>
+                                        <div><input
+                                                type="text"
+                                                title="Other Bonuses"
+                                                name="data.derivedAttributes.{{name}}.otherBonuses"
+                                                value="{{dAttribute.otherBonuses}}"
+                                                data-dtype="String"
+                                            /></div>
+                                    </div>
+                                </div>
+                            {{else}}
+                                <div><input type="text" value="{{dAttribute.value}}" data-dtype="Number" disabled="true"/></div>
+                                <div class="base-bonus-popup">
+                                    <div class="flexcol">
+                                        <div>Other Bonuses</div>
+                                        <div><input
+                                                type="text"
+                                                title="Other Bonuses"
+                                                name="data.derivedAttributes.{{name}}.otherBonuses"
+                                                value="{{dAttribute.otherBonuses}}"
+                                                data-dtype="Number"
+                                            /></div>
+                                    </div>
+                                </div>
+                            {{/if}}
+                        </div>
                     </div>
                 {{/each}}
             </div>

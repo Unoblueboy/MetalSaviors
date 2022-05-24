@@ -171,6 +171,14 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			item.sheet.render(true);
 		});
 
+		// Delete Inventory Item
+		html.find(".item-delete").click((ev) => {
+			const li = $(ev.currentTarget).parents(".item");
+			const item = this.actor.items.get(li.data("itemId"));
+			item.delete();
+			li.slideUp(200, () => this.render(false));
+		});
+
 		// -------------------------------------------------------------
 		// Everything below here is only needed if the sheet is editable
 		if (!this.isEditable) return;

@@ -31,7 +31,7 @@ div.window-app.metalsaviors.sheet.actor {
 .main-body-group {
 	@include flex-container($direction: row);
 	padding: 10px;
-	* {
+	div {
 		flex: 1;
 	}
 }
@@ -39,9 +39,6 @@ div.window-app.metalsaviors.sheet.actor {
 .sheet-body {
 	@include flex-container($direction: row);
 	padding: 10px;
-	* {
-		flex: 1;
-	}
 	.column1,
 	.column2 {
 		@include flex-container($direction: column);
@@ -60,17 +57,36 @@ tr.table-break {
 	cursor: pointer;
 }
 
+.item-row:hover *.item-controls {
+	max-width: 100px;
+}
+
+.item-controls {
+	max-width: 0px;
+	transition: max-width 1s;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
 .atb {
 	padding: 5px 0px 5px 0px;
+}
 
-	&:hover {
-		.atb-popup {
-			max-height: 100px;
-		}
+.exit-submit:hover {
+	.base-bonus-popup {
+		max-height: 100px;
 	}
 }
 
-.atb-popup {
+.div-cell-wrapper {
+	display: flex;
+	flex-direction: row;
+	div {
+		display: inline-block;
+	}
+}
+
+.base-bonus-popup {
 	display: block;
 	position: relative;
 	background-color: antiquewhite;
@@ -84,6 +100,15 @@ tr.table-break {
 	div {
 		padding: 5px;
 	}
+}
+
+.nsr .base-bonus-popup {
+	position: absolute;
+}
+
+.derived-atbs .base-bonus-popup {
+	position: absolute;
+	width: 100px;
 }
 
 table.skills-table {
