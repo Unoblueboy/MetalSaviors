@@ -36,13 +36,34 @@ div.window-app.metalsaviors.sheet.actor {
 	}
 }
 
-.sheet-body {
+.sheet-body-group {
+	@include flex-container($direction: row);
+	padding: 5px 0px 5px 0px;
+}
+
+.sheet-tabs {
 	@include flex-container($direction: row);
 	padding: 10px;
-	.column1,
+}
+
+.sheet-tab {
+	padding: 0px 10px 0px 0px;
+}
+
+.sheet-body-header {
+	@include flex-container;
+}
+
+.sheet-body {
+	@include flex-container($direction: column);
+	padding: 0px 10px 10px 10px;
+	.column1 {
+		@include flex-container($direction: column);
+		padding: 0px 5px 0px 0px;
+	}
 	.column2 {
 		@include flex-container($direction: column);
-		padding: 5px;
+		padding: 0px 0px 0px 5px;
 	}
 }
 
@@ -57,8 +78,15 @@ tr.table-break {
 	cursor: pointer;
 }
 
-.item-row:hover *.item-controls {
+.item-controls-container:hover *.item-controls {
 	max-width: 100px;
+}
+
+.sheet-tab.item-controls-container {
+	div {
+		display: inline-block;
+		vertical-align: top;
+	}
 }
 
 .item-controls {
@@ -84,6 +112,10 @@ tr.table-break {
 	div {
 		display: inline-block;
 	}
+}
+
+.cav-health-section {
+	border-right: 1px inset black;
 }
 
 .base-bonus-popup {

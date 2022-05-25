@@ -1,146 +1,63 @@
 <form class="{{cssClass}} {{actor.type}}" autocomplete="off">
-	<div class="sidebar">
-		<div>
-			<img
-				class="profile-img"
-				src="{{actor.img}}"
-				data-edit="img"
-				title="{{actor.name}}"
-			/>
-		</div>
-		<div class="attributes">
+    <div class="sidebar">
+        <div>
+            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+        </div>
+        <div class="attributes">
             {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"}}
         </div>
-	</div>
+    </div>
     <div class="main-body">
         <header>
             <div class="main-body-group">
                 <div class="flexcol">
                     <div>Character Name</div>
-                    <div><input class="update-actor" name="name" type="text" value="{{actor.name}}" placeholder="Name"/></div>
+                    <div><input class="update-actor" name="name" type="text" value="{{actor.name}}"
+                            placeholder="Name" /></div>
                 </div>
                 <div class="flexcol">
                     <div>Call Sign</div>
-                    <div><input class="update-actor" name="data.callsign" type="text" value="{{data.callsign}}" placeholder="Call Sign"/></div>
+                    <div><input class="update-actor" name="data.callsign" type="text" value="{{data.callsign}}"
+                            placeholder="Call Sign" /></div>
                 </div>
-            </div>
-
-            <div class="main-body-group">
-                <div class="flexcol">
-                    <div>Endurance</div>
-                    <div class="flexrow">
-                        <div><input class="update-actor" type="text" name="data.endurance.value" value="{{data.endurance.value}}" data-dtype="Number"/></div>
-                        <div class="flex0">/</div>
-                        <div><input class="update-actor" type="text" name="data.endurance.max" value="{{data.endurance.max}}" data-dtype="Number"/></div>
-                    </div>
-                </div>
-                <div class="flexcol">
-                    <div>Health</div>
-                    <div class="flexrow">
-                        <div><input class="update-actor" type="text" name="data.health.value" value="{{data.health.value}}" data-dtype="Number"/></div>
-                        <div class="flex0">/</div>
-                        <div><input class="update-actor" type="text" name="data.health.max" value="{{data.health.max}}" data-dtype="Number"/></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="main-body-group">
-                <div class="flexrow flex6">
-                    <div class="flexcol nsr">
-                        <div>NSR</div>
-                        <div class="exit-submit">
-                            <div><input type="text" value="{{data.nsr.value}}" data-dtype="Number" disabled="true"/></div>
-                            <div class="base-bonus-popup">
-                                <div class="flexcol">
-                                    <div>Base Value</div>
-                                    <div><input
-                                            type="text"
-                                            title="Base Value"
-                                            name="data.nsr.baseValue"
-                                            value="{{data.nsr.baseValue}}"
-                                            data-dtype="Number"
-                                        /></div>
-                                </div>
-                                <div class="flexcol">
-                                    <div>Other Bonuses</div>
-                                    <div><input
-                                            type="text"
-                                            title="Other Bonuses"
-                                            name="data.nsr.otherBonuses"
-                                            value="{{data.nsr.otherBonuses}}"
-                                            data-dtype="Number"
-                                        /></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flexcol">
-                        <div>Actions/Round</div>
-                        {{#if combatTraining}}
-                            <div><input type="text" value="{{combatTraining.data.actionsPerRound}}" data-dtype="Number" disabled="true"> </div>
-                        {{else}}
-                            <div><input type="text" value="No Training" data-dtype="Number" disabled="true"> </div>
-                        {{/if}}
-                    </div>
-                </div>
-                <div class="flex 1"></div>
-                <div class="flexrow flex6">
+                <div class="flexrow">
                     <div class="flexcol">
                         <div>Level</div>
-                        <div><input class="update-actor" type="text" name="data.level.value" value="{{data.level.value}}" data-dtype="Number"/></div>
+                        <div><input class="update-actor" type="text" name="data.level.value"
+                                value="{{data.level.value}}" data-dtype="Number" /></div>
                     </div>
                     <div class="flexcol">
                         <div>Experience</div>
-                        <div><input class="update-actor" type="text" name="data.level.exp" value="{{data.level.exp}}" data-dtype="Number"/></div>
+                        <div><input class="update-actor" type="text" name="data.level.exp" value="{{data.level.exp}}"
+                                data-dtype="Number" /></div>
                     </div>
                 </div>
             </div>
-            <div class="main-body-group derived-atbs">
-                {{#each data.derivedAttributes as |dAttribute name|}}
-                    <div class="flexcol flex1">
-                        <div class="flex1">{{dAttribute.label}}</div>
-                        <div class="exit-submit flex0">
-                            {{#if (eq name "damageModifier")}}
-                                <div ><input type="text" value="{{dAttribute.value}}" data-dtype="String" disabled="true"/></div>
-                                <div class="base-bonus-popup">
-                                    <div class="flexcol">
-                                        <div>Other Bonuses</div>
-                                        <div><input
-                                                type="text"
-                                                title="Other Bonuses"
-                                                name="data.derivedAttributes.{{name}}.otherBonuses"
-                                                value="{{dAttribute.otherBonuses}}"
-                                                data-dtype="String"
-                                            /></div>
-                                    </div>
-                                </div>
-                            {{else}}
-                                <div><input type="text" value="{{dAttribute.value}}" data-dtype="Number" disabled="true"/></div>
-                                <div class="base-bonus-popup">
-                                    <div class="flexcol">
-                                        <div>Other Bonuses</div>
-                                        <div><input
-                                                type="text"
-                                                title="Other Bonuses"
-                                                name="data.derivedAttributes.{{name}}.otherBonuses"
-                                                value="{{dAttribute.otherBonuses}}"
-                                                data-dtype="Number"
-                                            /></div>
-                                    </div>
-                                </div>
-                            {{/if}}
-                        </div>
-                    </div>
-                {{/each}}
-            </div>
         </header>
-        <div class="sheet-body flexrow">
-            <div class="column1">
-                {{> "systems/metalsaviors/templates/actor/parts/actor-items.hbs"}}
+        <div class="sheet-tabs" data-group="primary">
+            <div class="sheet-tab">
+                <a data-tab="pilot">Pilot</a>
             </div>
-            <div class="column2">
-                {{> "systems/metalsaviors/templates/actor/parts/actor-skills.hbs"}}
+            {{#each cavs as |cav|}}
+                <div class="sheet-tab item-controls-container item" data-item-id="{{cav._id}}">
+                    <div><a data-tab="cav_{{cav._id}}">{{cav.name}}</a></div>
+                    &nbsp;
+                    <div class="item-controls">
+                        <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+        <div class="sheet-body">
+            <div class="tab" data-group="primary" data-tab="pilot">
+                {{> "systems/metalsaviors/templates/actor/parts/actor-pilot.hbs"}}
             </div>
+            {{#each cavs as |cav|}}
+                <div class="tab" data-group="primary" data-tab="cav_{{cav._id}}" data-item-id="{{cav._id}}">
+                    {{> "systems/metalsaviors/templates/actor/parts/actor-cav.hbs" learnedSkills=../skills.learnedSkills}}
+                </div>
+            {{/each}}
         </div>
     </div>
 </form>

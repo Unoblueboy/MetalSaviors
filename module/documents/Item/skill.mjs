@@ -1,4 +1,4 @@
-import { SkillHelper } from "../helpers/SkillHelper.mjs";
+import { CalculateSkillValue } from "../helpers/Calculators.mjs";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -15,7 +15,16 @@ export class MetalSaviorsSkill extends Item {
 	}
 
 	prepareDerivedData() {
-		SkillHelper.prepareDerivedLearnedSkillData(this);
+		this.prepareDerivedLearnedSkillData();
+	}
+
+	prepareDerivedLearnedSkillData() {
+		if (this.type !== "learnedSkill") return;
+
+		const actor = this.actor ?? {};
+		const { value, cavValue } = CalculateSkillValue(this, actor);
+		this.data.data.value = value;
+		this.data.data.cavValue = cavValue;
 	}
 
 	/**
@@ -36,9 +45,33 @@ export class MetalSaviorsSkill extends Item {
 	 * @param {Event} event   The originating click event
 	 * @private
 	 */
-	async roll() {
+	async roll(dataset) {
+		const cavId = dataset?.cavId;
 		if (this.type === "learnedSkill") {
-			return SkillHelper.roll(this);
+			if (this.type !== "learnedSkill") return;
+
+			if (!this.actor) return;
+
+			const rollData = this.getRollData();
+
+			const cavValue = this.data.data.cavValue[cavId];
+
+			let rollString = `1d100cs<=${this.data.data.value}`;
+
+			if (cavValue) {
+				rollString = `1d100cs<=${cavValue}`;
+			}
+
+			// Invoke the roll and submit it to chat.
+			const roll = new Roll(rollString, rollData);
+			// If you need to store the value first, uncomment the next line.
+			// let result = await roll.roll({async: true});
+			roll.toMessage({
+				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+				rollMode: game.settings.get("core", "rollMode"),
+				flavor: `[Skill] ${this.name}`,
+			});
+			return roll;
 		}
 	}
 }

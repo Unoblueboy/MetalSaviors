@@ -116,7 +116,7 @@ export class MetalSaviorsActor extends Actor {
 		for (const item of this.items.filter(
 			(x) => x.type === "learnedSkill"
 		)) {
-			SkillHelper.prepareDerivedLearnedSkillData(item);
+			item.prepareDerivedLearnedSkillData();
 		}
 	}
 

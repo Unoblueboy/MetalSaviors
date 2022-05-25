@@ -112,7 +112,21 @@ div.window-app.metalsaviors.sheet.actor {
   flex: 1;
 }
 
-.sheet-body {
+.sheet-body-group {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  padding: 5px 0px 5px 0px;
+}
+
+.sheet-tabs {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -126,7 +140,51 @@ div.window-app.metalsaviors.sheet.actor {
   padding: 10px;
 }
 
-.sheet-body .column1,
+.sheet-tab {
+  padding: 0px 10px 0px 0px;
+}
+
+.sheet-body-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+}
+
+.sheet-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  padding: 0px 10px 10px 10px;
+}
+
+.sheet-body .column1 {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  padding: 0px 5px 0px 0px;
+}
+
 .sheet-body .column2 {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -138,7 +196,7 @@ div.window-app.metalsaviors.sheet.actor {
   -webkit-box-align: stretch;
   -ms-flex-align: stretch;
   align-items: stretch;
-  padding: 5px;
+  padding: 0px 0px 0px 5px;
 }
 
 tr.table-break {
@@ -152,8 +210,13 @@ tr.table-break {
   cursor: pointer;
 }
 
-.item-row:hover *.item-controls {
+.item-controls-container:hover *.item-controls {
   max-width: 100px;
+}
+
+.sheet-tab.item-controls-container div {
+  display: inline-block;
+  vertical-align: top;
 }
 
 .item-controls {
@@ -185,6 +248,10 @@ tr.table-break {
 
 .div-cell-wrapper div {
   display: inline-block;
+}
+
+.cav-health-section {
+  border-right: 1px inset black;
 }
 
 .base-bonus-popup {

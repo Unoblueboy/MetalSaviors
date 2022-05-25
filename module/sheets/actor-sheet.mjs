@@ -18,7 +18,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 				{
 					navSelector: ".sheet-tabs",
 					contentSelector: ".sheet-body",
-					initial: "features",
+					initial: "pilot",
 				},
 			],
 			submitOnChange: false,
@@ -229,7 +229,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			if (dataset.rollType == "item") {
 				const itemId = element.closest(".item").dataset.itemId;
 				const item = this.actor.items.get(itemId);
-				if (item) return item.roll();
+				if (item) return item.roll(dataset);
 			}
 		}
 

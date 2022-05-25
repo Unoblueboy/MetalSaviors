@@ -269,11 +269,19 @@ function _calculateCavInitiativeModifier(finesse, speed) {
 export function CalculateSkillValue(skill, actor) {
 	const skillData = skill.data;
 
+	const actorData = _getActorData(actor);
+	const cavBonuses = _getCavBonuses(skillData.name, actorData);
+
 	if (skillData.data.override.active) {
-		return skillData.data.override.value;
+		return {
+			value: skillData.data.override.value,
+			cavValue: _calculateCavValue(
+				skillData.data.override.value,
+				cavBonuses
+			),
+		};
 	}
 
-	const actorData = _getActorData(actor);
 	const lvl = actorData.data?.level?.value || 1;
 
 	const skillModifier =
@@ -285,14 +293,18 @@ export function CalculateSkillValue(skill, actor) {
 		actorData
 	);
 
-	return (
+	const skillValue =
 		skillData.data.baseValue +
 		numAcquiredBonus +
 		bonusesFromAtbSkills +
 		skillData.data.otherBonuses +
 		skillData.data.levelIncrease * lvl +
-		skillModifier
-	);
+		skillModifier;
+
+	return {
+		value: skillValue,
+		cavValue: _calculateCavValue(skillValue, cavBonuses),
+	};
 }
 
 function _getActorData(actor) {
@@ -310,6 +322,23 @@ function _getActorData(actor) {
 			},
 		},
 	};
+}
+
+function _getCavBonuses(skillName, actorData) {
+	const cavs = actorData.items?.filter((x) => x.type === "cav") ?? [];
+	let bonus = {};
+	for (const cav of cavs) {
+		bonus[cav.id] = cav.data.data.cavUnitPiloting[skillName] || 0;
+	}
+	return bonus;
+}
+
+function _calculateCavValue(skillValue, cavBonuses) {
+	const cavValue = {};
+	for (const [cavId, bonus] of Object.entries(cavBonuses)) {
+		cavValue[cavId] = skillValue + bonus;
+	}
+	return cavValue;
 }
 
 function _calculateSkillBonusesFromAtbSkills(skillName, actorData) {
