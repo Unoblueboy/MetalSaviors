@@ -4,7 +4,6 @@ import {
 } from "../helpers/Calculators.mjs";
 
 import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
-import { SkillHelper } from "../helpers/SkillHelper.mjs";
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
