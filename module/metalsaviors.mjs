@@ -11,6 +11,8 @@ import { MetalSaviorsCavSheet } from "./sheets/cav-sheet.mjs";
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { METALSAVIORS } from "./helpers/config.mjs";
+import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
+import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -41,6 +43,8 @@ Hooks.once("init", async function () {
 	// Define custom Document classes
 	CONFIG.Actor.documentClass = MetalSaviorsActor;
 	CONFIG.Item.documentClass = MetalSaviorsItemProxy;
+	CONFIG.Combat.documentClass = MetalSaviorsCombat;
+	CONFIG.ui.Combat = MetalSaviorsCombatTracker;
 
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
