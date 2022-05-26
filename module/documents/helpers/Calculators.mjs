@@ -328,7 +328,18 @@ function _getCavBonuses(skillName, actorData) {
 	const cavs = actorData.items?.filter((x) => x.type === "cav") ?? [];
 	let bonus = {};
 	for (const cav of cavs) {
-		bonus[cav.id] = cav.data.data.cavUnitPiloting[skillName] || 0;
+		const cavBonus = cav.data.data.cavUnitPiloting[skillName] || 0;
+		const requiredLicense = cav.data.data.requiredLicense;
+		const hasRequiredLicense = (actorData.items ?? []).some(
+			(x) => x.type === "pilotLicense" && x.name === requiredLicense
+		);
+
+		if (hasRequiredLicense) {
+			bonus[cav.id] = cavBonus;
+			continue;
+		}
+
+		bonus[cav.id] = cavBonus - 15;
 	}
 	return bonus;
 }

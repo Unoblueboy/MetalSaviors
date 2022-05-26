@@ -54,7 +54,7 @@
                 {{> "systems/metalsaviors/templates/actor/parts/actor-pilot.hbs"}}
             </div>
             {{#each cavs as |cav|}}
-                <div class="tab" data-group="primary" data-tab="cav_{{cav._id}}" data-item-id="{{cav._id}}">
+                <div class="tab item" data-group="primary" data-tab="cav_{{cav._id}}" data-item-id="{{cav._id}}">
                     {{> "systems/metalsaviors/templates/actor/parts/actor-cav.hbs" learnedSkills=../skills.learnedSkills}}
                 </div>
             {{/each}}

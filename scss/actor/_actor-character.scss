@@ -115,7 +115,24 @@ tr.table-break {
 }
 
 .cav-health-section {
-	border-right: 1px inset black;
+	// border-right: 1px inset black;
+	padding: 0px 10px;
+}
+
+.cav-health-section.first {
+	padding: 0px 10px 0px 0px;
+}
+
+.cav-health-section.last {
+	padding: 0px 0px 0px 10px;
+}
+
+.cav-boon {
+	color: green;
+}
+
+.cav-bane {
+	color: red;
 }
 
 .base-bonus-popup {

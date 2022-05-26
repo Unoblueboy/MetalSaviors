@@ -183,6 +183,15 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		// Everything below here is only needed if the sheet is editable
 		if (!this.isEditable) return;
 
+		html.find(".cav-data").change((ev) => {
+			const itemPath = ev.target.dataset.itemPath;
+			const updateValue = ev.target.value;
+			const itemContainer = $(ev.target).parents(".item");
+			console.log("itemContainer", itemContainer);
+			const item = this.actor.items.get(itemContainer.data("itemId"));
+			item.update({ [`${itemPath}`]: updateValue });
+		});
+
 		// Rollable abilities.
 		html.find(".rollable").click(this._onRoll.bind(this));
 

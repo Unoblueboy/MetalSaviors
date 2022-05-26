@@ -1,6 +1,6 @@
 <div class="sheet-body-header">
     <div class="sheet-body-group">
-        <div class="flexcol cav-health-section">
+        <div class="flexcol cav-health-section first">
             <div>Head</div>
             <div class="flexrow">
                 <div><input class="cav-data flex1" type="text" data-item-path="data.health.head.value"
@@ -16,7 +16,7 @@
                 <div><input class="cav-data flex1" type="text" data-item-path="data.health.torso.value"
                         value="{{data.health.torso.value}}" data-dtype="Number" /></div>
                 <div class="flex0">/</div>
-                <div><input class="cav-data flex1" type="text" data-item-path="data.health.torse.max"
+                <div><input class="cav-data flex1" type="text" data-item-path="data.health.torso.max"
                         value="{{data.health.torso.max}}" data-dtype="Number" /></div>
             </div>
         </div>
@@ -60,7 +60,7 @@
                         value="{{data.health.rLeg.max}}" data-dtype="Number" /></div>
             </div>
         </div>
-        <div class="flexcol cav-health-section">
+        <div class="flexcol cav-health-section last">
             <div>Reactor</div>
             <div class="flexrow">
                 <div><input class="cav-data flex1" type="text" data-item-path="data.health.reactor.value"
@@ -183,23 +183,31 @@
                     {{#each learnedSkills as |skill id|}}
                         <tr class="learned-skill item-controls-container item" data-item-id="{{skill._id}}">
                             <td class="div-cell-wrapper">
-                                <div>{{skill.name}}</div>
-                                &nbsp;
-                                <div class="item-controls">
-                                    <a class="item-roll rollable" data-roll-type="item" data-cav-id="{{../_id}}"><i
-                                            class="fas fa-dice"></i></a>
-                                    <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                                    <a class="item-control item-delete" title="Delete Item"><i
-                                            class="fas fa-trash"></i></a>
-                                </div>
-                            </td>
-                            <td>{{lookup skill.data.cavValue ../_id}}</td>
-                        </tr>
-                    {{/each}}
-                </table>
-            {{else}}
-                <div>No skills have been added to this character yet</div>
-            {{/if}}
+                                {{#if (gt (lookup skill.data.cavValue ../_id) skill.data.value)}}
+                                    <div class="cav-boon">
+                                {{/if}}
+                                {{#if (lt (lookup skill.data.cavValue ../_id) skill.data.value)}}
+                                    <div class="cav-bane">
+                                {{/if}}
+                                {{#if (eq (lookup skill.data.cavValue ../_id) skill.data.value)}}
+                                    <div>
+                                {{/if}}
+                                {{skill.name}}
         </div>
+        &nbsp;
+        <div class="item-controls">
+            <a class="item-roll rollable" data-roll-type="item" data-cav-id="{{../_id}}"><i class="fas fa-dice"></i></a>
+            <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+        </div>
+        </td>
+        <td>{{lookup skill.data.cavValue ../_id}}</td>
+        </tr>
+        {{/each}}
+        </table>
+        {{else}}
+            <div>No skills have been added to this character yet</div>
+            {{/if}}
     </div>
+</div>
 </div>
