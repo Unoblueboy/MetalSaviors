@@ -216,10 +216,7 @@
 				"boostSpeed": "160 km/h"
 			},
 			"requiredLicense": null,
-			"cavUnitPiloting": {
-				"Cav Piloting": 10,
-				"Cav Tricks": -10
-			}
+			"cavUnitPiloting": {}
 		}
 	}
 }
