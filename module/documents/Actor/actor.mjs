@@ -1,9 +1,8 @@
-import {
-	attributeCalculator,
-	derivedAttributeCalculator,
-} from "../helpers/Calculators.mjs";
+import { attributeCalculator, derivedAttributeCalculator } from "../helpers/Calculators.mjs";
 
 import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
+
+import { METALSAVIORS } from "../../helpers/config.mjs";
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -17,16 +16,9 @@ export class MetalSaviorsActor extends Actor {
 
 		if (!item) return;
 
-		if (
-			!["learnedSkill", "weaponProficiency", "pilotLicense"].includes(
-				item.type
-			)
-		)
-			return;
+		if (!["learnedSkill", "weaponProficiency", "pilotLicense"].includes(item.type)) return;
 
-		const sameNameTypeItems = actor.items.filter(
-			(x) => x.name === item.name && x.type === item.type
-		);
+		const sameNameTypeItems = actor.items.filter((x) => x.name === item.name && x.type === item.type);
 
 		if (sameNameTypeItems.length === 0) return;
 
@@ -60,9 +52,7 @@ export class MetalSaviorsActor extends Actor {
 		if (sameTypeItems.length === 0) return;
 
 		if (sameTypeItems.length > 1) {
-			console.log(
-				`Expected there to be at most 1 ${item.type} with same name but ${sameTypeItems.length} found`
-			);
+			console.log(`Expected there to be at most 1 ${item.type} with same name but ${sameTypeItems.length} found`);
 		}
 
 		const origItem = sameTypeItems[0];
@@ -104,17 +94,14 @@ export class MetalSaviorsActor extends Actor {
 
 		attributeCalculator(actorData, data);
 		derivedAttributeCalculator(actorData, data);
-		data.nsr.value =
-			(data.nsr.baseValue || 0) + (data.nsr.otherBonuses || 0);
+		data.nsr.value = (data.nsr.baseValue || 0) + (data.nsr.otherBonuses || 0);
 
 		// Learned skills values need to be recalculated to take into account the derived attribute
 		this._calculateLearnedSkillsValue();
 	}
 
 	_calculateLearnedSkillsValue() {
-		for (const item of this.items.filter(
-			(x) => x.type === "learnedSkill"
-		)) {
+		for (const item of this.items.filter((x) => x.type === "learnedSkill")) {
 			item.prepareDerivedLearnedSkillData();
 		}
 	}
@@ -172,5 +159,13 @@ export class MetalSaviorsActor extends Actor {
 		if (this.data.type !== "npc") return;
 
 		// Process additional NPC data here.
+	}
+
+	getActionsPerRound() {
+		const combatTraining = this.items.filter((x) => x.type === "combatTraining");
+		if (combatTraining.length === 0) {
+			return METALSAVIORS.combat.defaultActionsPerRound;
+		}
+		return combatTraining[0].data.data.actionsPerRound || METALSAVIORS.combat.defaultActionsPerRound;
 	}
 }

@@ -1,0 +1,31 @@
+{{log this}}
+<div class="dialog-content">
+    <form>
+        <div class="form-group">
+            <label>Action Name</label>
+            <select class="action-name-select" name="actionName">
+                {{selectOptions actions selected=selectedAction nameAttr="name" labelAttr="name"}}
+            </select>
+        </div>
+        {{!-- <div class="form-group">
+            <label>Action Name</label>
+            <input type="text" name="actionName" value="" />
+        </div> --}}
+        <div class="form-group">
+            <label>New Initiative</label>
+            <input type="text" name="newInitiative" value="" />
+        </div>
+        <div class="form-group">
+            <label>New Remaining Actions</label>
+            <input type="text" name="newRemainingActions" value="" />
+        </div>
+    </form>
+</div>
+<div class="dialog-buttons">
+    <button class="dialog-button {{cssClass}}" data-button="cancel">
+        Cancel
+    </button>
+    <button class="dialog-button {{cssClass}}" data-button="normal">
+        Perform Action
+    </button>
+</div>

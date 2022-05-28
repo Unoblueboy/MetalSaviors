@@ -13,6 +13,7 @@ import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { METALSAVIORS } from "./helpers/config.mjs";
 import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
 import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs";
+import MetalSaviorsCombatant from "./documents/Combat/Combatant.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -44,7 +45,9 @@ Hooks.once("init", async function () {
 	CONFIG.Actor.documentClass = MetalSaviorsActor;
 	CONFIG.Item.documentClass = MetalSaviorsItemProxy;
 	CONFIG.Combat.documentClass = MetalSaviorsCombat;
-	CONFIG.ui.Combat = MetalSaviorsCombatTracker;
+	CONFIG.Combatant.documentClass = MetalSaviorsCombatant;
+	CONFIG.ui.combat = MetalSaviorsCombatTracker;
+	CONFIG.time.roundTime = 10;
 
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
