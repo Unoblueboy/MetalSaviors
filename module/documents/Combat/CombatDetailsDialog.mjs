@@ -1,4 +1,7 @@
+import MetalSaviorsCombatant from "./Combatant.mjs";
+
 export class MetalSaviorsCombatDetailsDialog extends Dialog {
+	// TODO: Consider whether combatant in or out of CAV.
 	actions = [
 		{
 			name: "Accelerate / Brake",
@@ -139,6 +142,7 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 
 		this.selectedAction = this.actions[0].name;
 		this.selectedAttackAugment = this.attackAugments[0].name;
+		this.combatant = data.combatant;
 	}
 
 	static get defaultOptions() {
@@ -147,14 +151,103 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 		});
 	}
 
+	static async getActionDetails(combatant) {
+		return new Promise((resolve) => {
+			new MetalSaviorsCombatDetailsDialog(
+				{
+					normalCallback: (html) =>
+						resolve(this._processActionDetails(html[0].querySelector("form"), combatant)),
+					cancelCallback: (html) => resolve({ cancelled: true }),
+					combatant: combatant,
+				},
+				null
+			).render(true);
+		});
+	}
+
+	static _processActionDetails(form, combatant) {
+		const actionName = form.actionName.value;
+		switch (actionName) {
+			case "Accelerate / Brake":
+				return {
+					actionName: actionName,
+					actionCost: 1,
+					dSpeed: parseInt(form.dSpeed.value),
+				};
+			case "Refocus":
+				// TODO: Make the roll output prettier
+				const roll = new Roll("1d6");
+				const speaker = ChatMessage.getSpeaker({ actor: combatant.actor });
+				const rollMode = game.settings.get("core", "rollMode");
+				const result = roll.roll({ async: false });
+				roll.toMessage({
+					speaker: speaker,
+					rollMode: rollMode,
+					flavor: `${combatant.actor.data.name} is refocusing`,
+				});
+				console.log(result);
+				return {
+					actionName: actionName,
+					actionCost: 1,
+					dInit: result.total,
+				};
+			case "Unspecified":
+				const curSpeed = combatant.getCurMovementSpeed();
+				const newSpeed = Number.isNumeric(form.newSpeed.value) ? parseInt(form.newSpeed.value) : curSpeed;
+				const curInitiative = combatant.data.initiative;
+				const newInitiative = Number.isNumeric(form.newInitiative.value)
+					? parseInt(form.newInitiative.value)
+					: curInitiative;
+
+				return {
+					actionName: actionName,
+					actionCost: Number.isNumeric(form.actionCost.value) ? parseInt(form.actionCost.value) : 0,
+					dSpeed: newSpeed - curSpeed,
+					dInit: newInitiative - curInitiative,
+				};
+			default:
+				return {
+					actionName: actionName,
+					actionCost: Number.isNumeric(form.actionCost.value) ? parseInt(form.actionCost.value) : 1,
+				};
+		}
+	}
+
 	getData(options) {
 		const context = {};
 
 		context.actions = this.actions;
-		context.selectedAction = this.selectedAction;
+		context.actionDetails = {
+			selectedAction: this.selectedAction,
+			speedDetails: this._getSpeedDetails(),
+		};
 		context.attackAugments = this.attackAugments;
-		context.selectedAttackAugment = this.selectedAttackAugment;
+		context.attackAugmentsDetails = {
+			selectedAttackAugment: this.selectedAttackAugment,
+		};
+		context.combatant = this.combatant;
 		return context;
+	}
+
+	_getSpeedDetails() {
+		const combatant = this.combatant;
+		const curSpeed = combatant.getCurMovementSpeed();
+		const decSpeed = curSpeed - 1 < 0 ? null : curSpeed - 1;
+		const accSpeed = curSpeed + 1 > 4 ? null : curSpeed + 1;
+		return {
+			currentSpeed: {
+				value: curSpeed,
+				label: MetalSaviorsCombatant.getMovementSpeedString(curSpeed),
+			},
+			decelerateSpeed: {
+				value: decSpeed,
+				label: MetalSaviorsCombatant.getMovementSpeedString(decSpeed),
+			},
+			accelerateSpeed: {
+				value: accSpeed,
+				label: MetalSaviorsCombatant.getMovementSpeedString(accSpeed),
+			},
+		};
 	}
 
 	activateListeners(html) {

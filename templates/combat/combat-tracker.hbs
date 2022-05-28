@@ -81,11 +81,9 @@
                         </div>
                     </div>
                 </div>
-                {{#if this.hasResource}}
-                    <div class="token-resource">
-                        <span class="resource">{{this.resource}}</span>
-                    </div>
-                {{/if}}
+                <div class="token-resource">
+                    <span class="resource">{{this.remainingActions}}</span>
+                </div>
                 <div class="token-initiative">
                     {{#if this.hasRolled}}
                         <span class="initiative">{{this.initiative}}</span>

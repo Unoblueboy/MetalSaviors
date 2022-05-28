@@ -1,3 +1,4 @@
+import MetalSaviorsCombatant from "./Combatant.mjs";
 import { MetalSaviorsCombatDetailsDialog } from "./CombatDetailsDialog.mjs";
 
 export class MetalSaviorsCombatTracker extends CombatTracker {
@@ -36,30 +37,25 @@ export class MetalSaviorsCombatTracker extends CombatTracker {
 	async _onPerformAction(combatant) {
 		if (!combatant.combat) return;
 		if (!combatant.combat.started) return;
-		const details = await GetActionDetails();
-		console.log(details);
-		await combatant.combat.performAction(combatant.id, details);
+		const details = await MetalSaviorsCombatDetailsDialog.getActionDetails(combatant);
+		await combatant.performAction(details);
 	}
-}
 
-async function GetActionDetails() {
-	return new Promise((resolve) => {
-		new MetalSaviorsCombatDetailsDialog(
-			{
-				normalCallback: (html) => resolve(_processActionDetails(html[0].querySelector("form"))),
-				cancelCallback: (html) => resolve({ cancelled: true }),
-			},
-			null
-		).render(true);
-	});
-}
+	async getData(options) {
+		const context = await super.getData(options);
 
-function _processActionDetails(form) {
-	return {
-		actionName: form.actionName.value,
-		newInitiative: Number.isNumeric(form.newInitiative.value) ? parseInt(form.newInitiative.value) : null,
-		newRemainingActions: Number.isNumeric(form.newRemainingActions.value)
-			? parseInt(form.newRemainingActions.value)
-			: null,
-	};
+		const combat = this.viewed;
+
+		for (const turn of context.turns) {
+			const combatantId = turn.id;
+			const combatant = combat.combatants.get(combatantId, { strict: true });
+			turn.remainingActions = combatant.getFlag("metalsaviors", "remainingActions");
+			turn.turnDone = combatant.getFlag("metalsaviors", "turnDone");
+			turn.curMovementSpeed = MetalSaviorsCombatant.getMovementSpeedString(
+				combatant.getFlag("metalsaviors", "curMovementSpeed")
+			);
+		}
+
+		return context;
+	}
 }

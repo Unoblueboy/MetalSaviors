@@ -44,6 +44,10 @@ export class MetalSaviorsCombat extends Combat {
 	}
 
 	async startCombat() {
+		if (this.combatants.some((x) => !Number.isInteger(x.initiative))) {
+			ui.notifications.error("Combat cannot start until everyone has rolled thier initiative");
+			return;
+		}
 		await this.setupTurns();
 		await this.setFlag("metalsaviors", "actionHistory", []);
 		return super.startCombat();
@@ -71,52 +75,13 @@ export class MetalSaviorsCombat extends Combat {
 		return result;
 	}
 
-	async performAction(combatantId, data = { actionName: "", newInitiative: null, newRemainingActions: null }) {
-		if (data.newInitiative === null && data.newRemainingActions == null) return;
-		const combatant = this.combatants.get(combatantId, { strict: true });
-		const oldInitiative = combatant.data.initiative;
-		const oldRemainingActions = combatant.getFlag("metalsaviors", "remainingActions");
-		const newInitiative = data.newInitiative ?? oldInitiative;
-		const newRemainingActions = data.newRemainingActions ?? oldRemainingActions;
-
-		if (data.newInitiative !== null) {
-			combatant.update({ initiative: newInitiative });
-		}
-
-		if (data.newRemainingActions !== null) {
-			combatant.setFlag("metalsaviors", "remainingActions", newRemainingActions);
-		}
-
-		return this._pushHistory({
-			type: "action",
-			actionName: data.actionName,
-			combatantId,
-			oldInitiative,
-			newInitiative,
-			oldRemainingActions,
-			newRemainingActions,
-		});
-	}
-
 	async undoAction(actionData) {
 		if (actionData.type !== "action") return;
 
 		const combatantId = actionData.combatantId;
-		const oldInitiative = actionData.oldInitiative;
-		const newInitiative = actionData.newInitiative;
-		const oldRemainingActions = actionData.oldRemainingActions;
-		const newRemainingActions = actionData.newRemainingActions;
-
 		const combatant = this.combatants.get(combatantId, { strict: true });
-		if (!combatant) return;
 
-		if (oldInitiative !== newInitiative) {
-			await combatant.update({ initiative: oldInitiative });
-		}
-
-		if (oldRemainingActions !== newRemainingActions) {
-			await combatant.setFlag("metalsaviors", "remainingActions", oldRemainingActions);
-		}
+		await combatant.undoAction(actionData);
 
 		return this;
 	}
@@ -130,7 +95,6 @@ export class MetalSaviorsCombat extends Combat {
 		let advanceTime = CONFIG.time.roundTime;
 		const asyncTasks = [];
 		for (const combatant of this.turns) {
-			console.log(combatant);
 			asyncTasks.push(combatant.setFlag("metalsaviors", "turnDone", false));
 		}
 		await Promise.all(asyncTasks);
@@ -198,6 +162,9 @@ export class MetalSaviorsCombat extends Combat {
 			}
 			if (prevAction.type === "endTurn") {
 				await this._popHistory();
+				const combatantId = prevAction.combatantId;
+				const combatant = this.combatants.get(combatantId, { strict: true });
+				combatant.setFlag("metalsaviors", "turnDone", false);
 				return this.update({ turn: prevAction.turn }, { advanceTime: -CONFIG.time.turnTime });
 			}
 			if (prevAction.type === "action") {

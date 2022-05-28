@@ -4,21 +4,163 @@
         <div class="form-group">
             <label>Action Name</label>
             <select class="action-name-select" name="actionName">
-                {{selectOptions actions selected=selectedAction nameAttr="name" labelAttr="name"}}
+                {{selectOptions actions selected=actionDetails.selectedAction nameAttr="name" labelAttr="name"}}
             </select>
         </div>
-        {{!-- <div class="form-group">
-            <label>Action Name</label>
-            <input type="text" name="actionName" value="" />
-        </div> --}}
-        <div class="form-group">
-            <label>New Initiative</label>
-            <input type="text" name="newInitiative" value="" />
-        </div>
-        <div class="form-group">
-            <label>New Remaining Actions</label>
-            <input type="text" name="newRemainingActions" value="" />
-        </div>
+        {{#if (eq actionDetails.selectedAction "Accelerate / Brake")}}
+            <div class="form-group">
+                <label>Current Movement Speed</label>
+                <input type="text" value="{{actionDetails.speedDetails.currentSpeed.label}}" disabled="true" />
+            </div>
+            <div class="form-group">
+                <label>New Movement Speed</label>
+                <select name="dSpeed">
+                    {{#if actionDetails.speedDetails.accelerateSpeed.value}}
+                        <option value="1">{{actionDetails.speedDetails.accelerateSpeed.label}}
+                        </option>
+                    {{/if}}
+                    {{#if (or actionDetails.speedDetails.decelerateSpeed.value
+                    (eq actionDetails.speedDetails.decelerateSpeed.value 0))}}
+                        <option value="-1">{{actionDetails.speedDetails.decelerateSpeed.label}}
+                        </option>
+                    {{/if}}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Attack")}}
+            <!-- TODO: Attack Augments-->
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "CAV System")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Delay")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Ejection")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Emergency Repairs")}}
+            <!-- TODO: Incorporate logic for this operation -->
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Maneuver")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Other")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Refocus")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Reload")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Tool")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Block")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Dive")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Dodge")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Evasive Maneuvers")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Parry")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Reorient")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Roll with Punch")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" disabled="true" />
+            </div>
+        {{/if}}
+        {{#if (eq actionDetails.selectedAction "Unspecified")}}
+            <!-- TODO: Incorporate logic for this operation -->
+            <div class="form-group">
+                <label>New Speed</label>
+                <select name="newSpeed">
+                    <option value="0" {{#if (eq actionDetails.speedDetails.currentSpeed.value 0)}}selected{{/if}}>
+                        Halt</option>
+                    <option value="1" {{#if (eq actionDetails.speedDetails.currentSpeed.value 1)}}selected{{/if}}>
+                        Walking</option>
+                    <option value="2" {{#if (eq actionDetails.speedDetails.currentSpeed.value 2)}}selected{{/if}}>
+                        Pacing</option>
+                    <option value="3" {{#if (eq actionDetails.speedDetails.currentSpeed.value 3)}}selected{{/if}}>
+                        Sprinting</option>
+                    <option value="4" {{#if (eq actionDetails.speedDetails.currentSpeed.value 4)}}selected{{/if}}>
+                        Galloping</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>New Initiative</label>
+                <input type="text" name="newInitiative" value="{{combatant.data.initiative}}" />
+            </div>
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text" name="actionCost" value="1" />
+            </div>
+        {{/if}}
     </form>
 </div>
 <div class="dialog-buttons">
