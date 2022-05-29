@@ -72,8 +72,11 @@
                                 title="{{localize 'COMBAT.ToggleDead'}}" data-control="toggleDefeated">
                                 <i class="fas fa-skull"></i></a>
                         {{/if}}
-                        <a class="combatant-control perform-action" title="Perform Action" data-control="performAction">
-                            <i class="fas fa-fist-raised"></i></a>
+                        {{#if isOwner}}
+                            <a class="combatant-control perform-action" title="Perform Action"
+                                data-control="performAction">
+                                <i class="fas fa-fist-raised"></i></a>
+                        {{/if}}
                         <div class="token-effects">
                             {{#each this.effects}}
                                 <img class="token-effect" src="{{this}}" />

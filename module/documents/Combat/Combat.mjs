@@ -1,3 +1,5 @@
+import { isExecutingGm } from "../helpers/SocketsHelper.mjs";
+
 export class MetalSaviorsCombat extends Combat {
 	/* Some notes on Combat
      - Initiative ties are resloved as follows 
@@ -10,6 +12,35 @@ export class MetalSaviorsCombat extends Combat {
        - Converted to Movement Momentum
        - Increase Initiative
     */
+	constructor(data, context) {
+		super(data, context);
+		socket.on("system.metalsaviors", this._socketEventHandler.bind(this));
+	}
+
+	_socketEventHandler({ location = "", action = "", payload = {} }) {
+		console.log("Spcket Event Handler", location, action, payload);
+
+		if (location !== "Combat") return;
+		if (payload.targetId !== this.id) return;
+		if (!isExecutingGm()) return;
+
+		console.log("Handling Socket Event");
+
+		switch (action) {
+			case "pushHistory":
+				this._pushHistory(payload.data);
+				break;
+			case "nextTurn":
+				this.nextTurn();
+				break;
+			case "previousTurn":
+				this.previousTurn();
+				break;
+
+			default:
+				break;
+		}
+	}
 
 	_sortCombatants(a, b) {
 		const initA = _checkNumeric(a.initiative);
@@ -45,7 +76,7 @@ export class MetalSaviorsCombat extends Combat {
 
 	async startCombat() {
 		if (this.combatants.some((x) => !Number.isInteger(x.initiative))) {
-			ui.notifications.error("Combat cannot start until everyone has rolled thier initiative");
+			ui.notifications.warn("Combat cannot start until everyone has rolled thier initiative");
 			return;
 		}
 		await this.setupTurns();
@@ -106,6 +137,18 @@ export class MetalSaviorsCombat extends Combat {
 	}
 
 	async nextTurn() {
+		if (!isExecutingGm()) {
+			console.log("Emitting Signal");
+			game.socket.emit("system.metalsaviors", {
+				location: "Combat",
+				action: "nextTurn",
+				payload: {
+					targetId: this.id,
+				},
+			});
+			return this;
+		}
+
 		await this.combatant.setFlag("metalsaviors", "turnDone", true);
 
 		const skip = this.settings.skipDefeated;
@@ -155,6 +198,17 @@ export class MetalSaviorsCombat extends Combat {
 	}
 
 	async previousTurn() {
+		if (!isExecutingGm()) {
+			game.socket.emit("system.metalsaviors", {
+				location: "Combat",
+				action: "previousTurn",
+				payload: {
+					targetId: this.id,
+				},
+			});
+			return this;
+		}
+
 		while (true) {
 			const prevAction = await this._peekHistory();
 			if (!prevAction || prevAction.type === "endRound") {

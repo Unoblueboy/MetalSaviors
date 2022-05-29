@@ -1,9 +1,11 @@
 export default class MetalSaviorsCombatant extends Combatant {
 	_onCreate(data, options, userID) {
 		super._onCreate(data, options, userID);
-		this.setFlag("metalsaviors", "remainingActions", this.actor.getActionsPerRound());
-		this.setFlag("metalsaviors", "turnDone", false);
-		this.setFlag("metalsaviors", "curMovementSpeed", 0);
+		if (this.isOwner) {
+			this.setFlag("metalsaviors", "remainingActions", this.actor.getActionsPerRound());
+			this.setFlag("metalsaviors", "turnDone", false);
+			this.setFlag("metalsaviors", "curMovementSpeed", 0);
+		}
 	}
 
 	static getMovementSpeedString(movementSpeed) {
@@ -51,7 +53,7 @@ export default class MetalSaviorsCombatant extends Combatant {
 			asyncTasks.push(this.changeMovementSpeed(dSpeed));
 		}
 
-		asyncTasks.push(
+		if (game.user.isGM) {
 			this.combat._pushHistory({
 				type: "action",
 				combatantId: this.id,
@@ -59,8 +61,24 @@ export default class MetalSaviorsCombatant extends Combatant {
 				actionCost,
 				dInit,
 				dSpeed,
-			})
-		);
+			});
+		} else {
+			game.socket.emit("system.metalsaviors", {
+				class: "Combat",
+				action: "pushHistory",
+				payload: {
+					targetId: this.combat.id,
+					data: {
+						type: "action",
+						combatantId: this.id,
+						actionName,
+						actionCost,
+						dInit,
+						dSpeed,
+					},
+				},
+			});
+		}
 
 		await Promise.all(asyncTasks);
 	}

@@ -36,7 +36,10 @@ export class MetalSaviorsCombatTracker extends CombatTracker {
 
 	async _onPerformAction(combatant) {
 		if (!combatant.combat) return;
-		if (!combatant.combat.started) return;
+		if (!combatant.combat.started) {
+			ui.notifications.warn("Cannot perform an action until combat has started.");
+			return;
+		}
 		const details = await MetalSaviorsCombatDetailsDialog.getActionDetails(combatant);
 		await combatant.performAction(details);
 	}
@@ -54,6 +57,7 @@ export class MetalSaviorsCombatTracker extends CombatTracker {
 			turn.curMovementSpeed = MetalSaviorsCombatant.getMovementSpeedString(
 				combatant.getFlag("metalsaviors", "curMovementSpeed")
 			);
+			turn.isOwner = combatant.isOwner;
 		}
 
 		return context;
