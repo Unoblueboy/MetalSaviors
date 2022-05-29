@@ -1,4 +1,5 @@
 import { isExecutingGm } from "../helpers/SocketsHelper.mjs";
+import { MetalSaviorsCombatExcessActionsDialog } from "./CombatExcessActionsDialog.mjs";
 
 export class MetalSaviorsCombat extends Combat {
 	/* Some notes on Combat
@@ -14,29 +15,37 @@ export class MetalSaviorsCombat extends Combat {
     */
 	constructor(data, context) {
 		super(data, context);
-		socket.on("system.metalsaviors", this._socketEventHandler.bind(this));
+		socket.on("system.metalsaviors", (arg) => this._socketEventHandler(arg));
 	}
 
-	_socketEventHandler({ location = "", action = "", payload = {} }) {
-		console.log("Spcket Event Handler", location, action, payload);
+	async _socketEventHandler(data) {
+		const { location = "", action = "", payload = {} } = data;
 
 		if (location !== "Combat") return;
 		if (payload.targetId !== this.id) return;
-		if (!isExecutingGm()) return;
-
-		console.log("Handling Socket Event");
+		console.log("Handling Combat Socket Event", data);
 
 		switch (action) {
 			case "pushHistory":
-				this._pushHistory(payload.data);
+				if (!isExecutingGm()) return;
+				await this._pushHistory(payload.data);
 				break;
 			case "nextTurn":
-				this.nextTurn();
+				if (!isExecutingGm()) return;
+				await this.nextTurn();
 				break;
 			case "previousTurn":
-				this.previousTurn();
+				if (!isExecutingGm()) return;
+				await this.previousTurn();
 				break;
-
+			case "playerEndRound":
+				if (game.user.id !== payload.userId) return;
+				await this._endPlayerRound(payload.combatantId);
+				break;
+			case "spendExcessActions":
+				if (!isExecutingGm()) return;
+				await this.spendExcessActions(payload.details);
+				break;
 			default:
 				break;
 		}
@@ -123,22 +132,131 @@ export class MetalSaviorsCombat extends Combat {
 	}
 
 	async nextRound() {
-		let advanceTime = CONFIG.time.roundTime;
-		const asyncTasks = [];
-		for (const combatant of this.turns) {
-			asyncTasks.push(combatant.setFlag("metalsaviors", "turnDone", false));
-		}
-		await Promise.all(asyncTasks);
 		await this._pushHistory({
 			type: "endRound",
 			// Note: May need to have a note of all excess actions here
 		});
+
+		const endRoundObject = Object.fromEntries(this.combatants.map((x) => [x.id, null]));
+
+		await this.setFlag("metalsaviors", "endRoundObject", endRoundObject);
+
+		const playerCombatantsId = [];
+		for (const user of game.users) {
+			if (!user.active) continue;
+			if (isExecutingGm(user)) continue;
+			const actor = user.character;
+			if (!actor) continue;
+			const combatant = this.getCombatantByActor(actor.id);
+			if (!combatant) continue;
+
+			playerCombatantsId.push(combatant.id);
+
+			game.socket.emit("system.metalsaviors", {
+				location: "Combat",
+				action: "playerEndRound",
+				payload: {
+					targetId: this.id,
+					userId: user.id,
+					combatantId: combatant.id,
+				},
+			});
+		}
+
+		const gmCombatants = this.combatants.filter((x) => !playerCombatantsId.includes(x.id));
+
+		this._endNpcRounds(gmCombatants);
+	}
+
+	async _endNpcRounds(combatants) {
+		const [closeCallback, spentActionDetailsTask] =
+			MetalSaviorsCombatExcessActionsDialog.getExcessActionsDetails(combatants);
+		this.closeCombatExcessActionsDialog = closeCallback;
+		const spentActionDetails = await spentActionDetailsTask;
+		for (const detail of spentActionDetails) {
+			await this.spendExcessActions(detail);
+		}
+	}
+
+	async _endPlayerRound(combatantId) {
+		const combatant = this.combatants.get(combatantId, { strict: true });
+		const [closeCallback, spentActionDetailsTask] = MetalSaviorsCombatExcessActionsDialog.getExcessActionsDetails([
+			combatant,
+		]);
+		this.closeCombatExcessActionsDialog = closeCallback;
+		const spentActionDetails = await spentActionDetailsTask;
+		this.spendExcessActions(spentActionDetails[0]);
+	}
+
+	async spendExcessActions(details) {
+		if (!isExecutingGm()) {
+			game.socket.emit("system.metalsaviors", {
+				location: "Combat",
+				action: "spendExcessActions",
+				payload: {
+					targetId: this.id,
+					details: details,
+				},
+			});
+			return;
+		}
+
+		let endRoundObject = this.getFlag("metalsaviors", "endRoundObject");
+		if (!endRoundObject) {
+			return;
+		}
+
+		const combatant = this.combatants.get(details.combatantId, { strict: true });
+		await combatant.performAction({
+			actionName: "Spend Excess Actions",
+			dInit: details.dInit,
+			dMomentum: details.dMomentum,
+			actionCost: details.actionCost,
+		});
+
+		await this.setFlag("metalsaviors", "endRoundObject", { [details.combatantId]: true });
+		endRoundObject = this.getFlag("metalsaviors", "endRoundObject");
+		if (Object.values(endRoundObject).every((x) => x)) {
+			this.beginNewRound();
+		}
+	}
+
+	async beginNewRound() {
+		const asyncTasks = [];
+
+		const endRoundSummary = Object.fromEntries(this.combatants.map((x) => [x.id, x.getRemainingActions()]));
+		asyncTasks.push(
+			this._pushHistory({
+				type: "endRoundSummary",
+				data: endRoundSummary,
+			})
+		);
+
+		asyncTasks.push(this.unsetFlag("metalsaviors", "endRoundObject"));
+
+		await Promise.all(asyncTasks);
+
+		await this._pushHistory({
+			type: "beginRound",
+		});
+
+		await Promise.all([...this.combatants].map((x) => x.resetForNewRound()));
+
+		game.socket.emit("system.metalsaviors", {
+			location: "CombatExcessActionsDialog",
+			action: "newRound",
+		});
+
+		if (this.closeCombatExcessActionsDialog) {
+			this.closeCombatExcessActionsDialog();
+		}
+
+		let advanceTime = CONFIG.time.roundTime;
 		return this.update({ round: this.round + 1, turn: 0 }, { advanceTime });
 	}
 
 	async nextTurn() {
 		if (!isExecutingGm()) {
-			console.log("Emitting Signal");
 			game.socket.emit("system.metalsaviors", {
 				location: "Combat",
 				action: "nextTurn",
@@ -147,6 +265,11 @@ export class MetalSaviorsCombat extends Combat {
 				},
 			});
 			return this;
+		}
+
+		var endRoundObject = this.getFlag("metalsaviors", "endRoundObject");
+		if (endRoundObject) {
+			return this.beginNewRound();
 		}
 
 		await this.combatant.setFlag("metalsaviors", "turnDone", true);
@@ -187,10 +310,16 @@ export class MetalSaviorsCombat extends Combat {
 			}
 			if (prevAction.type === "endRound") {
 				await this.update({ round: round });
+				for (const combatant of this.combatants) {
+					await combatant.setFlag("metalsaviors", "turnDone", true);
+				}
 				return this.previousTurn();
 			}
 			if (prevAction.type === "action") {
 				await this.undoAction(prevAction);
+			}
+			if (prevAction.type === "endRoundSummary") {
+				await this.undoEndRoundSummary(prevAction.data);
 			}
 		}
 
@@ -214,6 +343,10 @@ export class MetalSaviorsCombat extends Combat {
 			if (!prevAction || prevAction.type === "endRound") {
 				return this.previousRound();
 			}
+			if (prevAction.type === "beginRound") {
+				await this._popHistory();
+				return this;
+			}
 			if (prevAction.type === "endTurn") {
 				await this._popHistory();
 				const combatantId = prevAction.combatantId;
@@ -224,7 +357,20 @@ export class MetalSaviorsCombat extends Combat {
 			if (prevAction.type === "action") {
 				await Promise.all([this._popHistory(), this.undoAction(prevAction)]);
 			}
+			if (prevAction.type === "endRoundSummary") {
+				await Promise.all([this._popHistory(), this.undoEndRoundSummary(prevAction.data)]);
+			}
 		}
+	}
+
+	async undoEndRoundSummary(data) {
+		const asyncTasks = [];
+		for (const [combatantId, prevRemainingActions] of Object.entries(data)) {
+			const combatant = this.combatants.get(combatantId, { strict: true });
+			asyncTasks.push(combatant.setRemainingActions(prevRemainingActions));
+		}
+
+		await Promise.all(asyncTasks);
 	}
 }
 

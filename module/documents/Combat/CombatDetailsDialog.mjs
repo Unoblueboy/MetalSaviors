@@ -95,6 +95,9 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 
 	attackAugments = [
 		{
+			name: "None",
+		},
+		{
 			name: "Aim Down Sights",
 			additionalActions: 2,
 		},
@@ -138,6 +141,7 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					callback: data.cancelCallback,
 				},
 			},
+			close: data.cancelCallback,
 		};
 
 		this.selectedAction = this.actions[0].name;
@@ -174,6 +178,15 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					actionCost: 1,
 					dSpeed: parseInt(form.dSpeed.value),
 				};
+			case "Attack":
+				const augmentActionCost = Number.isNumeric(form.augmentActionCost.value)
+					? parseInt(form.augmentActionCost.value)
+					: 1;
+				const actionCost = augmentActionCost + 1;
+				return {
+					actionName: actionName,
+					actionCost: actionCost,
+				};
 			case "Refocus":
 				// TODO: Make the roll output prettier
 				const roll = new Roll("1d6");
@@ -185,7 +198,6 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					rollMode: rollMode,
 					flavor: `${combatant.actor.data.name} is refocusing`,
 				});
-				console.log(result);
 				return {
 					actionName: actionName,
 					actionCost: 1,
@@ -224,6 +236,8 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 		context.attackAugments = this.attackAugments;
 		context.attackAugmentsDetails = {
 			selectedAttackAugment: this.selectedAttackAugment,
+			selectedAttackAugmentCost: this.attackAugments.find((x) => x.name == this.selectedAttackAugment)
+				.additionalActions,
 		};
 		context.combatant = this.combatant;
 		return context;
@@ -255,6 +269,11 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 
 		html.find(".action-name-select").change((ev) => {
 			this.selectedAction = ev.target.value;
+			this.render({});
+		});
+
+		html.find(".attack-augment-select").change((ev) => {
+			this.selectedAttackAugment = ev.target.value;
 			this.render({});
 		});
 	}

@@ -36,7 +36,30 @@ export default class MetalSaviorsCombatant extends Combatant {
 		return this.getFlag("metalsaviors", "curMovementSpeed");
 	}
 
-	async performAction({ actionName = "", actionCost = 0, dInit = 0, dSpeed = 0 } = {}) {
+	getRemainingActions() {
+		return this.getFlag("metalsaviors", "remainingActions");
+	}
+
+	async setRemainingActions(remActions) {
+		return await this.setFlag("metalsaviors", "remainingActions", remActions);
+	}
+
+	async resetForNewRound() {
+		await Promise.all([
+			this.setFlag("metalsaviors", "remainingActions", this.actor.getActionsPerRound()),
+			this.setFlag("metalsaviors", "turnDone", false),
+		]);
+	}
+
+	async performAction({ actionName = "", actionCost = 0, dInit = 0, dSpeed = 0, dMomentum = 0 } = {}) {
+		if (this.getFlag("metalsaviors", "remainingActions") < actionCost) {
+			ui.notifications.warn(
+				`Combatant [${this.name}] does not have the remaining combat actions ` +
+					`this round to perform the "${actionName}" action`
+			);
+			return;
+		}
+
 		const asyncTasks = [];
 
 		if (dInit !== 0) {
@@ -53,29 +76,26 @@ export default class MetalSaviorsCombatant extends Combatant {
 			asyncTasks.push(this.changeMovementSpeed(dSpeed));
 		}
 
+		// TODO: logic for dMomentum
+
+		const data = {
+			type: "action",
+			combatantId: this.id,
+			actionName,
+			actionCost,
+			dInit,
+			dSpeed,
+			dMomentum,
+		};
 		if (game.user.isGM) {
-			this.combat._pushHistory({
-				type: "action",
-				combatantId: this.id,
-				actionName,
-				actionCost,
-				dInit,
-				dSpeed,
-			});
+			this.combat._pushHistory(data);
 		} else {
 			game.socket.emit("system.metalsaviors", {
 				class: "Combat",
 				action: "pushHistory",
 				payload: {
 					targetId: this.combat.id,
-					data: {
-						type: "action",
-						combatantId: this.id,
-						actionName,
-						actionCost,
-						dInit,
-						dSpeed,
-					},
+					data: data,
 				},
 			});
 		}

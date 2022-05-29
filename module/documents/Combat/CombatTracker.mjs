@@ -46,19 +46,23 @@ export class MetalSaviorsCombatTracker extends CombatTracker {
 
 	async getData(options) {
 		const context = await super.getData(options);
-
 		const combat = this.viewed;
+		let roundDone = true;
 
 		for (const turn of context.turns) {
 			const combatantId = turn.id;
 			const combatant = combat.combatants.get(combatantId, { strict: true });
 			turn.remainingActions = combatant.getFlag("metalsaviors", "remainingActions");
 			turn.turnDone = combatant.getFlag("metalsaviors", "turnDone");
+			if (!turn.turnDone) {
+				roundDone = false;
+			}
 			turn.curMovementSpeed = MetalSaviorsCombatant.getMovementSpeedString(
 				combatant.getFlag("metalsaviors", "curMovementSpeed")
 			);
 			turn.isOwner = combatant.isOwner;
 		}
+		context.roundDone = roundDone;
 
 		return context;
 	}
