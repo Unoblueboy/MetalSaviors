@@ -210,7 +210,7 @@ export class MetalSaviorsCombat extends Combat {
 		await combatant.performAction({
 			actionName: "Spend Excess Actions",
 			dInit: details.dInit,
-			dMomentum: details.dMomentum,
+			dExtraMomentum: details.dExtraMomentum,
 			actionCost: details.actionCost,
 		});
 
@@ -289,6 +289,15 @@ export class MetalSaviorsCombat extends Combat {
 			combatantId: this.combatant.id,
 			turn: this.turn,
 		});
+
+		if (this.combatant.getExtraMovementMomentum() !== 0) {
+			await this._pushHistory({
+				type: "action",
+				actionName: "Zero Extra Movement Momentum",
+				combatantId: this.combatant.id,
+				dExtraMomentum: -this.combatant.getExtraMovementMomentum(),
+			});
+		}
 
 		if (this.round === 0 || next === null) {
 			return this.nextRound();

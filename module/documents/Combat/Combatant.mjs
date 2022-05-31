@@ -5,6 +5,8 @@ export default class MetalSaviorsCombatant extends Combatant {
 			this.setFlag("metalsaviors", "remainingActions", this.actor.getActionsPerRound());
 			this.setFlag("metalsaviors", "turnDone", false);
 			this.setFlag("metalsaviors", "curMovementSpeed", 0);
+			this.setFlag("metalsaviors", "cumExcessInitIncrease", 0);
+			this.setFlag("metalsaviors", "extraMovementMomentum", 0);
 		}
 	}
 
@@ -40,6 +42,32 @@ export default class MetalSaviorsCombatant extends Combatant {
 		return this.getFlag("metalsaviors", "remainingActions");
 	}
 
+	getCumExcessInitIncrease() {
+		return this.getFlag("metalsaviors", "cumExcessInitIncrease");
+	}
+
+	async changeCumExcessInitIncrease(dInit) {
+		const curCumInitIncrease = this.getCumExcessInitIncrease();
+		return await this.setFlag("metalsaviors", "cumExcessInitIncrease", curCumInitIncrease + dInit);
+	}
+
+	getExtraMovementMomentum() {
+		return this.getFlag("metalsaviors", "extraMovementMomentum");
+	}
+
+	async changeExtraMovementMomentum(dExtraMomentum) {
+		const baseExtraMovementMomentum = this.getExtraMovementMomentum();
+		return await this.setFlag("metalsaviors", "extraMovementMomentum", baseExtraMovementMomentum + dExtraMomentum);
+	}
+
+	getFinesse() {
+		try {
+			return this.actor.data.data.attributes.fin.value;
+		} catch {
+			return 0;
+		}
+	}
+
 	async setRemainingActions(remActions) {
 		return await this.setFlag("metalsaviors", "remainingActions", remActions);
 	}
@@ -51,7 +79,7 @@ export default class MetalSaviorsCombatant extends Combatant {
 		]);
 	}
 
-	async performAction({ actionName = "", actionCost = 0, dInit = 0, dSpeed = 0, dMomentum = 0 } = {}) {
+	async performAction({ actionName = "", actionCost = 0, dInit = 0, dSpeed = 0, dExtraMomentum = 0 } = {}) {
 		if (this.getFlag("metalsaviors", "remainingActions") < actionCost) {
 			ui.notifications.warn(
 				`Combatant [${this.name}] does not have the remaining combat actions ` +
@@ -76,7 +104,13 @@ export default class MetalSaviorsCombatant extends Combatant {
 			asyncTasks.push(this.changeMovementSpeed(dSpeed));
 		}
 
-		// TODO: logic for dMomentum
+		if (dExtraMomentum !== 0) {
+			asyncTasks.push(this.changeExtraMovementMomentum(dExtraMomentum));
+		}
+
+		if (actionName === "Spend Excess Actions") {
+			await this.changeCumExcessInitIncrease(dInit);
+		}
 
 		const data = {
 			type: "action",
@@ -85,7 +119,7 @@ export default class MetalSaviorsCombatant extends Combatant {
 			actionCost,
 			dInit,
 			dSpeed,
-			dMomentum,
+			dExtraMomentum,
 		};
 		if (game.user.isGM) {
 			this.combat._pushHistory(data);
@@ -103,7 +137,7 @@ export default class MetalSaviorsCombatant extends Combatant {
 		await Promise.all(asyncTasks);
 	}
 
-	async undoAction({ actionCost = 0, dInit = 0, dSpeed = 0 } = {}) {
+	async undoAction({ actionName = "", actionCost = 0, dInit = 0, dSpeed = 0, dExtraMomentum = 0 } = {}) {
 		const asyncTasks = [];
 
 		if (dInit !== 0) {
@@ -111,9 +145,17 @@ export default class MetalSaviorsCombatant extends Combatant {
 			asyncTasks.push(this.update({ initiative: curInitiative - dInit }));
 		}
 
+		if (actionName === "Spend Excess Actions") {
+			this.changeCumExcessInitIncrease(-dInit);
+		}
+
 		if (actionCost !== 0) {
 			const curRemainingActions = this.getFlag("metalsaviors", "remainingActions");
 			asyncTasks.push(this.setFlag("metalsaviors", "remainingActions", curRemainingActions + actionCost));
+		}
+
+		if (dExtraMomentum !== 0) {
+			asyncTasks.push(this.changeExtraMovementMomentum(-dExtraMomentum));
 		}
 
 		if (dSpeed !== 0) {
