@@ -12,7 +12,8 @@ export class MetalSaviorsCavSheet extends ItemSheet {
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
 			classes: ["metalsaviors", "sheet", "item"],
-			height: 350,
+			width: 800,
+			height: 700,
 		});
 	}
 
