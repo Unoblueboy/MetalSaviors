@@ -1,5 +1,5 @@
 import MetalSaviorsCombatant from "./Combatant.mjs";
-import { MetalSaviorsCombatDetailsDialog } from "./CombatDetailsDialog.mjs";
+import { MetalSaviorsCombatDetailsDialog } from "./Dialogs/CombatDetailsDialog.mjs";
 
 export class MetalSaviorsCombatTracker extends CombatTracker {
 	get template() {
@@ -26,7 +26,7 @@ export class MetalSaviorsCombatTracker extends CombatTracker {
 
 			// Roll combatant initiative
 			case "rollInitiative":
-				return combat.rollInitiative([c.id]);
+				return c.rollInitiative();
 
 			// Perform an action
 			case "performAction":

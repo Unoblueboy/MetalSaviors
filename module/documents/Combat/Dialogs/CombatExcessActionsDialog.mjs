@@ -1,4 +1,4 @@
-import MetalSaviorsCombatant from "./Combatant.mjs";
+import MetalSaviorsCombatant from "../Combatant.mjs";
 
 export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 	constructor(data, options) {
@@ -16,6 +16,10 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 		};
 		this.combatants = data.combatants;
 		game.socket.on("system.metalsaviors", (arg) => this._socketEventHandler(arg));
+	}
+
+	get title() {
+		return this.data.title || "Spend Excess Actions";
 	}
 
 	setNormalCallback(normalCallback) {

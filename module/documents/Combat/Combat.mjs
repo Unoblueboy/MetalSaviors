@@ -1,5 +1,7 @@
+import { rollInitiative } from "../../helpers/roll.mjs";
 import { isExecutingGm } from "../helpers/SocketsHelper.mjs";
-import { MetalSaviorsCombatExcessActionsDialog } from "./CombatExcessActionsDialog.mjs";
+import { MetalSaviorsCombatantMultiRollDialog } from "./Dialogs/CombatantRollDialog.mjs";
+import { MetalSaviorsCombatExcessActionsDialog } from "./Dialogs/CombatExcessActionsDialog.mjs";
 
 export class MetalSaviorsCombat extends Combat {
 	/* Some notes on Combat
@@ -81,6 +83,48 @@ export class MetalSaviorsCombat extends Combat {
 
 		// Otherwise use arbritrary value
 		return a.tokenId - b.tokenId;
+	}
+
+	async rollInitiative(ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
+		// Structure input data
+		ids = typeof ids === "string" ? [ids] : ids;
+
+		if (!ids.length) return this;
+
+		const combatants = ids.map((id) => this.combatants.get(id, { strict: true }));
+		const allInitiativeOptions = await MetalSaviorsCombatantMultiRollDialog.getInitiativeOptions(combatants);
+
+		if (allInitiativeOptions.cancelled) {
+			return this;
+		}
+
+		// Iterate over Combatants, performing an initiative roll for each
+		const updates = [];
+		for (const [id, initiativeOptions] of Object.entries(allInitiativeOptions)) {
+			const combatant = this.combatants.get(id, { strict: true });
+			const messageData = {
+				speaker: ChatMessage.getSpeaker({
+					actor: combatant.actor,
+					token: combatant.token,
+					alias: combatant.name,
+				}),
+				flavor: game.i18n.format("COMBAT.RollsInitiative", { name: combatant.name }),
+			};
+
+			const roll = await rollInitiative(combatant, {
+				...initiativeOptions,
+				messageData,
+			});
+
+			updates.push({ _id: id, initiative: roll.total });
+		}
+
+		if (!updates.length) return this;
+
+		// Update multiple combatants
+		await this.updateEmbeddedDocuments("Combatant", updates);
+
+		return this;
 	}
 
 	async startCombat() {

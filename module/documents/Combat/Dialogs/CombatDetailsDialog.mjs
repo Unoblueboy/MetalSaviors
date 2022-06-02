@@ -1,4 +1,4 @@
-import MetalSaviorsCombatant from "./Combatant.mjs";
+import MetalSaviorsCombatant from "../Combatant.mjs";
 
 export class MetalSaviorsCombatDetailsDialog extends Dialog {
 	// TODO: Consider whether combatant in or out of CAV.
@@ -153,6 +153,10 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			template: "systems/metalsaviors/templates/combat/combat-action-dialog.hbs",
 		});
+	}
+
+	get title() {
+		return this.data.title || "Perform Action";
 	}
 
 	static async getActionDetails(combatant) {

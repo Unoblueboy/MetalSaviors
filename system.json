@@ -2,7 +2,7 @@
 	"name": "metalsaviors",
 	"title": "Metal Saviors",
 	"description": "The Metal Saviors system for FoundryVTT!",
-	"version": "1.0.16",
+	"version": "1.0.17",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "9",
 	"author": "Notepad Anon",
@@ -59,7 +59,7 @@
 	"socket": true,
 	"primaryTokenAttribute": "endurance",
 	"secondaryTokenAttribute": "health",
-	"url": "",
+	"url": "https://github.com/Unoblueboy/MetalSaviors",
 	"manifest": "https://github.com/Unoblueboy/MetalSaviors/releases/latest/download/system.json",
 	"download": "https://github.com/Unoblueboy/MetalSaviors/releases/latest/download/release.zip",
 	"license": "LICENSE.txt"

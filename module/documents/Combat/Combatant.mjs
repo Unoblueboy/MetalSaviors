@@ -1,3 +1,6 @@
+import { rollInitiative } from "../../helpers/roll.mjs";
+import { MetalSaviorsCombatantRollDialog } from "./Dialogs/CombatantRollDialog.mjs";
+
 export default class MetalSaviorsCombatant extends Combatant {
 	_onCreate(data, options, userID) {
 		super._onCreate(data, options, userID);
@@ -163,5 +166,30 @@ export default class MetalSaviorsCombatant extends Combatant {
 		}
 
 		await Promise.all(asyncTasks);
+	}
+
+	async rollInitiative() {
+		const initiativeOptions = await MetalSaviorsCombatantRollDialog.getInitiativeOptions(this);
+
+		if (initiativeOptions.cancelled) {
+			return;
+		}
+
+		const messageData = {
+			speaker: ChatMessage.getSpeaker({
+				actor: this.actor,
+				token: this.token,
+				alias: this.name,
+			}),
+			flavor: game.i18n.format("COMBAT.RollsInitiative", { name: this.name }),
+		};
+
+		const roll = await rollInitiative(this, {
+			...initiativeOptions,
+			createMessage: true,
+			messageData,
+		});
+
+		this.update({ initiative: roll.total });
 	}
 }
