@@ -1,0 +1,26 @@
+<div class="dialog-content">
+    <form>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Bonus</th>
+                <th>In Cav</th>
+            </tr>
+            {{#each combatants as |combatant|}}
+                <tr>
+                    <td>{{combatant.name}}</td>
+                    <td><input type="number" name="{{combatant.id}}_bonus" value="0" step="1" /></td>
+                    <td><input type="checkbox" name="{{combatant.id}}_inCav" /></td>
+                </tr>
+            {{/each}}
+        </table>
+    </form>
+</div>
+<div class="dialog-buttons">
+    <button class="dialog-button {{cssClass}}" data-button="cancel">
+        Cancel
+    </button>
+    <button class="dialog-button {{cssClass}}" data-button="normal">
+        Roll Initiatives
+    </button>
+</div>

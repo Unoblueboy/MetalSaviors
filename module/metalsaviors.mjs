@@ -11,6 +11,9 @@ import { MetalSaviorsCavSheet } from "./sheets/cav-sheet.mjs";
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { METALSAVIORS } from "./helpers/config.mjs";
+import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
+import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs";
+import MetalSaviorsCombatant from "./documents/Combat/Combatant.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -29,18 +32,13 @@ Hooks.once("init", async function () {
 	// Add custom constants for configuration.
 	CONFIG.METALSAVIORS = METALSAVIORS;
 
-	/**
-	 * Set an initiative formula for the system
-	 * @type {String}
-	 */
-	CONFIG.Combat.initiative = {
-		formula: "1d20 + @abilities.dex.mod",
-		decimals: 2,
-	};
-
 	// Define custom Document classes
 	CONFIG.Actor.documentClass = MetalSaviorsActor;
 	CONFIG.Item.documentClass = MetalSaviorsItemProxy;
+	CONFIG.Combat.documentClass = MetalSaviorsCombat;
+	CONFIG.Combatant.documentClass = MetalSaviorsCombatant;
+	CONFIG.ui.combat = MetalSaviorsCombatTracker;
+	CONFIG.time.roundTime = 10;
 
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
@@ -52,13 +50,7 @@ Hooks.once("init", async function () {
 		makeDefault: true,
 	});
 	Items.registerSheet("metalsaviors", MetalSaviorsSkillSheet, {
-		types: [
-			"learnedSkill",
-			"atbSkill",
-			"combatTraining",
-			"weaponProficiency",
-			"pilotLicense",
-		],
+		types: ["learnedSkill", "atbSkill", "combatTraining", "weaponProficiency", "pilotLicense"],
 		makeDefault: true,
 	});
 	Items.registerSheet("metalsaviors", MetalSaviorsCavSheet, {
@@ -134,9 +126,7 @@ Hooks.once("ready", async function () {
 	Hooks.on("dropActorSheetData", (actor, sheet, data) =>
 		MetalSaviorsActor.EnforceStrictItemUniqueness(actor, sheet, data)
 	);
-	Hooks.on("dropActorSheetData", (actor, sheet, data) =>
-		MetalSaviorsActor.EnforceItemUniqueness(actor, sheet, data)
-	);
+	Hooks.on("dropActorSheetData", (actor, sheet, data) => MetalSaviorsActor.EnforceItemUniqueness(actor, sheet, data));
 });
 
 /* -------------------------------------------- */
@@ -152,17 +142,12 @@ Hooks.once("ready", async function () {
  */
 async function createItemMacro(data, slot) {
 	if (data.type !== "Item") return;
-	if (!("data" in data))
-		return ui.notifications.warn(
-			"You can only create macro buttons for owned Items"
-		);
+	if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned Items");
 	const item = data.data;
 
 	// Create the macro command
 	const command = `game.metalsaviors.rollItemMacro("${item.name}");`;
-	let macro = game.macros.find(
-		(m) => m.name === item.name && m.command === command
-	);
+	let macro = game.macros.find((m) => m.name === item.name && m.command === command);
 	if (!macro) {
 		macro = await Macro.create({
 			name: item.name,
@@ -188,10 +173,7 @@ function rollItemMacro(itemName) {
 	if (speaker.token) actor = game.actors.tokens[speaker.token];
 	if (!actor) actor = game.actors.get(speaker.actor);
 	const item = actor ? actor.items.find((i) => i.name === itemName) : null;
-	if (!item)
-		return ui.notifications.warn(
-			`Your controlled Actor does not have an item named ${itemName}`
-		);
+	if (!item) return ui.notifications.warn(`Your controlled Actor does not have an item named ${itemName}`);
 
 	// Trigger the item roll
 	return item.roll();

@@ -51,3 +51,7 @@ METALSAVIORS.derivedAttributesAbbreviations = {
 	spacesMoved: "METALSAVIORS.AttributeSpacesMovedAbbr",
 	cavInitiativeModifier: "METALSAVIORS.AttributeCavInitiativeModifierAbbr",
 };
+
+METALSAVIORS.combat = {
+	defaultActionsPerRound: 1,
+};
