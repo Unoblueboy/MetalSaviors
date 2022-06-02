@@ -2,7 +2,7 @@
 	"name": "metalsaviors",
 	"title": "Metal Saviors",
 	"description": "The Metal Saviors system for FoundryVTT!",
-	"version": "1.0.17",
+	"version": "1.0.18",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "9",
 	"author": "Notepad Anon",
@@ -41,9 +41,9 @@
 			"type": "Item"
 		},
 		{
-			"name": "imperial-cavs",
+			"name": "cavs",
 			"label": "CAVs",
-			"path": "packs/imperial-cavs.db",
+			"path": "packs/cavs.db",
 			"type": "Item"
 		}
 	],
