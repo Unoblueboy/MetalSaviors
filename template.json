@@ -216,7 +216,8 @@
 				"boostSpeed": "160 km/h"
 			},
 			"requiredLicense": null,
-			"cavUnitPiloting": {}
+			"cavUnitPiloting": {},
+			"traits": {}
 		}
 	}
 }

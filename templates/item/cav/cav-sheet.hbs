@@ -117,6 +117,30 @@
                 </tr>
             </table>
         </div>
+        <div>
+            <h4>Traits</h4>
+            <table>
+                <tr>
+                    <th>Trait</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+                {{#each data.traits as |description name|}}
+                    <tr>
+                        <td class="cav-trait-name" data-prev-name="{{name}}"><input type="text" value="{{name}}"
+                                data-dtype="String" /></td>
+                        <td><textarea type="textbox" name="data.traits.{{name}}"
+                                data-dtype="String" />{{description}}</textarea>
+                        <td class="delete-cav-trait"><a><i class="fas fa-trash"></i></a></td>
+                    </tr>
+                {{/each}}
+                <tr>
+                    <td class="add-cav-trait-name"><input type="text" data-dtype="String" /></td>
+                    <td class="add-cav-trait-value"><textarea></textarea></td>
+                    <td class="add-cav-trait"><a><i class="fas fa-plus"></i></a></td>
+                </tr>
+            </table>
+        </div>
         <div class="tab">
             {{editor
 				content=data.description

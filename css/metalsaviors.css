@@ -306,6 +306,23 @@ tr.table-break {
   width: 100px;
 }
 
+.cav-trait {
+  border: 1px black solid;
+  margin: 5px 0px;
+}
+
+.cav-trait hr {
+  margin: 0px;
+}
+
+.cav-trait h4 {
+  margin: 0px 0px 2px 0px;
+}
+
+.cav-trait p {
+  margin: 2px 0px 5px 0px;
+}
+
 table.skills-table {
   border-collapse: collapse;
 }
