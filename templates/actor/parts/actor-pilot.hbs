@@ -5,7 +5,7 @@
             <div class="flexrow">
                 <div><input class="update-actor" type="text" name="data.endurance.value"
                         value="{{data.endurance.value}}" data-dtype="Number" /></div>
-                <div class="flex0">/</div>
+                <div class="flex-0">/</div>
                 <div><input class="update-actor" type="text" name="data.endurance.max" value="{{data.endurance.max}}"
                         data-dtype="Number" /></div>
             </div>
@@ -15,7 +15,7 @@
             <div class="flexrow">
                 <div><input class="update-actor" type="text" name="data.health.value" value="{{data.health.value}}"
                         data-dtype="Number" /></div>
-                <div class="flex0">/</div>
+                <div class="flex-0">/</div>
                 <div><input class="update-actor" type="text" name="data.health.max" value="{{data.health.max}}"
                         data-dtype="Number" /></div>
             </div>
@@ -50,9 +50,9 @@
     </div>
     <div class="sheet-body-group derived-atbs">
         {{#each data.derivedAttributes as |dAttribute name|}}
-            <div class="flexcol flex1">
-                <div class="flex1">{{dAttribute.label}}</div>
-                <div class="exit-submit flex0">
+            <div class="flexcol flex-1">
+                <div class="flex-1">{{dAttribute.label}}</div>
+                <div class="exit-submit flex-0">
                     {{#if (eq name "damageModifier")}}
                         <div><input type="text" value="{{dAttribute.value}}" data-dtype="String" disabled="true" />
                         </div>
