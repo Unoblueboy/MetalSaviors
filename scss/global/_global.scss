@@ -16,30 +16,66 @@
 	transition: visibility 0s #{$time}s, opacity #{$time}s linear;
 }
 
-.flex0 {
-	flex: 0;
+@mixin flex($val) {
+	flex: $val;
 }
 
-.flex1 {
-	flex: 1;
+@mixin strict-flex($val) {
+	flex: $val $val 0%;
 }
 
-.flex2 {
-	flex: 2;
+.fill-parent {
+	width: 100%;
+	height: 100%;
 }
 
-.flex3 {
-	flex: 3;
+.flex-0 {
+	@include flex($val: 0);
 }
 
-.flex4 {
-	flex: 4;
+.strict-flex-0 {
+	@include strict-flex($val: 0);
 }
 
-.flex5 {
-	flex: 5;
+.flex-1 {
+	@include flex($val: 1);
 }
 
-.flex6 {
-	flex: 6;
+.strict-flex-1 {
+	@include strict-flex($val: 1);
+}
+.flex-2 {
+	@include flex($val: 2);
+}
+
+.strict-flex-2 {
+	@include strict-flex($val: 2);
+}
+.flex-3 {
+	@include flex($val: 3);
+}
+
+.strict-flex-3 {
+	@include strict-flex($val: 3);
+}
+.flex-4 {
+	@include flex($val: 4);
+}
+
+.strict-flex-4 {
+	@include strict-flex($val: 4);
+}
+.flex-5 {
+	@include flex($val: 5);
+}
+
+.strict-flex-5 {
+	@include strict-flex($val: 5);
+}
+.flex-6 {
+	@include flex($val: 6);
+}
+
+.strict-flex-6 {
+	@include strict-flex($val: 6);
 }

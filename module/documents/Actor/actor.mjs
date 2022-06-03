@@ -81,6 +81,7 @@ export class MetalSaviorsActor extends Actor {
 		// Make separate methods for each Actor type (character, npc, etc.) to keep
 		// things organized.
 		this._prepareCharacterData(actorData);
+		this._prepareInfantryData(actorData);
 		// this._prepareNpcData(actorData);
 	}
 
@@ -109,12 +110,12 @@ export class MetalSaviorsActor extends Actor {
 	/**
 	 * Prepare NPC type specific data.
 	 */
-	_prepareNpcData(actorData) {
-		if (actorData.type !== "npc") return;
+	_prepareInfantryData(actorData) {
+		if (actorData.type !== "infantry") return;
 
 		// Make modifications to data here. For example:
 		const data = actorData.data;
-		data.xp = data.cr * data.cr * 100;
+		data.squadMembers = Math.ceil(data.health.value / data.healthPerSquadMember);
 	}
 
 	/**

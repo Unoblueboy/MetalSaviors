@@ -2,7 +2,8 @@
 	padding: 0px;
 }
 
-form.character {
+form.character,
+form.infantry {
 	@include flex-container($direction: row);
 }
 
@@ -13,7 +14,7 @@ div.window-app.metalsaviors.sheet.actor {
 
 .sidebar {
 	height: 100%; /* Full-height: remove this if you want "auto" height */
-	width: 160px; /* Set the width of the sidebar */
+	max-width: 160px; /* Set the width of the sidebar */
 	position: relative;
 	z-index: 1;
 	top: 0;
@@ -31,14 +32,29 @@ div.window-app.metalsaviors.sheet.actor {
 .main-body-group {
 	@include flex-container($direction: row);
 	padding: 10px;
-	div {
-		flex: 1;
-	}
 }
 
 .sheet-body-group {
 	@include flex-container($direction: row);
 	padding: 5px 0px 5px 0px;
+}
+
+.squad-type-grid-container {
+	display: grid;
+	grid-template-columns: 25% 75%;
+	row-gap: 5px;
+	.squad-type {
+		grid-row: 1;
+		grid-column: 1;
+	}
+	.squad-type-select {
+		grid-row: 1;
+		grid-column: 2;
+	}
+	.squad-description {
+		grid-row: 2;
+		grid-column: 1 / span 2;
+	}
 }
 
 .sheet-tabs {
@@ -56,6 +72,7 @@ div.window-app.metalsaviors.sheet.actor {
 
 .sheet-body {
 	@include flex-container($direction: column);
+	height: 100%;
 	padding: 0px 10px 10px 10px;
 	.column1 {
 		@include flex-container($direction: column);
@@ -65,6 +82,10 @@ div.window-app.metalsaviors.sheet.actor {
 		@include flex-container($direction: column);
 		padding: 0px 0px 0px 5px;
 	}
+}
+
+form.infantry .editor {
+	height: calc(100% - 115px);
 }
 
 tr.table-break {

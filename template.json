@@ -1,6 +1,6 @@
 {
 	"Actor": {
-		"types": ["character", "npc"],
+		"types": ["character", "infantry", "vehicle", "pike"],
 		"templates": {
 			"base": {
 				"health": {
@@ -78,9 +78,86 @@
 				}
 			}
 		},
-		"npc": {
-			"templates": ["base"],
-			"cr": 0
+		"infantry": {
+			"squadType": "Anti-Vehicle",
+			"cr": 10,
+			"healthPerSquadMember": 10,
+			"health": {
+				"max": 10,
+				"value": 10
+			},
+			"spacesMoved": {
+				"value": 3
+			},
+			"description": "Insert Notes Here."
+		},
+		"vehicle": {
+			"msr": 8,
+			"durability": {
+				"value": 40,
+				"max": 40
+			},
+			"weight": "Medium",
+			"Designation": {
+				"Name": "Land",
+				"Notes": "Standard Unit Type"
+			},
+			"combatReadiness": "Combat",
+			"combatSpeeds": {
+				"halt": {
+					"hitBonus": 2,
+					"momentum": 0,
+					"spacesMoved": 0
+				},
+				"walk": {
+					"hitBonus": 0,
+					"momentum": 0,
+					"spacesMoved": 4
+				},
+				"pace": {
+					"hitBonus": -2,
+					"momentum": 1,
+					"spacesMoved": 6
+				},
+				"gallop": {
+					"hitBonus": -4,
+					"momentum": 3,
+					"spacesMoved": 8
+				},
+				"sprint": {
+					"hitBonus": -8,
+					"momentum": 5,
+					"spacesMoved": 10
+				}
+			},
+			"traits": {},
+			"description": ""
+		},
+		"pike": {
+			"msr": 8,
+			"durability": {
+				"value": 25,
+				"max": 25
+			},
+			"combatSpeeds": {
+				"halt": {
+					"hitBonus": 2,
+					"momentum": 0,
+					"spacesMoved": 0
+				},
+				"walk": {
+					"hitBonus": 0,
+					"momentum": 0,
+					"spacesMoved": 3
+				},
+				"pace": {
+					"hitBonus": -2,
+					"momentum": 1,
+					"spacesMoved": 5
+				}
+			},
+			"traits": {},
+			"description": ""
 		}
 	},
 	"Item": {

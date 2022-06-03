@@ -1,9 +1,6 @@
-import {
-	onManageActiveEffect,
-	prepareActiveEffectCategories,
-} from "../helpers/effects.mjs";
+import { onManageActiveEffect, prepareActiveEffectCategories } from "../../helpers/effects.mjs";
 
-import { generateSkillKey } from "../helpers/KeyGenerator.mjs";
+import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -83,17 +80,11 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 	_prepareCharacterData(context) {
 		// Handle ability scores.
 		for (let [k, v] of Object.entries(context.data.attributes)) {
-			v.label =
-				game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
+			v.label = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
 		}
 
-		for (const [key, derivedAttribute] of Object.entries(
-			context.data.derivedAttributes
-		)) {
-			derivedAttribute.label =
-				game.i18n.localize(
-					CONFIG.METALSAVIORS.derivedAttributes[key]
-				) ?? key;
+		for (const [key, derivedAttribute] of Object.entries(context.data.derivedAttributes)) {
+			derivedAttribute.label = game.i18n.localize(CONFIG.METALSAVIORS.derivedAttributes[key]) ?? key;
 		}
 	}
 
@@ -257,10 +248,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 
 	_rollSkill(skillName) {
 		let skillKey = generateSkillKey(skillName);
-		let roll = new Roll(
-			`d100cs<=@skills.${skillKey}.value`,
-			this.actor.getRollData()
-		);
+		let roll = new Roll(`d100cs<=@skills.${skillKey}.value`, this.actor.getRollData());
 		const speaker = ChatMessage.getSpeaker({ actor: this.actor });
 		const rollMode = game.settings.get("core", "rollMode");
 
@@ -281,9 +269,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 
 		const isSuccess = roll.total === 1;
 		const isCritical = dieRoll % 11 === 0;
-		const resultString =
-			(isCritical ? "Critical " : "") +
-			(isSuccess ? "Success" : "Failure");
+		const resultString = (isCritical ? "Critical " : "") + (isSuccess ? "Success" : "Failure");
 		const stringContent = `<div class="dice-roll"><div class="dice-result">
     <div class="dice-formula">${roll.formula}</div>
     <div class="dice-tooltip" style="display: none;">
@@ -295,9 +281,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
             <span class="part-total">${resultString}</span>
         </header>
         <ol class="dice-rolls">
-            <li class="roll die d100${
-				isSuccess ? " success" : ""
-			}">${dieRoll}</li>
+            <li class="roll die d100${isSuccess ? " success" : ""}">${dieRoll}</li>
         </ol>
     </div>
 </section>

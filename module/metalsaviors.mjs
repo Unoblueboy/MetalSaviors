@@ -4,16 +4,17 @@ import { MetalSaviorsItem } from "./documents/Item/item.mjs";
 import { MetalSaviorsCav } from "./documents/Item/cav.mjs";
 import { MetalSaviorsItemProxy } from "./documents/Item/itemProxy.mjs";
 // Import sheet classes.
-import { MetalSaviorsActorSheet } from "./sheets/actor-sheet.mjs";
-import { MetalSaviorsItemSheet } from "./sheets/item-sheet.mjs";
-import { MetalSaviorsSkillSheet } from "./sheets/skill-sheet.mjs";
-import { MetalSaviorsCavSheet } from "./sheets/cav-sheet.mjs";
+import { MetalSaviorsActorSheet } from "./sheets/actor/actor-sheet.mjs";
+import { MetalSaviorsItemSheet } from "./sheets/item/item-sheet.mjs";
+import { MetalSaviorsSkillSheet } from "./sheets/item/skill-sheet.mjs";
+import { MetalSaviorsCavSheet } from "./sheets/item/cav-sheet.mjs";
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { METALSAVIORS } from "./helpers/config.mjs";
 import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
 import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs";
 import MetalSaviorsCombatant from "./documents/Combat/Combatant.mjs";
+import { MetalSaviorsInfantrySheet } from "./sheets/actor/infantry-sheet.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -45,6 +46,11 @@ Hooks.once("init", async function () {
 	Actors.registerSheet("metalsaviors", MetalSaviorsActorSheet, {
 		makeDefault: true,
 	});
+	Actors.registerSheet("metalsaviors", MetalSaviorsInfantrySheet, {
+		types: ["infantry"],
+		makeDefault: true,
+	});
+
 	Items.unregisterSheet("core", ItemSheet);
 	Items.registerSheet("metalsaviors", MetalSaviorsItemSheet, {
 		makeDefault: true,
