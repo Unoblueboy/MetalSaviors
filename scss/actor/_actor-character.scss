@@ -3,7 +3,8 @@
 }
 
 form.character,
-form.infantry {
+form.infantry,
+form.vehicle {
 	@include flex-container($direction: row);
 }
 
@@ -86,6 +87,10 @@ div.window-app.metalsaviors.sheet.actor {
 
 form.infantry .editor {
 	height: calc(100% - 115px);
+}
+
+form.vehicle .editor {
+	height: calc(100% - 50px);
 }
 
 tr.table-break {

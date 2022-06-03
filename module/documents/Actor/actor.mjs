@@ -169,4 +169,16 @@ export class MetalSaviorsActor extends Actor {
 		}
 		return combatTraining[0].data.data.actionsPerRound || METALSAVIORS.combat.defaultActionsPerRound;
 	}
+
+	getInitiativeRoll({ inCav = false } = {}) {
+		switch (this.type) {
+			case "character":
+				if (!inCav) {
+					return "d20 + @derivedAttributes.initiativeModifier.value";
+				}
+				return "d20 + @derivedAttributes.cavInitiativeModifier.value";
+			default:
+				return "d20";
+		}
+	}
 }

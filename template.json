@@ -98,9 +98,8 @@
 				"max": 40
 			},
 			"weight": "Medium",
-			"Designation": {
-				"Name": "Land",
-				"Notes": "Standard Unit Type"
+			"designation": {
+				"Name": "Land"
 			},
 			"combatReadiness": "Combat",
 			"combatSpeeds": {
@@ -131,7 +130,7 @@
 				}
 			},
 			"traits": {},
-			"description": ""
+			"description": "Insert Notes Here"
 		},
 		"pike": {
 			"msr": 8,

@@ -15,6 +15,7 @@ import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
 import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs";
 import MetalSaviorsCombatant from "./documents/Combat/Combatant.mjs";
 import { MetalSaviorsInfantrySheet } from "./sheets/actor/infantry-sheet.mjs";
+import { MetalSaviorsVehicleSheet } from "./sheets/actor/vehicle-sheet.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -48,6 +49,10 @@ Hooks.once("init", async function () {
 	});
 	Actors.registerSheet("metalsaviors", MetalSaviorsInfantrySheet, {
 		types: ["infantry"],
+		makeDefault: true,
+	});
+	Actors.registerSheet("metalsaviors", MetalSaviorsVehicleSheet, {
+		types: ["vehicle"],
 		makeDefault: true,
 	});
 

@@ -1,0 +1,150 @@
+<form class="{{cssClass}} {{actor.type}}" autocomplete="off">
+    <div class="sidebar">
+        <div>
+            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+        </div>
+    </div>
+    <div class="main-body">
+        <header>
+            <div class="main-body-group">
+                <div class="flexcol flex-1">
+                    <div>Vehicle Name</div>
+                    <div><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></div>
+                </div>
+            </div>
+        </header>
+        <div class="sheet-body">
+            <div class="sheet-body-header">
+                <div class="sheet-body-group">
+                    <div class="flexcol fill-parent">
+                        <div>Durability</div>
+                        <div class="flexrow">
+                            <div><input type="number" name="data.durability.value" value="{{data.durability.value}}"
+                                    data-dtype="Number" /></div>
+                            <div class="flex-0">/</div>
+                            <div><input type="number" name="data.durability.max" value="{{data.durability.max}}"
+                                    data-dtype="Number" /></div>
+                        </div>
+                    </div>
+                    <div class="flexcol fill-parent">
+                        <div>MSR</div>
+                        <div class="exit-submit">
+                            <div><input type="text" name="data.msr" value="{{data.msr}}" data-dtype="Number" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flexcol fill-parent">
+                        <div>Actions/Round</div>
+                        {{#if combatTraining}}
+                            <div><input type="text" value="{{combatTraining.data.actionsPerRound}}" data-dtype="Number"
+                                    disabled="true"> </div>
+                        {{else}}
+                            <div><input type="text" value="No Training" data-dtype="Number" disabled="true"> </div>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="sheet-body-group">
+                    <div class="flexcol fill-parent">
+                        <div>Weight</div>
+                        <div>
+                            <select class="fill-parent" name="data.weight">
+                                {{selectOptions vehicleWeights selected=data.weight nameAttr="name" labelAttr="name"}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flexcol fill-parent">
+                        <div>Designation</div>
+                        <div>
+                            <select class="fill-parent" name="data.designation">
+                                {{selectOptions vehicleDesignations selected=data.designation nameAttr="name" labelAttr="name"}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flexcol fill-parent">
+                        <div>Combat Readiness</div>
+                        <div>
+                            <select class="fill-parent" name="data.combatReadiness">
+                                {{selectOptions vehicleCombatReadiness selected=data.combatReadiness nameAttr="name" labelAttr="name"}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                Combat Speeds
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Hit Bonus</th>
+                        <th>Momentum</th>
+                        <th>Spaces Moved</th>
+                    </tr>
+                    <tr>
+                        <th>Halt</th>
+                        <td><input type="number" name="data.combatSpeeds.halt.hitBonus"
+                                value="{{data.combatSpeeds.halt.hitBonus}}" data-dtype="Number" />
+                        </td>
+                        <td><input type="number" name="data.combatSpeeds.halt.momentum"
+                                value="{{data.combatSpeeds.halt.momentum}}" data-dtype="Number" />
+                        </td>
+                        <td><input type="number" name="data.combatSpeeds.halt.spacesMoved"
+                                value="{{data.combatSpeeds.halt.spacesMoved}}" data-dtype="Number" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Walking</th>
+                        <td><input type="number" name="data.combatSpeeds.walk.hitBonus"
+                                value="{{data.combatSpeeds.walk.hitBonus}}" data-dtype="Number" />
+                        </td>
+                        <td><input type="number" name="data.combatSpeeds.walk.momentum"
+                                value="{{data.combatSpeeds.walk.momentum}}" data-dtype="Number" />
+                        </td>
+                        <td><input type="number" name="data.combatSpeeds.walk.spacesMoved"
+                                value="{{data.combatSpeeds.walk.spacesMoved}}" data-dtype="Number" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Pacing</th>
+                        <td><input type="number" name="data.combatSpeeds.pace.hitBonus"
+                                value="{{data.combatSpeeds.pace.hitBonus}}" data-dtype="Number" />
+                        </td>
+                        <td><input type="number" name="data.combatSpeeds.pace.momentum"
+                                value="{{data.combatSpeeds.pace.momentum}}" data-dtype="Number" />
+                        </td>
+                        <td><input type="number" name="data.combatSpeeds.pace.spacesMoved"
+                                value="{{data.combatSpeeds.pace.spacesMoved}}" data-dtype="Number" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Galloping</th>
+                        <td><input type="number" name="data.combatSpeeds.gallop.hitBonus"
+                                value="{{data.combatSpeeds.gallop.hitBonus}}" data-dtype="Number" />
+                        </td>
+                        <td><input type="number" name="data.combatSpeeds.gallop.momentum"
+                                value="{{data.combatSpeeds.gallop.momentum}}" data-dtype="Number" />
+                        </td>
+                        <td><input type="number" name="data.combatSpeeds.gallop.spacesMoved"
+                                value="{{data.combatSpeeds.gallop.spacesMoved}}" data-dtype="Number" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Sprinting</th>
+                        <td><input type="number" name="data.combatSpeeds.sprint.hitBonus"
+                                value="{{data.combatSpeeds.sprint.hitBonus}}" data-dtype="Number" />
+                        </td>
+                        <td><input type="number" name="data.combatSpeeds.sprint.momentum"
+                                value="{{data.combatSpeeds.sprint.momentum}}" data-dtype="Number" />
+                        </td>
+                        <td><input type="number" name="data.combatSpeeds.sprint.spacesMoved"
+                                value="{{data.combatSpeeds.sprint.spacesMoved}}" data-dtype="Number" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="fill-parent">
+                <h3>Notes</h4>
+                    {{editor content=data.data.description target="data.description" button=true owner=owner editable=editable}}
+            </div>
+        </div>
+    </div>
+</form>

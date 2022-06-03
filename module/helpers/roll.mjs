@@ -2,12 +2,7 @@ export async function rollInitiative(combatant, { inCav = false, bonus = 0, crea
 	const actor = combatant.actor;
 	const rollData = actor.getRollData();
 
-	var rollString;
-	if (!inCav) {
-		rollString = "d20 + @derivedAttributes.initiativeModifier.value";
-	} else {
-		rollString = "d20 + @derivedAttributes.cavInitiativeModifier.value";
-	}
+	let rollString = actor.getInitiativeRoll({ inCav: inCav });
 
 	if (bonus !== 0) {
 		rollString += ` + ${bonus}`;
