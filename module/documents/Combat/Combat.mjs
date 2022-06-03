@@ -63,6 +63,10 @@ export class MetalSaviorsCombat extends Combat {
 			return initDifference;
 		}
 
+		if (a.actor.type !== "character" || b.actor.type !== "character") {
+			return a.tokenId - b.tokenId;
+		}
+
 		// On initiative ties, check finesse
 		const finA = _checkNumeric(a.actor.data.data.attributes.fin.value);
 		const finB = _checkNumeric(b.actor.data.data.attributes.fin.value);

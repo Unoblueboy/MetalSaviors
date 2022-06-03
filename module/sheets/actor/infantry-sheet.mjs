@@ -49,6 +49,32 @@ export class MetalSaviorsInfantrySheet extends ActorSheet {
 			},
 		];
 
+		this._prepareItems(context);
+
 		return context;
+	}
+
+	_prepareItems(context) {
+		// Initialize containers.
+		const gear = [];
+		let combatTraining = null;
+
+		// Iterate through items, allocating to containers
+		for (let i of context.items) {
+			i.img = i.img || DEFAULT_TOKEN;
+			// Append to gear.
+			switch (i.type) {
+				case "item":
+					gear.push(i);
+					break;
+				case "combatTraining":
+					combatTraining = i;
+					break;
+			}
+		}
+
+		// Assign and return
+		context.gear = gear;
+		context.combatTraining = combatTraining;
 	}
 }
