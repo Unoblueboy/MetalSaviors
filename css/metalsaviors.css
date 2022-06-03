@@ -93,7 +93,8 @@
 
 form.character,
 form.infantry,
-form.vehicle {
+form.vehicle,
+form.pike {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -269,6 +270,10 @@ form.infantry .editor {
 }
 
 form.vehicle .editor {
+  height: calc(100% - 50px);
+}
+
+form.pike .editor {
   height: calc(100% - 50px);
 }
 

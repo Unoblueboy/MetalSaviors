@@ -16,6 +16,7 @@ import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs"
 import MetalSaviorsCombatant from "./documents/Combat/Combatant.mjs";
 import { MetalSaviorsInfantrySheet } from "./sheets/actor/infantry-sheet.mjs";
 import { MetalSaviorsVehicleSheet } from "./sheets/actor/vehicle-sheet.mjs";
+import { MetalSaviorsPikeSheet } from "./sheets/actor/pike-sheet.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -53,6 +54,10 @@ Hooks.once("init", async function () {
 	});
 	Actors.registerSheet("metalsaviors", MetalSaviorsVehicleSheet, {
 		types: ["vehicle"],
+		makeDefault: true,
+	});
+	Actors.registerSheet("metalsaviors", MetalSaviorsPikeSheet, {
+		types: ["pike"],
 		makeDefault: true,
 	});
 
