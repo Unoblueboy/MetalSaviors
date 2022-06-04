@@ -1,0 +1,58 @@
+{{log "Weapon Sheet" this}}
+{{log (lookup tagTypes selectedTagTypeKey)}}
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <div class="header-fields">
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+        </div>
+    </header>
+    <hr />
+    <div>
+        <select name="data.type">
+            {{selectOptions weaponTypes selected=data.type}}
+        </select>
+    </div>
+    {{#if (eq data.type "melee")}}
+        {{> "systems/metalsaviors/templates/item/weapon/parts/melee-weapon-sheet.hbs"}}
+    {{else if (eq data.type "ranged")}}
+    {{/if}}
+    <div>
+        <h3>Tags</h3>
+        <table>
+            <tr>
+                <th>Tag</th>
+                <th></th>
+                <th></th>
+            </tr>
+            {{#each data.tags as |value name|}}
+                <tr>
+                    <td>{{name~}}&nbsp;{{value}}</td>
+                    <td></td>
+                    <td class="delete-weapon-tag" data-tag-name="{{name}}"><a><i class="fas fa-trash"></i></a></td>
+                </tr>
+            {{/each}}
+            {{#with (lookup tagTypes selectedTagTypeKey) as |selectedTagInfo|}}
+                <tr>
+                    <td class="add-weapon-tag-name">
+                        <div class="flexrow">
+                            <select>
+                                {{selectOptions ../tagTypes selected=../selectedTagTypeKey labelAttr="name"}}
+                            </select>
+                            {{#if selectedTagInfo.hasCustomName}}
+                                <input type="text" value="{{../selectedTagTypeKey}}" />
+                            {{/if}}
+                        </div>
+                    </td>
+                    <td class="add-weapon-tag-value">
+                        {{#if selectedTagInfo.hasValue}}
+                            <input type="text" />
+                        {{else}}
+                            <input type="hidden" />
+                        {{/if}}
+                    </td>
+                    <td class="add-weapon-tag"><a><i class="fas fa-plus"></i></a></td>
+                </tr>
+            {{/with}}
+        </table>
+    </div>
+</form>

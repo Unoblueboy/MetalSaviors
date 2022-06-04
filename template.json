@@ -168,7 +168,8 @@
 			"combatTraining",
 			"weaponProficiency",
 			"pilotLicense",
-			"cav"
+			"cav",
+			"weapon"
 		],
 		"templates": {
 			"base": {
@@ -294,6 +295,12 @@
 			"requiredLicense": null,
 			"cavUnitPiloting": {},
 			"traits": {}
+		},
+		"weapon": {
+			"type": "melee",
+			"damageRoll": "d6",
+			"toHitRoll": "d20",
+			"tags": {}
 		}
 	}
 }

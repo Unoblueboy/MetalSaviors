@@ -1,4 +1,4 @@
-import MetalSaviorsCombatant from "../Combatant.mjs";
+import { MetalSaviorsCombatant } from "../Combatant.mjs";
 
 export class MetalSaviorsCombatDetailsDialog extends Dialog {
 	// TODO: Consider whether combatant in or out of CAV.

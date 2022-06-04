@@ -1,6 +1,7 @@
 import { MetalSaviorsItem } from "./item.mjs";
 import { MetalSaviorsSkill } from "./skill.mjs";
 import { MetalSaviorsCav } from "./cav.mjs";
+import { MetalSaviorsWeaponProxy } from "./weapons/weaponProxy.mjs";
 
 //Provide a type string to class object mapping to keep our code clean
 const itemMappings = {
@@ -12,6 +13,7 @@ const itemMappings = {
 	weaponProficiency: MetalSaviorsSkill,
 	pilotLicense: MetalSaviorsSkill,
 	cav: MetalSaviorsCav,
+	weapon: MetalSaviorsWeaponProxy,
 };
 
 export const MetalSaviorsItemProxy = new Proxy(function () {}, {
@@ -21,9 +23,7 @@ export const MetalSaviorsItemProxy = new Proxy(function () {}, {
 
 		//Handle missing mapping entries
 		if (!itemMappings.hasOwnProperty(data.type))
-			throw new Error(
-				"Unsupported Entity type for create(): " + data.type
-			);
+			throw new Error("Unsupported Entity type for create(): " + data.type);
 
 		//Return the appropriate, actual object from the right class
 		return new itemMappings[data.type](...args);
@@ -38,15 +38,11 @@ export const MetalSaviorsItemProxy = new Proxy(function () {}, {
 				return function (data, options) {
 					if (data.constructor === Array) {
 						//Array of data, this happens when creating Actors imported from a compendium
-						return data.map((i) =>
-							itemMappings[i.type].create(i, options)
-						);
+						return data.map((i) => itemMappings[i.type].create(i, options));
 					}
 
 					if (!itemMappings.hasOwnProperty(data.type))
-						throw new Error(
-							"Unsupported Entity type for create(): " + data.type
-						);
+						throw new Error("Unsupported Entity type for create(): " + data.type);
 
 					return itemMappings[data.type].create(data, options);
 				};
@@ -54,9 +50,7 @@ export const MetalSaviorsItemProxy = new Proxy(function () {}, {
 			case Symbol.hasInstance:
 				//Applying the "instanceof" operator on the instance object
 				return function (instance) {
-					return Object.values(itemMappings).some(
-						(i) => instance instanceof i
-					);
+					return Object.values(itemMappings).some((i) => instance instanceof i);
 				};
 
 			default:
