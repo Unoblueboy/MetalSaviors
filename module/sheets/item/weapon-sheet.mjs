@@ -5,6 +5,14 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 		this.selectedTagTypeKey = "akimbo";
 	}
 
+	static get defaultOptions() {
+		return mergeObject(super.defaultOptions, {
+			classes: ["metalsaviors", "sheet", "item"],
+			width: 500,
+			height: 500,
+		});
+	}
+
 	get template() {
 		return "systems/metalsaviors/templates/item/weapon/weapon-sheet.hbs";
 	}
@@ -51,6 +59,8 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 			hasCustomName: true,
 		},
 	};
+	fireRateTypes = [{ name: "Automatic" }, { name: "Burst" }, { name: "Single" }, { name: "Special" }];
+	variantTypes = [{ name: "Charge" }, { name: "Kinetic" }, { name: "Laser" }];
 
 	getData() {
 		const context = super.getData();
@@ -60,6 +70,8 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 		context.weaponTypes = this.weaponTypes;
 		context.tagTypes = this.tagTypes;
 		context.selectedTagTypeKey = this.selectedTagTypeKey;
+		context.fireRateTypes = this.fireRateTypes;
+		context.variantTypes = this.variantTypes;
 
 		return context;
 	}

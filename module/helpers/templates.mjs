@@ -13,5 +13,6 @@ export const preloadHandlebarsTemplates = async function () {
 		"systems/metalsaviors/templates/actor/parts/actor-pilot.hbs",
 		// Item Partials.
 		"systems/metalsaviors/templates/item/weapon/parts/melee-weapon-sheet.hbs",
+		"systems/metalsaviors/templates/item/weapon/parts/ranged-weapon-sheet.hbs",
 	]);
 };

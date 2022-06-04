@@ -1,6 +1,4 @@
-{{log "Weapon Sheet" this}}
-{{log (lookup tagTypes selectedTagTypeKey)}}
-<form class="{{cssClass}}" autocomplete="off">
+<form class="{{cssClass}} {{item.type}}" autocomplete="off">
     <header class="sheet-header">
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
@@ -15,6 +13,7 @@
     {{#if (eq data.type "melee")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/melee-weapon-sheet.hbs"}}
     {{else if (eq data.type "ranged")}}
+        {{> "systems/metalsaviors/templates/item/weapon/parts/ranged-weapon-sheet.hbs"}}
     {{/if}}
     <div>
         <h3>Tags</h3>
@@ -54,5 +53,8 @@
                 </tr>
             {{/with}}
         </table>
+    </div>
+    <div class="fill-parent">
+        {{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
     </div>
 </form>

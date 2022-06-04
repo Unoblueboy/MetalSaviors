@@ -1,0 +1,28 @@
+<table>
+    <tr>
+        <td>Damage Roll</td>
+        <td>To Hit Roll</td>
+        <td>Fire Rate</td>
+        <td>Range</td>
+        <td>Variant</td>
+    </tr>
+    <tr>
+        <td><input type="text" name="data.damageRoll" value="{{data.damageRoll}}"></td>
+        <td><input type="text" name="data.toHitRoll" value="{{data.toHitRoll}}"></td>
+        <td>
+            <select name="data.fireRate" multiple>
+                {{selectOptions fireRateTypes selected=data.fireRate nameAttr="name" labelAttr="name"}}
+            </select>
+        </td>
+        <td><input type="number" name="data.range" value="{{data.range}}"></td>
+        <td>
+            <select name="data.variant">
+                {{selectOptions variantTypes selected=data.variant nameAttr="name" labelAttr="name"}}
+            </select>
+        </td>
+    </tr>
+</table>
+<div>
+    <h3>WeaponProficiency</h3>
+    <div><input type="text" name="data.weaponProficiency" value="{{data.weaponProficiency}}"></div>
+</div>

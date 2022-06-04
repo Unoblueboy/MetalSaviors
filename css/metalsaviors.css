@@ -269,11 +269,12 @@ form.infantry .editor {
   height: calc(100% - 115px);
 }
 
-form.vehicle .editor {
+form.vehicle .editor,
+form.pike .editor {
   height: calc(100% - 50px);
 }
 
-form.pike .editor {
+form.weapon .editor {
   height: calc(100% - 50px);
 }
 
