@@ -181,4 +181,8 @@ export class MetalSaviorsActor extends Actor {
 				return "d20";
 		}
 	}
+
+	getCavs() {
+		return this.itemTypes.cav;
+	}
 }

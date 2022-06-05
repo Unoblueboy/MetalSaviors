@@ -13,7 +13,11 @@
             </td>
             <td><input type="text" name="data.rolls.{{name}}.toHitRoll" value="{{roll.toHitRoll}}" data-dtype="Dice">
             </td>
-            <td class="delete-weapon-roll" data-name="{{name}}"><a><i class="fas fa-trash"></i></a></td>
+            {{#if (eq name "Normal") }}
+                <td></td>
+            {{else}}
+                <td class="delete-weapon-roll" data-name="{{name}}"><a><i class="fas fa-trash"></i></a></td>
+            {{/if}}
         </tr>
     {{/each}}
     <tr>

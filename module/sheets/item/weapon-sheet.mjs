@@ -73,6 +73,22 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 		context.fireRateTypes = this.fireRateTypes;
 		context.variantTypes = this.variantTypes;
 
+		if (this.item.actor) {
+			const actor = this.item.actor;
+			context.possibleOwners = {
+				[`${actor.id}`]: {
+					type: "pilot",
+					name: actor.name,
+				},
+			};
+			for (const cav of actor.getCavs()) {
+				context.possibleOwners[cav.id] = {
+					type: "cav",
+					name: cav.name,
+				};
+			}
+			context.owner = this.item.getOwner();
+		}
 		return context;
 	}
 
@@ -152,6 +168,12 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 			this.item.update({
 				[`data.rolls.-=${name}`]: null,
 			});
+		});
+
+		html.find(".owner-select").change((ev) => {
+			const curTarget = $(ev.target);
+			const value = curTarget.val();
+			this.item.setOwner(value);
 		});
 	}
 

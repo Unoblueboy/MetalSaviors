@@ -11,7 +11,11 @@
             <td><input type="text" value="{{name}}" disabled="true"></td>
             <td><input type="text" name="data.rolls.{{name}}.damageRoll" value="{{roll.damageRoll}}"></td>
             <td><input type="text" name="data.rolls.{{name}}.toHitRoll" value="{{roll.toHitRoll}}"></td>
-            <td class="delete-weapon-roll" data-name="{{name}}"><a><i class="fas fa-trash"></i></a></td>
+            {{#if (eq name "Normal") }}
+                <td></td>
+            {{else}}
+                <td class="delete-weapon-roll" data-name="{{name}}"><a><i class="fas fa-trash"></i></a></td>
+            {{/if}}
         </tr>
     {{/each}}
     <tr>

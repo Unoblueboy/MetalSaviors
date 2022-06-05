@@ -107,6 +107,10 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		const pilotLicenses = {};
 		const cavs = [];
 		let combatTraining = null;
+		const weapons = {
+			pilot: [],
+			cav: Object.fromEntries(this.actor.getCavs().map((cav) => [cav.id, []])),
+		};
 
 		// Iterate through items, allocating to containers
 		for (let i of context.items) {
@@ -137,6 +141,20 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 				case "cav":
 					cavs.push(i);
 					break;
+				case "weapon":
+					let weaponList;
+
+					const item = this.actor.data.items.get(i._id);
+					const owner = item.getFlag("metalsaviors", "owner");
+
+					if (!owner) {
+						break;
+					}
+
+					weaponList = owner.type === "cav" ? weapons.cav[owner.id] : weapons[owner.type];
+
+					weaponList.push(i);
+					break;
 			}
 		}
 
@@ -147,6 +165,9 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		context.combatTraining = combatTraining;
 		context.pilotLicenses = pilotLicenses;
 		context.cavs = cavs;
+		context.weapons = weapons;
+
+		console.log(context);
 	}
 
 	/* -------------------------------------------- */
@@ -164,7 +185,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 
 		// Delete Inventory Item
 		html.find(".item-delete").click((ev) => {
-			const li = $(ev.currentTarget).parents(".item");
+			const li = $(ev.currentTarget).closest(".item");
 			const item = this.actor.items.get(li.data("itemId"));
 			item.delete();
 			li.slideUp(200, () => this.render(false));
