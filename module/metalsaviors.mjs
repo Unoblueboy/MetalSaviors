@@ -45,6 +45,14 @@ Hooks.once("init", async function () {
 	CONFIG.ui.combat = MetalSaviorsCombatTracker;
 	CONFIG.time.roundTime = 10;
 
+	// Add new data-dtypes
+	window.Dice = (value) => {
+		if (Roll.validate(value)) {
+			return value;
+		}
+		return null;
+	};
+
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
 	Actors.registerSheet("metalsaviors", MetalSaviorsActorSheet, {

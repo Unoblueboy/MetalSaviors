@@ -299,8 +299,7 @@
 		"weapon": {
 			"templates": ["base"],
 			"type": "melee",
-			"damageRoll": "d6",
-			"toHitRoll": "d20",
+			"rolls": { "Normal": { "damageRoll": "d6", "toHitRoll": "d20" } },
 			"weaponProficiency": "",
 			"fireRate": [],
 			"range": 1,

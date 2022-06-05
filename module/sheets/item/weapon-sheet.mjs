@@ -79,29 +79,28 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 	activateListeners(html) {
 		super.activateListeners(html);
 
-		html.find(".add-weapon-tag-name select").change((ev) => {
+		html.find("select.add-weapon-tag-name").change((ev) => {
 			const curTarget = $(ev.target);
 			const value = curTarget.val();
 			this.selectedTagTypeKey = value;
 			this.render(true);
 		});
-
 		html.find(".add-weapon-tag").click((ev) => {
 			const curTarget = $(ev.target).closest(".add-weapon-tag");
-			const addWeaponTagNameEle = $(curTarget).siblings(".add-weapon-tag-name");
-			const newtagKey = addWeaponTagNameEle.find("select").first().val();
-			const newValue = $(curTarget).siblings(".add-weapon-tag-value").children("input").first().val();
+			const addWeaponTagInfoEle = $(curTarget).siblings(".add-weapon-tag-info");
+			const newtagKey = addWeaponTagInfoEle.find("select.add-weapon-tag-name").first().val();
+			const newValue = addWeaponTagInfoEle.find("input.add-weapon-tag-value").first().val();
 
 			if (!newtagKey) {
 				return;
 			}
 
 			const newTagName = this.tagTypes[newtagKey].hasCustomName
-				? addWeaponTagNameEle.find("input").first().val()
+				? this._getCustomTagName(addWeaponTagInfoEle)
 				: this.tagTypes[newtagKey].name;
-
 			const tags = Object.keys(this.item.data.data.tags);
-			if (newTagName && tags.includes(newTagName)) {
+
+			if (!newTagName || tags.includes(newTagName)) {
 				return;
 			}
 
@@ -116,11 +115,49 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 				[`data.tags.-=${tagName}`]: null,
 			});
 		});
+
+		html.find(".add-weapon-roll").click((ev) => {
+			const curTarget = $(ev.target).closest(".add-weapon-roll");
+			const newRollName = $(curTarget).siblings(".add-weapon-roll-name").children("input").first().val();
+			const newDamageRoll = $(curTarget).siblings(".add-weapon-damage-roll").children("input").first().val();
+			const newToHitRoll = $(curTarget).siblings(".add-weapon-to-hit-roll").children("input").first().val();
+
+			if (!newRollName) {
+				return;
+			}
+
+			if (!Roll.validate(newDamageRoll)) {
+				return;
+			}
+
+			if (!Roll.validate(newToHitRoll)) {
+				return;
+			}
+
+			const rolls = Object.keys(this.item.data.data.rolls);
+			if (rolls.includes(newRollName)) {
+				return;
+			}
+
+			this.item.update({
+				[`data.rolls.${newRollName}`]: {
+					damageRoll: newDamageRoll,
+					toHitRoll: newToHitRoll,
+				},
+			});
+		});
+		html.find(".delete-weapon-roll").click((ev) => {
+			const curTarget = $(ev.target).closest(".delete-weapon-roll");
+			const name = curTarget.data("name");
+			this.item.update({
+				[`data.rolls.-=${name}`]: null,
+			});
+		});
 	}
 
-	_getCustomTagName(addWeaponTagNameEle) {
-		const newTagName = addWeaponTagNameEle.children("input").first().val();
-		if (Object.values(tagTypes).some((x) => x.name.toLowerCase() === newTagName.toLowerCase())) {
+	_getCustomTagName(addWeaponTagInfoEle) {
+		const newTagName = addWeaponTagInfoEle.find("input.add-weapon-tag-name").first().val();
+		if (Object.values(this.tagTypes).some((x) => x.name.toLowerCase() === newTagName.toLowerCase())) {
 			return null;
 		}
 		return newTagName;
