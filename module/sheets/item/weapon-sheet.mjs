@@ -90,7 +90,6 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 			context.weaponOwner = this.item.getOwner();
 		}
 
-		console.log("Weapon Sheet", this.item, context);
 		return context;
 	}
 

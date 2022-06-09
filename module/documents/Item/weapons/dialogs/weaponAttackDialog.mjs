@@ -94,11 +94,3 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 		};
 	}
 }
-
-/**{
-		weaponToHitBonus = null,
-		meleeToHitBonus = null,
-		otherToHitBonus = null,
-		weaponDamageRoll = "0",
-		otherDamageBonuses = null,
-	} */
