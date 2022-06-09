@@ -1,10 +1,12 @@
+import { rollAttack } from "../../../helpers/roll.mjs";
+
 export class MetalSaviorsWeapon extends Item {
 	getDamageRoll() {
 		throw new Error("The method getDamageRoll has not been implemented");
 	}
 
-	getToHitRoll() {
-		throw new Error("The method getToHitRoll has not been implemented");
+	gettoHitBonus() {
+		throw new Error("The method gettoHitBonus has not been implemented");
 	}
 
 	_onCreate(data, options, userId) {
@@ -31,5 +33,27 @@ export class MetalSaviorsWeapon extends Item {
 		}
 
 		this.setFlag("metalsaviors", "owner", { type: ownerId === this.actor.id ? "pilot" : "cav", id: ownerId });
+	}
+
+	getAttackRollData(name) {
+		return this.data.data.rolls[name] || {};
+	}
+
+	getAllAttackRollData() {
+		return this.data.data.rolls;
+	}
+
+	async getWeaponData() {
+		throw new Error("The method getWeaponType has not been implemented");
+	}
+
+	async roll() {
+		const data = await this.getWeaponData();
+
+		if (data.cancelled) {
+			return;
+		}
+
+		rollAttack(this.actor, data);
 	}
 }

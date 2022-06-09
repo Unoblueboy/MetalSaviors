@@ -3,11 +3,11 @@
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
         </div>
-        {{#if owner}}
+        {{#if weaponOwner}}
             <div class="header-fields">
                 <label>Owner</label>
                 <select class="owner-select">
-                    {{selectOptions possibleOwners selected=owner.id labelAttr = "name"}}
+                    {{selectOptions possibleOwners selected=weaponOwner.id labelAttr = "name"}}
                 </select>
             </div>
         {{/if}}

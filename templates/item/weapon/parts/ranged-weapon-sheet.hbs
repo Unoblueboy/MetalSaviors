@@ -3,7 +3,7 @@
     <tr>
         <td>Name</td>
         <td>Damage Roll</td>
-        <td>To Hit Roll</td>
+        <td>To Hit Bonus</td>
         <td></td>
     </tr>
     {{#each data.rolls as |roll name|}}
@@ -11,7 +11,7 @@
             <td><input type="text" value="{{name}}" disabled="true"></td>
             <td><input type="text" name="data.rolls.{{name}}.damageRoll" value="{{roll.damageRoll}}" data-dtype="Dice">
             </td>
-            <td><input type="text" name="data.rolls.{{name}}.toHitRoll" value="{{roll.toHitRoll}}" data-dtype="Dice">
+            <td><input type="text" name="data.rolls.{{name}}.toHitBonus" value="{{roll.toHitBonus}}" data-dtype="Dice">
             </td>
             {{#if (eq name "Normal") }}
                 <td></td>

@@ -87,8 +87,10 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 					name: cav.name,
 				};
 			}
-			context.owner = this.item.getOwner();
+			context.weaponOwner = this.item.getOwner();
 		}
+
+		console.log("Weapon Sheet", this.item, context);
 		return context;
 	}
 
@@ -136,7 +138,7 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 			const curTarget = $(ev.target).closest(".add-weapon-roll");
 			const newRollName = $(curTarget).siblings(".add-weapon-roll-name").children("input").first().val();
 			const newDamageRoll = $(curTarget).siblings(".add-weapon-damage-roll").children("input").first().val();
-			const newToHitRoll = $(curTarget).siblings(".add-weapon-to-hit-roll").children("input").first().val();
+			const newToHitBonus = $(curTarget).siblings(".add-weapon-to-hit-roll").children("input").first().val();
 
 			if (!newRollName) {
 				return;
@@ -146,7 +148,7 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 				return;
 			}
 
-			if (!Roll.validate(newToHitRoll)) {
+			if (!Roll.validate(newToHitBonus)) {
 				return;
 			}
 
@@ -158,7 +160,7 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 			this.item.update({
 				[`data.rolls.${newRollName}`]: {
 					damageRoll: newDamageRoll,
-					toHitRoll: newToHitRoll,
+					toHitBonus: newToHitBonus,
 				},
 			});
 		});

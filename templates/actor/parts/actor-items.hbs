@@ -30,7 +30,7 @@
             <tr class="item items-header">
                 <th class="item-name">Name</th>
                 <th class="item-formula">Damage Roll</th>
-                <th class="item-formula">To Hit Roll</th>
+                <th class="item-formula">To Hit Bonus</th>
                 <th></th>
             </tr>
             {{#each weapons as |weapon id|}}
@@ -39,7 +39,7 @@
                         <h4><a class="rollable" data-roll-type="item">{{weapon.name}}</a></h4>
                     </td>
                     <td class="item-prop">{{weapon.data.rolls.Normal.damageRoll}}</td>
-                    <td class="item-prop">{{weapon.data.rolls.Normal.toHitRoll}}</td>
+                    <td class="item-prop">{{weapon.data.rolls.Normal.toHitBonus}}</td>
                     <td>
                         <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
