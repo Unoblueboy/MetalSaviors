@@ -17,22 +17,12 @@ export async function rollInitiative(combatant, { inCav = false, bonus = 0, crea
 
 export async function rollAttack(
 	actor = null,
-	{
-		weaponToHitBonus = null,
-		meleeToHitBonus = null,
-		otherToHitBonus = null,
-		weaponDamageRoll = "0",
-		otherDamageBonuses = null,
-	} = {}
+	{ weaponToHitBonus = null, otherToHitBonus = null, weaponDamageRoll = "0", otherDamageBonuses = null } = {}
 ) {
 	let toHitRollString = "d20";
 
 	if (weaponToHitBonus) {
 		toHitRollString += `+${weaponToHitBonus}`;
-	}
-
-	if (meleeToHitBonus) {
-		toHitRollString += `+${meleeToHitBonus}`;
 	}
 
 	if (otherToHitBonus) {
