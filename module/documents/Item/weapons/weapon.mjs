@@ -1,12 +1,9 @@
 import { rollAttack } from "../../../helpers/roll.mjs";
+import { MetalSaviorsWeaponAttackDialog } from "./dialogs/weaponAttackDialog.mjs";
 
 export class MetalSaviorsWeapon extends Item {
-	getDamageRoll() {
-		throw new Error("The method getDamageRoll has not been implemented");
-	}
-
-	gettoHitBonus() {
-		throw new Error("The method gettoHitBonus has not been implemented");
+	get weaponType() {
+		return this.data.data.type;
 	}
 
 	_onCreate(data, options, userId) {
@@ -44,7 +41,17 @@ export class MetalSaviorsWeapon extends Item {
 	}
 
 	async getWeaponData() {
-		throw new Error("The method getWeaponType has not been implemented");
+		switch (this.weaponType) {
+			case "melee":
+			case "ranged":
+				return await MetalSaviorsWeaponAttackDialog.getAttackRollData(this);
+			case "missile":
+				return await MetalSaviorsWeaponAttackDialog.getAttackRollData(this, {
+					includeToHit: false,
+				});
+			default:
+				return {};
+		}
 	}
 
 	async roll() {

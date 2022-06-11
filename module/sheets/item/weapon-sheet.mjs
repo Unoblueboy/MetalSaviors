@@ -17,7 +17,7 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 		return "systems/metalsaviors/templates/item/weapon/weapon-sheet.hbs";
 	}
 
-	weaponTypes = { melee: "Melee", ranged: "Ranged" };
+	weaponTypes = { melee: "Melee", ranged: "Ranged", missile: "Missile" };
 	tagTypes = {
 		akimbo: { name: "Akimbo" },
 		ammunition: {

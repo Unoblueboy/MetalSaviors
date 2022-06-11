@@ -14,5 +14,6 @@ export const preloadHandlebarsTemplates = async function () {
 		// Item Partials.
 		"systems/metalsaviors/templates/item/weapon/parts/melee-weapon-sheet.hbs",
 		"systems/metalsaviors/templates/item/weapon/parts/ranged-weapon-sheet.hbs",
+		"systems/metalsaviors/templates/item/weapon/parts/missile-weapon-sheet.hbs",
 	]);
 };

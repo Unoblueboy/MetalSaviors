@@ -15,6 +15,8 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 
 		this.weapon = data.weapon;
 		this.rollData = this.weapon.getAllAttackRollData();
+		this.includeToHit = data.includeToHit;
+		this.includeDamage = data.includeDamage;
 	}
 
 	static get defaultOptions() {
@@ -27,13 +29,18 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 		return this.data.title || "Roll Attack";
 	}
 
-	static async getAttackRollData(weapon) {
+	static async getAttackRollData(weapon, { includeToHit = true, includeDamage = true } = {}) {
 		return new Promise((resolve) => {
 			new MetalSaviorsWeaponAttackDialog(
 				{
-					normalCallback: (html) => resolve(this._processAttackRollData(html[0].querySelector("form"))),
+					normalCallback: (html) =>
+						resolve(
+							this._processAttackRollData(html[0].querySelector("form"), includeToHit, includeDamage)
+						),
 					cancelCallback: (html) => resolve({ cancelled: true }),
 					weapon: weapon,
+					includeToHit: includeToHit,
+					includeDamage: includeDamage,
 				},
 				null
 			).render(true);
@@ -48,6 +55,9 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 		}
 		rollData[""] = { label: "Other" };
 		context.rollData = rollData;
+
+		context.includeToHit = this.includeToHit;
+		context.includeDamage = this.includeDamage;
 
 		return context;
 	}
@@ -85,12 +95,18 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 		});
 	}
 
-	static _processAttackRollData(form) {
-		return {
-			weaponToHitBonus: form.toHitBonus.value || null,
-			otherToHitBonus: form.othertoHitBonuses.value || null,
-			weaponDamageRoll: form.damageRoll.value || "0",
-			otherDamageBonuses: form.otherDamageBonuses.value || null,
-		};
+	static _processAttackRollData(form, includeToHit, includeDamage) {
+		const data = {};
+		data.includeToHit = includeToHit;
+		if (includeToHit) {
+			data.weaponToHitBonus = form.toHitBonus.value || null;
+			data.otherToHitBonus = form.othertoHitBonuses.value || null;
+		}
+		data.includeDamage = includeDamage;
+		if (includeDamage) {
+			data.weaponDamageRoll = form.damageRoll.value || "0";
+			data.otherDamageBonuses = form.otherDamageBonuses.value || null;
+		}
+		return data;
 	}
 }

@@ -22,42 +22,46 @@
         {{> "systems/metalsaviors/templates/item/weapon/parts/melee-weapon-sheet.hbs"}}
     {{else if (eq data.type "ranged")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/ranged-weapon-sheet.hbs"}}
+    {{else if (eq data.type "missile")}}
+        {{> "systems/metalsaviors/templates/item/weapon/parts/missile-weapon-sheet.hbs"}}
     {{/if}}
-    <div>
-        <h3>Tags</h3>
-        <table>
-            <tr>
-                <th>Tag</th>
-                <th></th>
-            </tr>
-            {{#each data.tags as |value name|}}
+    {{#if (ne data.type "missile")}}
+        <div>
+            <h3>Tags</h3>
+            <table>
                 <tr>
-                    <td>{{name~}}&nbsp;{{value}}</td>
-                    <td class="delete-weapon-tag" data-tag-name="{{name}}"><a><i class="fas fa-trash"></i></a></td>
+                    <th>Tag</th>
+                    <th></th>
                 </tr>
-            {{/each}}
-            {{#with (lookup tagTypes selectedTagTypeKey) as |selectedTagInfo|}}
-                <tr>
-                    <td class="add-weapon-tag-info">
-                        <div class="flexrow">
-                            <select class="add-weapon-tag-name">
-                                {{selectOptions ../tagTypes selected=../selectedTagTypeKey labelAttr="name"}}
-                            </select>
-                            {{#if selectedTagInfo.hasCustomName}}
-                                <input class="add-weapon-tag-name" type="text" placeholder="Name" />
-                            {{/if}}
-                            {{#if selectedTagInfo.hasValue}}
-                                <input class="add-weapon-tag-value" type="text" placeholder="Value" />
-                            {{else}}
-                                <input class="add-weapon-tag-value" type="hidden" />
-                            {{/if}}
-                        </div>
-                    </td>
-                    <td class="add-weapon-tag"><a><i class="fas fa-plus"></i></a></td>
-                </tr>
-            {{/with}}
-        </table>
-    </div>
+                {{#each data.tags as |value name|}}
+                    <tr>
+                        <td>{{name~}}&nbsp;{{value}}</td>
+                        <td class="delete-weapon-tag" data-tag-name="{{name}}"><a><i class="fas fa-trash"></i></a></td>
+                    </tr>
+                {{/each}}
+                {{#with (lookup tagTypes selectedTagTypeKey) as |selectedTagInfo|}}
+                    <tr>
+                        <td class="add-weapon-tag-info">
+                            <div class="flexrow">
+                                <select class="add-weapon-tag-name">
+                                    {{selectOptions ../tagTypes selected=../selectedTagTypeKey labelAttr="name"}}
+                                </select>
+                                {{#if selectedTagInfo.hasCustomName}}
+                                    <input class="add-weapon-tag-name" type="text" placeholder="Name" />
+                                {{/if}}
+                                {{#if selectedTagInfo.hasValue}}
+                                    <input class="add-weapon-tag-value" type="text" placeholder="Value" />
+                                {{else}}
+                                    <input class="add-weapon-tag-value" type="hidden" />
+                                {{/if}}
+                            </div>
+                        </td>
+                        <td class="add-weapon-tag"><a><i class="fas fa-plus"></i></a></td>
+                    </tr>
+                {{/with}}
+            </table>
+        </div>
+    {{/if}}
     <div class="fill-parent">
         {{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
     </div>

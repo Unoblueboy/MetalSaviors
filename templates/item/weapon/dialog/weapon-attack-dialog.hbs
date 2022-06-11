@@ -6,26 +6,30 @@
                 {{selectOptions rollData labelAttr="label"}}
             </select>
         </div>
-        <hr>
-        <div class="form-group">
-            <label>Weapon To Hit Bonus</label>
-            <input type="text" class="to-hit-bonus-input" name="toHitBonus" value="{{rollData.Normal.toHitBonus}}"
-                disabled="true" data-dtype="Dice" />
-        </div>
-        <div class="form-group">
-            <label>Other To Hit bonuses</label>
-            <input type="text" name="othertoHitBonuses" data-dtype="Dice" />
-        </div>
-        <hr>
-        <div class="form-group">
-            <label>Weapon Damage Roll</label>
-            <input type="text" class="damage-roll-input" name="damageRoll" value="{{rollData.Normal.damageRoll}}"
-                disabled="true" data-dtype="Dice" />
-        </div>
-        <div class="form-group">
-            <label>Other Damage bonuses</label>
-            <input type="text" name="otherDamageBonuses" data-dtype="Dice" />
-        </div>
+        {{#if includeToHit}}
+            <hr>
+            <div class="form-group">
+                <label>Weapon To Hit Bonus</label>
+                <input type="text" class="to-hit-bonus-input" name="toHitBonus" value="{{rollData.Normal.toHitBonus}}"
+                    disabled="true" data-dtype="Dice" />
+            </div>
+            <div class="form-group">
+                <label>Other To Hit bonuses</label>
+                <input type="text" name="othertoHitBonuses" data-dtype="Dice" />
+            </div>
+        {{/if}}
+        {{#if includeDamage}}
+            <hr>
+            <div class="form-group">
+                <label>Weapon Damage Roll</label>
+                <input type="text" class="damage-roll-input" name="damageRoll" value="{{rollData.Normal.damageRoll}}"
+                    disabled="true" data-dtype="Dice" />
+            </div>
+            <div class="form-group">
+                <label>Other Damage bonuses</label>
+                <input type="text" name="otherDamageBonuses" data-dtype="Dice" />
+            </div>
+        {{/if}}
     </form>
 </div>
 <div class="dialog-buttons">
