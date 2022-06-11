@@ -5,7 +5,8 @@
 form.character,
 form.infantry,
 form.vehicle,
-form.pike {
+form.pike,
+form.drone {
 	@include flex-container($direction: row);
 }
 
@@ -93,6 +94,10 @@ form.infantry .editor {
 form.vehicle .editor,
 form.pike .editor {
 	height: calc(100% - 50px);
+}
+
+form.drone .editor {
+	height: calc(100% - 150px);
 }
 
 form.weapon .editor {

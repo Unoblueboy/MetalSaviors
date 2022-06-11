@@ -1,0 +1,80 @@
+<form class="{{cssClass}} {{actor.type}}" autocomplete="off">
+    <div class="sidebar">
+        <div>
+            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+        </div>
+    </div>
+    <div class="main-body">
+        <header>
+            <div class="main-body-group">
+                <div class="flexcol flex-1">
+                    <div>Drone Name</div>
+                    <div><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></div>
+                </div>
+            </div>
+            <div class="main-body-group">
+                <div class="flexcol flex-1">
+                    <div>Health</div>
+                    <div class="flexrow">
+                        <input class="flex-1" name="data.health.value" type="text" value="{{data.health.value}}"
+                            placeholder="Name" />
+                        <div class="flex-0">/</div>
+                        <input class="flex-1" name="data.health.max" type="text" value="{{data.health.max}}"
+                            placeholder="Name" />
+                    </div>
+                </div>
+                <div class="flexcol flex-1">
+                    <div>MSR</div>
+                    <div><input name="data.msr" type="text" value="{{data.msr}}" placeholder="MSR" /></div>
+                </div>
+                <div class="flexcol flex-1">
+                    <div>Operation Range</div>
+                    <div><input name="data.range" type="text" value="{{data.range}}" placeholder="Range" /></div>
+                </div>
+            </div>
+        </header>
+        <div class="sheet-body">
+            <div class="flexrow fill-parent">
+                <div class="column1">
+                    <div class="fill-parent">
+                        <h3>Effect</h3>
+                        {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+                    </div>
+                </div>
+                <div class="column2">
+                    <div class="weapons-header">
+                        <h3>Weapons</h3>
+                    </div>
+                    <div class="weapons">
+                        {{#if (gt (len weapons) 0)}}
+                            <table class="items-table">
+                                <tr class="item items-header">
+                                    <th class="item-name">Name</th>
+                                    <th class="item-formula">Damage Roll</th>
+                                    <th class="item-formula">To Hit Bonus</th>
+                                    <th></th>
+                                </tr>
+                                {{#each weapons as |weapon id|}}
+                                    <tr class="item" data-item-id="{{weapon._id}}">
+                                        <td class="item-name">
+                                            <h4><a class="rollable" data-roll-type="item">{{weapon.name}}</a></h4>
+                                        </td>
+                                        <td class="item-prop">{{weapon.data.rolls.Normal.damageRoll}}</td>
+                                        <td class="item-prop">{{weapon.data.rolls.Normal.toHitBonus}}</td>
+                                        <td>
+                                            <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                                            <a class="item-control item-delete" title="Delete Item"><i
+                                                    class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                            </table>
+                        {{else}}
+                            <div>No Weapons have been added to this Drone</div>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

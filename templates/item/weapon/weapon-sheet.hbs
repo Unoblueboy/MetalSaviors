@@ -24,6 +24,8 @@
         {{> "systems/metalsaviors/templates/item/weapon/parts/ranged-weapon-sheet.hbs"}}
     {{else if (eq data.type "missile")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/missile-weapon-sheet.hbs"}}
+    {{else if (eq data.type "supportWeapon")}}
+        {{> "systems/metalsaviors/templates/item/weapon/parts/ranged-weapon-sheet.hbs"}}
     {{/if}}
     {{#if (ne data.type "missile")}}
         <div>

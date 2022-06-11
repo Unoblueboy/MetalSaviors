@@ -17,7 +17,7 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 		return "systems/metalsaviors/templates/item/weapon/weapon-sheet.hbs";
 	}
 
-	weaponTypes = { melee: "Melee", ranged: "Ranged", missile: "Missile" };
+	weaponTypes = { melee: "Melee", ranged: "Ranged", missile: "Missile", supportWeapon: "Support Weapon" };
 	tagTypes = {
 		akimbo: { name: "Akimbo" },
 		ammunition: {
@@ -37,7 +37,10 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 		obvious: { name: "Obvious" },
 		piercing: { name: "Piercing" },
 		ranged: { name: "Ranged" },
-		reload: { name: "Reload" },
+		reload: {
+			name: "Reload",
+			hasValue: true,
+		},
 		salsaRule: { name: "Salsa Rule" },
 		scoped: { name: "Scoped" },
 		shotgun: { name: "Shotgun" },
@@ -59,7 +62,15 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 			hasCustomName: true,
 		},
 	};
-	fireRateTypes = [{ name: "Automatic" }, { name: "Burst" }, { name: "Single" }, { name: "Special" }];
+	fireRateTypes = [
+		{ name: "Automatic" },
+		{ name: "Burst" },
+		{ name: "Single" },
+		{ name: "Laser" },
+		{ name: "Explosive" },
+		{ name: "Missile" },
+		{ name: "Special" },
+	];
 	variantTypes = [{ name: "Charge" }, { name: "Kinetic" }, { name: "Laser" }];
 
 	getData() {

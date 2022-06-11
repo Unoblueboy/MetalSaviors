@@ -42,15 +42,12 @@ export class MetalSaviorsWeapon extends Item {
 
 	async getWeaponData() {
 		switch (this.weaponType) {
-			case "melee":
-			case "ranged":
-				return await MetalSaviorsWeaponAttackDialog.getAttackRollData(this);
 			case "missile":
 				return await MetalSaviorsWeaponAttackDialog.getAttackRollData(this, {
 					includeToHit: false,
 				});
 			default:
-				return {};
+				return await MetalSaviorsWeaponAttackDialog.getAttackRollData(this);
 		}
 	}
 

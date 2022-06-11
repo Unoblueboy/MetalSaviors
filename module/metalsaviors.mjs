@@ -19,6 +19,7 @@ import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs"
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { METALSAVIORS } from "./helpers/config.mjs";
+import { MetalSaviorsDroneSheet } from "./sheets/actor/drone-sheet.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -68,6 +69,10 @@ Hooks.once("init", async function () {
 	});
 	Actors.registerSheet("metalsaviors", MetalSaviorsPikeSheet, {
 		types: ["pike"],
+		makeDefault: true,
+	});
+	Actors.registerSheet("metalsaviors", MetalSaviorsDroneSheet, {
+		types: ["drone"],
 		makeDefault: true,
 	});
 

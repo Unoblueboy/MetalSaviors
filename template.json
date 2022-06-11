@@ -1,6 +1,6 @@
 {
 	"Actor": {
-		"types": ["character", "infantry", "vehicle", "pike"],
+		"types": ["character", "infantry", "vehicle", "pike", "drone"],
 		"templates": {
 			"base": {
 				"health": {
@@ -157,6 +157,15 @@
 			},
 			"traits": {},
 			"description": ""
+		},
+		"drone": {
+			"description": "",
+			"range": 5,
+			"msr": 6,
+			"health": {
+				"value": 50,
+				"max": 50
+			}
 		}
 	},
 	"Item": {
