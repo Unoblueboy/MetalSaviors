@@ -3,20 +3,23 @@ import { MetalSaviorsActor } from "./documents/Actor/actor.mjs";
 import { MetalSaviorsItem } from "./documents/Item/item.mjs";
 import { MetalSaviorsCav } from "./documents/Item/cav.mjs";
 import { MetalSaviorsItemProxy } from "./documents/Item/itemProxy.mjs";
+import { MetalSaviorsCombatant } from "./documents/Combat/Combatant.mjs";
+import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
 // Import sheet classes.
 import { MetalSaviorsActorSheet } from "./sheets/actor/actor-sheet.mjs";
 import { MetalSaviorsItemSheet } from "./sheets/item/item-sheet.mjs";
 import { MetalSaviorsSkillSheet } from "./sheets/item/skill-sheet.mjs";
 import { MetalSaviorsCavSheet } from "./sheets/item/cav-sheet.mjs";
-// Import helper/utility classes and constants.
-import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
-import { METALSAVIORS } from "./helpers/config.mjs";
-import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
-import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs";
-import MetalSaviorsCombatant from "./documents/Combat/Combatant.mjs";
 import { MetalSaviorsInfantrySheet } from "./sheets/actor/infantry-sheet.mjs";
 import { MetalSaviorsVehicleSheet } from "./sheets/actor/vehicle-sheet.mjs";
 import { MetalSaviorsPikeSheet } from "./sheets/actor/pike-sheet.mjs";
+import { MetalSaviorsWeaponSheet } from "./sheets/item/weapon-sheet.mjs";
+// Import ui classes.
+import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs";
+// Import helper/utility classes and constants.
+import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
+import { METALSAVIORS } from "./helpers/config.mjs";
+import { MetalSaviorsDroneSheet } from "./sheets/actor/drone-sheet.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -43,6 +46,14 @@ Hooks.once("init", async function () {
 	CONFIG.ui.combat = MetalSaviorsCombatTracker;
 	CONFIG.time.roundTime = 10;
 
+	// Add new data-dtypes
+	window.Dice = (value) => {
+		if (Roll.validate(value)) {
+			return value;
+		}
+		return null;
+	};
+
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
 	Actors.registerSheet("metalsaviors", MetalSaviorsActorSheet, {
@@ -60,6 +71,10 @@ Hooks.once("init", async function () {
 		types: ["pike"],
 		makeDefault: true,
 	});
+	Actors.registerSheet("metalsaviors", MetalSaviorsDroneSheet, {
+		types: ["drone"],
+		makeDefault: true,
+	});
 
 	Items.unregisterSheet("core", ItemSheet);
 	Items.registerSheet("metalsaviors", MetalSaviorsItemSheet, {
@@ -71,6 +86,10 @@ Hooks.once("init", async function () {
 	});
 	Items.registerSheet("metalsaviors", MetalSaviorsCavSheet, {
 		types: ["cav"],
+		makeDefault: true,
+	});
+	Items.registerSheet("metalsaviors", MetalSaviorsWeaponSheet, {
+		types: ["weapon"],
 		makeDefault: true,
 	});
 

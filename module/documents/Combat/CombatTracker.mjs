@@ -1,4 +1,4 @@
-import MetalSaviorsCombatant from "./Combatant.mjs";
+import { MetalSaviorsCombatant } from "./Combatant.mjs";
 import { MetalSaviorsCombatDetailsDialog } from "./Dialogs/CombatDetailsDialog.mjs";
 
 export class MetalSaviorsCombatTracker extends CombatTracker {

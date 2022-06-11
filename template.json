@@ -1,6 +1,6 @@
 {
 	"Actor": {
-		"types": ["character", "infantry", "vehicle", "pike"],
+		"types": ["character", "infantry", "vehicle", "pike", "drone"],
 		"templates": {
 			"base": {
 				"health": {
@@ -157,6 +157,15 @@
 			},
 			"traits": {},
 			"description": ""
+		},
+		"drone": {
+			"description": "",
+			"range": 5,
+			"msr": 6,
+			"health": {
+				"value": 50,
+				"max": 50
+			}
 		}
 	},
 	"Item": {
@@ -168,7 +177,8 @@
 			"combatTraining",
 			"weaponProficiency",
 			"pilotLicense",
-			"cav"
+			"cav",
+			"weapon"
 		],
 		"templates": {
 			"base": {
@@ -294,6 +304,19 @@
 			"requiredLicense": null,
 			"cavUnitPiloting": {},
 			"traits": {}
+		},
+		"weapon": {
+			"templates": ["base"],
+			"type": "melee",
+			"rolls": { "Normal": { "damageRoll": "d6", "toHitBonus": null } },
+			"weaponProficiency": "",
+			"fireRate": [],
+			"range": 1,
+			"variant": "",
+			"tags": {},
+			"MVV": 0,
+			"missileNum": 0,
+			"MSR": 0
 		}
 	}
 }

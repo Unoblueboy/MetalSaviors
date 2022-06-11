@@ -1,0 +1,73 @@
+{{log this}}
+{{#if toHitRoll}}
+    <div class="dice-roll">
+        <div class="dice-flavor">To Hit</div>
+        <div class="dice-result">
+            <div class="dice-formula">{{toHitRoll.formula}}</div>
+            <div class="dice-tooltip">
+                {{#each toHitRoll.parts}}
+                    <section class="tooltip-part">
+                        <div class="dice">
+                            <header class="part-header flexrow">
+                                <span class="part-formula">{{this.formula}}</span>
+                                {{#if this.flavor}}<span class="part-flavor">{{this.flavor}}</span>{{/if}}
+                                <span class="part-total">{{this.total}}</span>
+                            </header>
+                            <ol class="dice-rolls">
+                                {{#each this.rolls}}
+                                    <li class="roll {{this.classes}}">{{{this.result}}}</li>
+                                {{/each}}
+                            </ol>
+                        </div>
+                    </section>
+                {{/each}}
+            </div>
+            <h4 class="dice-total">{{toHitRoll.total}}</h4>
+        </div>
+    </div>
+{{/if}}
+{{#if damageRoll}}
+    <div class="dice-roll">
+        <div class="dice-flavor">Damage</div>
+        <div class="dice-result">
+            <div class="dice-formula">{{damageRoll.formula}}{{#if critRoll}} (+ {{critRoll.formula}}){{/if}}</div>
+            <div class="dice-tooltip">
+                {{#each damageRoll.parts}}
+                    <section class="tooltip-part">
+                        <div class="dice">
+                            <header class="part-header flexrow">
+                                <span class="part-formula">{{this.formula}}</span>
+                                {{#if ../critRoll}}<span class="part-flavor">Base Damage</span>{{/if}}
+                                <span class="part-total">{{this.total}}</span>
+                            </header>
+                            <ol class="dice-rolls">
+                                {{#each this.rolls}}
+                                    <li class="roll {{this.classes}}">{{{this.result}}}</li>
+                                {{/each}}
+                            </ol>
+                        </div>
+                    </section>
+                {{/each}}
+            </div>
+            <div class="dice-tooltip">
+                {{#each critRoll.parts}}
+                    <section class="tooltip-part">
+                        <div class="dice">
+                            <header class="part-header flexrow">
+                                <span class="part-formula">{{this.formula}}</span>
+                                <span class="part-flavor">Critical Damage</span>
+                                <span class="part-total">{{this.total}}</span>
+                            </header>
+                            <ol class="dice-rolls">
+                                {{#each this.rolls}}
+                                    <li class="roll {{this.classes}}">{{{this.result}}}</li>
+                                {{/each}}
+                            </ol>
+                        </div>
+                    </section>
+                {{/each}}
+            </div>
+            <h4 class="dice-total">{{damageRoll.total}}{{#if critRoll}} (+ {{critRoll.total}}){{/if}}</h4>
+        </div>
+    </div>
+{{/if}}

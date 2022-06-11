@@ -1,0 +1,29 @@
+<h3>Rolls</h3>
+<table>
+    <tr>
+        <td>Name</td>
+        <td>Damage Roll</td>
+        <td>To Hit Bonus</td>
+        <td></td>
+    </tr>
+    {{#each data.rolls as |roll name|}}
+        <tr>
+            <td><input type="text" value="{{name}}" disabled="true"></td>
+            <td><input type="text" name="data.rolls.{{name}}.damageRoll" value="{{roll.damageRoll}}" data-dtype="Dice">
+            </td>
+            <td><input type="text" name="data.rolls.{{name}}.toHitBonus" value="{{roll.toHitBonus}}" data-dtype="Dice">
+            </td>
+            {{#if (eq name "Normal") }}
+                <td></td>
+            {{else}}
+                <td class="delete-weapon-roll" data-name="{{name}}"><a><i class="fas fa-trash"></i></a></td>
+            {{/if}}
+        </tr>
+    {{/each}}
+    <tr>
+        <td class="add-weapon-roll-name"><input type="text" placeholder="New Name"></td>
+        <td class="add-weapon-damage-roll"><input type="text" placeholder="Damage Roll"></td>
+        <td class="add-weapon-to-hit-roll"><input type="text" placeholder="To Hit Roll"></td>
+        <td class="add-weapon-roll"><a><i class="fas fa-plus"></i></a></td>
+    </tr>
+</table>

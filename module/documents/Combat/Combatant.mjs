@@ -1,7 +1,7 @@
 import { rollInitiative } from "../../helpers/roll.mjs";
 import { MetalSaviorsCombatantRollDialog } from "./Dialogs/CombatantRollDialog.mjs";
 
-export default class MetalSaviorsCombatant extends Combatant {
+export class MetalSaviorsCombatant extends Combatant {
 	_onCreate(data, options, userID) {
 		super._onCreate(data, options, userID);
 		if (this.isOwner) {
