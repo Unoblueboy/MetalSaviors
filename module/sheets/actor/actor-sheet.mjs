@@ -14,7 +14,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			tabs: [
 				{
 					navSelector: ".sheet-tabs",
-					contentSelector: ".sheet-body",
+					contentSelector: "form",
 					initial: "pilot",
 				},
 			],
@@ -79,8 +79,9 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 	 */
 	_prepareCharacterData(context) {
 		// Handle ability scores.
+		context.attributeLabels = {};
 		for (let [k, v] of Object.entries(context.data.attributes)) {
-			v.label = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
+			context.attributeLabels[k] = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
 		}
 
 		for (const [key, derivedAttribute] of Object.entries(context.data.derivedAttributes)) {

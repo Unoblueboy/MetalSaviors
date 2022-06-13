@@ -1,11 +1,25 @@
-{{log this}}
 <form class="{{cssClass}} {{actor.type}}" autocomplete="off">
     <div class="sidebar">
         <div>
             <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
         </div>
         <div class="attributes">
-            {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"}}
+            <div class="tab" data-group="primary" data-tab="pilot">
+                {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs" 
+                    attributes=data.attributes
+                    attributeSection="attributes"
+                    attributeLabels = attributeLabels
+                    popup="true"}}
+            </div>
+            {{#each data.cavAttributes as |cavAttributes id|}}
+                <div class="tab" data-group="primary" data-tab="cav_{{id}}" data-item-id="{{id}}">
+                    {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"
+                        attributes=cavAttributes
+                        attributeSection=(concat "cavAttributes." id)
+                        attributeLabels = ../attributeLabels
+                        popup="false"}}
+                </div>
+            {{/each}}
         </div>
     </div>
     <div class="main-body">

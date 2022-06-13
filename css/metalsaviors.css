@@ -346,11 +346,13 @@ tr.table-break {
   padding: 0px 0px 0px 10px;
 }
 
-.cav-boon {
+.cav-boon,
+.cav-boon:disabled {
   color: green;
 }
 
-.cav-bane {
+.cav-bane,
+.cav-bane:disabled {
   color: red;
 }
 
