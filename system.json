@@ -2,7 +2,7 @@
 	"name": "metalsaviors",
 	"title": "Metal Saviors",
 	"description": "The Metal Saviors system for FoundryVTT!",
-	"version": "1.0.21",
+	"version": "1.0.22",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "9",
 	"author": "Notepad Anon",
@@ -51,6 +51,14 @@
 			"label": "Drones",
 			"path": "packs/drones.db",
 			"type": "Actor"
+		}
+	],
+	"dependencies": [
+		{
+			"name": "vtta-tokenizer"
+		},
+		{
+			"name": "token-frames"
 		}
 	],
 	"languages": [
