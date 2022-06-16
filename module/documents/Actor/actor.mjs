@@ -20,7 +20,10 @@ export class MetalSaviorsActor extends Actor {
 
 		const sameNameTypeItems = actor.items.filter((x) => x.name === item.name && x.type === item.type);
 
-		if (sameNameTypeItems.length === 0) return;
+		if (sameNameTypeItems.length === 0) {
+			item.data.update({ "data.lvlAcquired": actor.data.data.level.value });
+			return;
+		}
 
 		if (sameNameTypeItems.length > 1) {
 			console.log(

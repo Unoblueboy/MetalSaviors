@@ -54,25 +54,14 @@ export class MetalSaviorsSkill extends Item {
 
 			if (!this.actor) return;
 
-			const rollData = this.getRollData();
-
-			const cavValue = this.data.data.cavValue[cavId];
-
 			let value = cavId ? this.data.data.cavValue[cavId] : this.data.data.value;
 
-			let rollString = `1d100cs<=${this.data.data.value}`;
-
-			if (cavValue) {
-				rollString = `1d100cs<=${cavValue}`;
-			}
-
-			const data = await MetalSaviorsSkillRollDialog.getSkillOptions(this);
-
-			await rollSkill(this.actor, {
+			const data = await MetalSaviorsSkillRollDialog.getSkillOptions({
 				name: this.name,
 				value: value,
-				difficultyPenalty: 0,
 			});
+
+			await rollSkill(this.actor, data);
 		}
 	}
 }

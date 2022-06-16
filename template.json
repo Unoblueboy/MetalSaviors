@@ -203,7 +203,8 @@
 			"override": {
 				"active": false,
 				"value": 0
-			}
+			},
+			"lvlAcquired": 1
 		},
 		"atbSkill": {
 			"templates": ["base"],

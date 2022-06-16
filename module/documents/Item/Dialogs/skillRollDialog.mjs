@@ -13,7 +13,7 @@ export class MetalSaviorsSkillRollDialog extends Dialog {
 			close: data.cancelCallback,
 		};
 
-		this.skill = data.skill;
+		this.skillData = data.skillData;
 	}
 
 	static get defaultOptions() {
@@ -26,13 +26,13 @@ export class MetalSaviorsSkillRollDialog extends Dialog {
 		return this.data.title || "Roll Skill";
 	}
 
-	static async getSkillOptions(skill) {
+	static async getSkillOptions(skillData) {
 		return new Promise((resolve) => {
 			new MetalSaviorsSkillRollDialog(
 				{
 					normalCallback: (html) => resolve(this._processInitiativeOptions(html[0].querySelector("form"))),
 					cancelCallback: (html) => resolve({ cancelled: true }),
-					skill: skill,
+					skillData: skillData,
 				},
 				null
 			).render(true);
@@ -49,14 +49,14 @@ export class MetalSaviorsSkillRollDialog extends Dialog {
 
 	getData(options) {
 		const data = super.getData(options);
-		if (!this.skill) {
+		if (!this.skillData) {
 			return data;
 		}
 
-		console.log(this.skill);
+		console.log(this.skillData);
 
-		data.name = this.skill.name;
-		data.value = this.skill.data.data.value;
+		data.name = this.skillData.name;
+		data.value = this.skillData.value;
 		return data;
 	}
 }
