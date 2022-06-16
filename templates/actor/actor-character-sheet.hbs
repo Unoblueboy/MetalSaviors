@@ -9,7 +9,7 @@
                     attributes=data.attributes
                     attributeSection="attributes"
                     attributeLabels = attributeLabels
-                    popup="true"}}
+                    popup=editable}}
             </div>
             {{#each data.cavAttributes as |cavAttributes id|}}
                 <div class="tab" data-group="primary" data-tab="cav_{{id}}" data-item-id="{{id}}">
@@ -17,7 +17,7 @@
                         attributes=cavAttributes
                         attributeSection=(concat "cavAttributes." id)
                         attributeLabels = ../attributeLabels
-                        popup="false"}}
+                        popup=false}}
                 </div>
             {{/each}}
         </div>
@@ -66,13 +66,16 @@
         </div>
         <div class="sheet-body">
             <div class="tab" data-group="primary" data-tab="pilot">
-                {{> "systems/metalsaviors/templates/actor/parts/actor-pilot.hbs" weapons=weapons.pilot}}
+                {{> "systems/metalsaviors/templates/actor/parts/actor-pilot.hbs" 
+                    weapons=weapons.pilot
+                    editable=editable}}
             </div>
             {{#each cavs as |cav|}}
                 <div class="tab item" data-group="primary" data-tab="cav_{{cav._id}}" data-item-id="{{cav._id}}">
                     {{> "systems/metalsaviors/templates/actor/parts/actor-cav.hbs" 
                         learnedSkills=../skills.learnedSkills
-                        weapons=(lookup ../weapons.cav cav._id)}}
+                        weapons=(lookup ../weapons.cav cav._id
+                        editable=../editable)}}
                 </div>
             {{/each}}
         </div>

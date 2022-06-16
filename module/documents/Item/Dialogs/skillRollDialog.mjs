@@ -53,8 +53,6 @@ export class MetalSaviorsSkillRollDialog extends Dialog {
 			return data;
 		}
 
-		console.log(this.skillData);
-
 		data.name = this.skillData.name;
 		data.value = this.skillData.value;
 		return data;

@@ -10,9 +10,11 @@
                         <div>{{skill.name}}</div>
                         &nbsp;
                         <div class="item-controls">
-                            <a class="item-roll rollable" data-roll-type="item"><i class="fas fa-dice"></i></a>
-                            <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                            {{#if ../editable}}
+                                <a class="item-roll rollable" data-roll-type="item"><i class="fas fa-dice"></i></a>
+                                <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                            {{/if}}
                         </div>
                     </td>
                     <td>{{skill.data.value}}</td>
@@ -34,8 +36,10 @@
                         <div>{{skill.name}}</div>
                         &nbsp;
                         <div class="item-controls">
-                            <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                            <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                            {{#if ../editable}}
+                                <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                            {{/if}}
                         </div>
                     </td>
                     <td></td>
@@ -58,8 +62,10 @@
                         <div>{{skill.name}}</div>
                         &nbsp;
                         <div class="item-controls">
-                            <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                            <a class="item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                            {{#if ../editable}}
+                                <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                                <a class="item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                            {{/if}}
                         </div>
                     </td>
                 </tr>
