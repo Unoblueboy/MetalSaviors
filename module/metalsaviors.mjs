@@ -20,6 +20,7 @@ import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs"
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { METALSAVIORS } from "./helpers/config.mjs";
 import { MetalSaviorsDroneSheet } from "./sheets/actor/drone-sheet.mjs";
+import { MetalSaviorsChatMessage } from "./documents/ChatMessage/chatMessage.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -43,6 +44,7 @@ Hooks.once("init", async function () {
 	CONFIG.Item.documentClass = MetalSaviorsItemProxy;
 	CONFIG.Combat.documentClass = MetalSaviorsCombat;
 	CONFIG.Combatant.documentClass = MetalSaviorsCombatant;
+	CONFIG.ChatMessage.documentClass = MetalSaviorsChatMessage;
 	CONFIG.ui.combat = MetalSaviorsCombatTracker;
 	CONFIG.time.roundTime = 10;
 

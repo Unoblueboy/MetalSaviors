@@ -167,8 +167,6 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		context.pilotLicenses = pilotLicenses;
 		context.cavs = cavs;
 		context.weapons = weapons;
-
-		console.log(context);
 	}
 
 	/* -------------------------------------------- */
@@ -200,7 +198,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			const itemPath = ev.target.dataset.itemPath;
 			const updateValue = ev.target.value;
 			const itemContainer = $(ev.target).parents(".item");
-			console.log("itemContainer", itemContainer);
+
 			const item = this.actor.items.get(itemContainer.data("itemId"));
 			item.update({ [`${itemPath}`]: updateValue });
 		});

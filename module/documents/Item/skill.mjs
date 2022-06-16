@@ -1,4 +1,6 @@
+import { rollSkill } from "../../helpers/roll.mjs";
 import { CalculateSkillValue } from "../helpers/Calculators.mjs";
+import { MetalSaviorsSkillRollDialog } from "./Dialogs/skillRollDialog.mjs";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -56,22 +58,21 @@ export class MetalSaviorsSkill extends Item {
 
 			const cavValue = this.data.data.cavValue[cavId];
 
+			let value = cavId ? this.data.data.cavValue[cavId] : this.data.data.value;
+
 			let rollString = `1d100cs<=${this.data.data.value}`;
 
 			if (cavValue) {
 				rollString = `1d100cs<=${cavValue}`;
 			}
 
-			// Invoke the roll and submit it to chat.
-			const roll = new Roll(rollString, rollData);
-			// If you need to store the value first, uncomment the next line.
-			// let result = await roll.roll({async: true});
-			roll.toMessage({
-				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-				rollMode: game.settings.get("core", "rollMode"),
-				flavor: `[Skill] ${this.name}`,
+			const data = await MetalSaviorsSkillRollDialog.getSkillOptions(this);
+
+			await rollSkill(this.actor, {
+				name: this.name,
+				value: value,
+				difficultyPenalty: 0,
 			});
-			return roll;
 		}
 	}
 }

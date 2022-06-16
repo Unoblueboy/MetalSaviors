@@ -468,3 +468,11 @@ img.profile-img {
   -ms-flex: 0;
   flex: 0;
 }
+
+.dice-total.critical.success {
+  background-color: #002000;
+}
+
+.dice-total.critical.failure {
+  background-color: #200000;
+}
