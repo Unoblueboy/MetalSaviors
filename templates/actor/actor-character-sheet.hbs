@@ -1,10 +1,16 @@
-<form class="{{cssClass}} {{actor.type}}" autocomplete="off">
+<form class="{{cssClass}} {{actor.type}}"
+      autocomplete="off">
     <div class="sidebar">
         <div>
-            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+            <img class="profile-img"
+                 src="{{actor.img}}"
+                 data-edit="img"
+                 title="{{actor.name}}" />
         </div>
         <div class="attributes">
-            <div class="tab" data-group="primary" data-tab="pilot">
+            <div class="tab"
+                 data-group="primary"
+                 data-tab="pilot">
                 {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs" 
                     attributes=data.attributes
                     attributeSection="attributes"
@@ -12,7 +18,10 @@
                     popup=editable}}
             </div>
             {{#each data.cavAttributes as |cavAttributes id|}}
-                <div class="tab" data-group="primary" data-tab="cav_{{id}}" data-item-id="{{id}}">
+                <div class="tab"
+                     data-group="primary"
+                     data-tab="cav_{{id}}"
+                     data-item-id="{{id}}">
                     {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"
                         attributes=cavAttributes
                         attributeSection=(concat "cavAttributes." id)
@@ -28,54 +37,78 @@
             <div class="main-body-group">
                 <div class="flexcol flex-1">
                     <div>Character Name</div>
-                    <div><input class="update-actor" name="name" type="text" value="{{actor.name}}"
+                    <div><input class="update-actor"
+                               name="name"
+                               type="text"
+                               value="{{actor.name}}"
                                placeholder="Name" /></div>
                 </div>
                 <div class="flexcol flex-1">
                     <div>Call Sign</div>
-                    <div><input class="update-actor" name="data.callsign" type="text" value="{{data.callsign}}"
+                    <div><input class="update-actor"
+                               name="data.callsign"
+                               type="text"
+                               value="{{data.callsign}}"
                                placeholder="Call Sign" /></div>
                 </div>
                 <div class="flexrow flex-1">
                     <div class="flexcol">
                         <div>Level</div>
-                        <div><input class="update-actor" type="text" name="data.level.value"
-                                   value="{{data.level.value}}" data-dtype="Number" /></div>
+                        <div><input class="update-actor"
+                                   type="text"
+                                   name="data.level.value"
+                                   value="{{data.level.value}}"
+                                   data-dtype="Number" /></div>
                     </div>
                     <div class="flexcol">
                         <div>Experience</div>
-                        <div><input class="update-actor" type="text" name="data.level.exp" value="{{data.level.exp}}"
+                        <div><input class="update-actor"
+                                   type="text"
+                                   name="data.level.exp"
+                                   value="{{data.level.exp}}"
                                    data-dtype="Number" /></div>
                     </div>
                 </div>
             </div>
         </header>
-        <div class="sheet-tabs" data-group="primary">
+        <div class="sheet-tabs"
+             data-group="primary">
             <div class="sheet-tab">
                 <a data-tab="pilot">Pilot</a>
             </div>
             {{#each cavs as |cav|}}
-                <div class="sheet-tab item-controls-container item" data-item-id="{{cav._id}}">
+                <div class="sheet-tab item-controls-container item"
+                     data-item-id="{{cav._id}}">
                     <div><a data-tab="cav_{{cav._id}}">{{cav.name}}</a></div>
                     <div class="item-controls">
-                        <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                        <a class="item-edit"
+                           title="Edit Item"><i class="fas fa-edit"></i></a>
+                        <a class="item-control item-delete"
+                           title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
                 </div>
             {{/each}}
         </div>
         <div class="sheet-body">
-            <div class="tab" data-group="primary" data-tab="pilot">
+            <div class="tab"
+                 data-group="primary"
+                 data-tab="pilot">
                 {{> "systems/metalsaviors/templates/actor/parts/actor-pilot.hbs" 
                     weapons=weapons.pilot
                     editable=editable}}
             </div>
             {{#each cavs as |cav|}}
-                <div class="tab item" data-group="primary" data-tab="cav_{{cav._id}}" data-item-id="{{cav._id}}">
+                <div class="tab item"
+                     data-group="primary"
+                     data-tab="cav_{{cav._id}}"
+                     data-item-id="{{cav._id}}">
                     {{> "systems/metalsaviors/templates/actor/parts/actor-cav.hbs" 
                         learnedSkills=../skills.learnedSkills
                         weapons=(lookup ../weapons.cav cav._id)
-                        editable=../editable}}
+                        editable=../editable
+                        curMovementSpeed=../curMovementSpeed
+                        excessMomentum=../excessMomentum
+                        CONFIG=../CONFIG}}
                 </div>
             {{/each}}
         </div>

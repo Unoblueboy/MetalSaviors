@@ -1,3 +1,4 @@
+import { MetalSaviorsCombatant } from "../../documents/Combat/Combatant.mjs";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../../helpers/effects.mjs";
 
 import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
@@ -56,16 +57,14 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			this._prepareCharacterData(context);
 		}
 
-		// Prepare NPC data and items.
-		if (actorData.type == "npc") {
-			this._prepareItems(context);
-		}
-
 		// Add roll data for TinyMCE editors.
 		context.rollData = context.actor.getRollData();
 
 		// Prepare active effects
 		context.effects = prepareActiveEffectCategories(this.actor.effects);
+
+		// Pass in config for localisation
+		context.CONFIG = CONFIG.METALSAVIORS;
 
 		return context;
 	}
@@ -87,6 +86,14 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		for (const [key, derivedAttribute] of Object.entries(context.data.derivedAttributes)) {
 			derivedAttribute.label = game.i18n.localize(CONFIG.METALSAVIORS.derivedAttributes[key]) ?? key;
 		}
+
+		// Get current movement speed (if in combat)
+
+		const token = this.actor.getActiveTokens(true, true)[0];
+		if (!token) return;
+
+		context.curMovementSpeed = token.combatant?.getCurMovementSpeedKey();
+		context.excessMomentum = token.combatant?.getExtraMovementMomentum();
 	}
 
 	/**

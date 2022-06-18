@@ -57,9 +57,6 @@ export class MetalSaviorsCombatTracker extends CombatTracker {
 			if (!turn.turnDone) {
 				roundDone = false;
 			}
-			turn.curMovementSpeed = MetalSaviorsCombatant.getMovementSpeedString(
-				combatant.getFlag("metalsaviors", "curMovementSpeed")
-			);
 			turn.isOwner = combatant.isOwner;
 		}
 		context.roundDone = roundDone;

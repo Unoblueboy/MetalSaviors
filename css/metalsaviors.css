@@ -311,6 +311,10 @@ tr.table-break {
   align-self: center;
 }
 
+table tr.current-movement-speed {
+  background-color: rgba(0, 128, 0, 0.25);
+}
+
 .item-controls {
   max-width: 0px;
   -webkit-transition: max-width 1s;
