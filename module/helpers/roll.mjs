@@ -20,12 +20,15 @@ export async function rollInitiative(combatant, { inCav = false, bonus = 0, crea
 export async function rollAttack(
 	actor = null,
 	{
+		attackerName = null,
+		weaponName = null,
 		includeToHit = true,
 		weaponToHitBonus = null,
 		otherToHitBonus = null,
 		includeDamage = true,
 		weaponDamageRoll = "0",
 		otherDamageBonuses = null,
+		damageType = null,
 	} = {}
 ) {
 	var toHitRoll = null;
@@ -87,6 +90,14 @@ export async function rollAttack(
 	};
 	const content = await renderTemplate(template, templateData);
 
+	attackerName = attackerName || actor.data.name;
+	let flavor = `${attackerName} is making an attack`;
+	if (weaponName) {
+		flavor += ` with their ${weaponName}`;
+	}
+	if (damageType) {
+		flavor += ` (${damageType})`;
+	}
 	const speaker = ChatMessage.getSpeaker({ actor: actor });
 	const rollMode = game.settings.get("core", "rollMode");
 	MetalSaviorsChatMessage.create({
@@ -95,7 +106,7 @@ export async function rollAttack(
 		rollMode: rollMode,
 		roll: null,
 		type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-		flavor: `${actor.data.name} is making an attack`,
+		flavor: flavor,
 		content: content,
 		sound: CONFIG.sounds.dice,
 	});

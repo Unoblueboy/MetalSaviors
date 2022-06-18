@@ -46,6 +46,24 @@ export class MetalSaviorsDroneSheet extends ActorSheet {
 
 	activateListeners(html) {
 		super.activateListeners(html);
+
+		// Render the item sheet for viewing/editing prior to the editable check.
+		html.find(".item-edit").click((ev) => {
+			const li = $(ev.currentTarget).parents(".item");
+			const item = this.actor.items.get(li.data("itemId"));
+			item.sheet.render(true);
+		});
+
+		if (!this.isEditable) return;
+
+		// Delete Inventory Item
+		html.find(".item-delete").click((ev) => {
+			const li = $(ev.currentTarget).closest(".item");
+			const item = this.actor.items.get(li.data("itemId"));
+			item.delete();
+			li.slideUp(200, () => this.render(false));
+		});
+
 		html.find(".rollable").click(this._onRoll.bind(this));
 	}
 
