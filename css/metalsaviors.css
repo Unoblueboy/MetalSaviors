@@ -3,6 +3,21 @@
   height: 100%;
 }
 
+.fill-parent-offset-height-50 {
+  width: 100%;
+  height: calc(100%-50px);
+}
+
+.fill-parent-offset-height-100 {
+  width: 100%;
+  height: calc(100%-50px);
+}
+
+.fill-parent-offset-height-150 {
+  width: 100%;
+  height: calc(100%-50px);
+}
+
 .flex-0 {
   -webkit-box-flex: 0;
   -ms-flex: 0;
@@ -95,7 +110,8 @@ form.character,
 form.infantry,
 form.vehicle,
 form.pike,
-form.drone {
+form.drone,
+form.blank {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -281,6 +297,10 @@ form.drone .editor {
 
 form.weapon .editor {
   height: calc(100% - 50px);
+}
+
+form.blank .editor {
+  height: calc(100% - 100px);
 }
 
 tr.table-break {

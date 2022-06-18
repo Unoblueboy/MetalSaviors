@@ -6,7 +6,8 @@ form.character,
 form.infantry,
 form.vehicle,
 form.pike,
-form.drone {
+form.drone,
+form.blank {
 	@include flex-container($direction: row);
 }
 
@@ -102,6 +103,10 @@ form.drone .editor {
 
 form.weapon .editor {
 	height: calc(100% - 50px);
+}
+
+form.blank .editor {
+	height: calc(100% - 100px);
 }
 
 tr.table-break {

@@ -21,6 +21,7 @@ import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { METALSAVIORS } from "./helpers/config.mjs";
 import { MetalSaviorsDroneSheet } from "./sheets/actor/drone-sheet.mjs";
 import { MetalSaviorsChatMessage } from "./documents/ChatMessage/chatMessage.mjs";
+import { MetalSaviorsBlankSheet } from "./sheets/actor/blank-sheet.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -75,6 +76,10 @@ Hooks.once("init", async function () {
 	});
 	Actors.registerSheet("metalsaviors", MetalSaviorsDroneSheet, {
 		types: ["drone"],
+		makeDefault: true,
+	});
+	Actors.registerSheet("metalsaviors", MetalSaviorsBlankSheet, {
+		types: ["blank"],
 		makeDefault: true,
 	});
 

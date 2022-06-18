@@ -79,6 +79,9 @@ export class MetalSaviorsActor extends Actor {
 	 * @override
 	 */
 	prepareDerivedData() {
+		if (this.type === "blank") {
+			return;
+		}
 		const actorData = this.data;
 		const data = actorData.data;
 		const flags = actorData.flags.metalsaviors || {};
