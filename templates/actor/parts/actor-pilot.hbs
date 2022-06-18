@@ -3,37 +3,58 @@
         <div class="flexcol">
             <div>Endurance</div>
             <div class="flexrow">
-                <div><input class="update-actor" type="text" name="data.endurance.value"
-                        value="{{data.endurance.value}}" data-dtype="Number" /></div>
+                <div><input class="update-actor"
+                           type="text"
+                           name="data.endurance.value"
+                           value="{{data.endurance.value}}"
+                           data-dtype="Number" /></div>
                 <div class="flex-0">/</div>
-                <div><input class="update-actor" type="text" name="data.endurance.max" value="{{data.endurance.max}}"
-                        data-dtype="Number" /></div>
+                <div><input class="update-actor"
+                           type="text"
+                           name="data.endurance.max"
+                           value="{{data.endurance.max}}"
+                           data-dtype="Number" /></div>
             </div>
         </div>
         <div class="flexcol">
             <div>Health</div>
             <div class="flexrow">
-                <div><input class="update-actor" type="text" name="data.health.value" value="{{data.health.value}}"
-                        data-dtype="Number" /></div>
+                <div><input class="update-actor"
+                           type="text"
+                           name="data.health.value"
+                           value="{{data.health.value}}"
+                           data-dtype="Number" /></div>
                 <div class="flex-0">/</div>
-                <div><input class="update-actor" type="text" name="data.health.max" value="{{data.health.max}}"
-                        data-dtype="Number" /></div>
+                <div><input class="update-actor"
+                           type="text"
+                           name="data.health.max"
+                           value="{{data.health.max}}"
+                           data-dtype="Number" /></div>
             </div>
         </div>
         <div class="flexcol nsr">
             <div>NSR</div>
             <div class="exit-submit">
-                <div><input type="text" value="{{data.nsr.value}}" data-dtype="Number" disabled="true" /></div>
+                <div><input type="text"
+                           value="{{data.nsr.value}}"
+                           data-dtype="Number"
+                           disabled="true" /></div>
                 <div class="base-bonus-popup">
                     <div class="flexcol">
                         <div>Base Value</div>
-                        <div><input type="text" title="Base Value" name="data.nsr.baseValue"
-                                value="{{data.nsr.baseValue}}" data-dtype="Number" /></div>
+                        <div><input type="text"
+                                   title="Base Value"
+                                   name="data.nsr.baseValue"
+                                   value="{{data.nsr.baseValue}}"
+                                   data-dtype="Number" /></div>
                     </div>
                     <div class="flexcol">
                         <div>Other Bonuses</div>
-                        <div><input type="text" title="Other Bonuses" name="data.nsr.otherBonuses"
-                                value="{{data.nsr.otherBonuses}}" data-dtype="Number" /></div>
+                        <div><input type="text"
+                                   title="Other Bonuses"
+                                   name="data.nsr.otherBonuses"
+                                   value="{{data.nsr.otherBonuses}}"
+                                   data-dtype="Number" /></div>
                     </div>
                 </div>
             </div>
@@ -41,10 +62,15 @@
         <div class="flexcol">
             <div>Actions/Round</div>
             {{#if combatTraining}}
-                <div><input type="text" value="{{combatTraining.data.actionsPerRound}}" data-dtype="Number"
-                        disabled="true"> </div>
+                <div><input type="text"
+                           value="{{combatTraining.data.actionsPerRound}}"
+                           data-dtype="Number"
+                           disabled="true"> </div>
             {{else}}
-                <div><input type="text" value="No Training" data-dtype="Number" disabled="true"> </div>
+                <div><input type="text"
+                           value="No Training"
+                           data-dtype="Number"
+                           disabled="true"> </div>
             {{/if}}
         </div>
     </div>
@@ -54,25 +80,35 @@
                 <div class="flex-1">{{dAttribute.label}}</div>
                 <div class="exit-submit flex-0">
                     {{#if (eq name "damageModifier")}}
-                        <div><input type="text" value="{{dAttribute.value}}" data-dtype="String" disabled="true" />
+                        <div><input type="text"
+                                   value="{{dAttribute.value}}"
+                                   data-dtype="String"
+                                   disabled="true" />
                         </div>
                         <div class="base-bonus-popup">
                             <div class="flexcol">
                                 <div>Other Bonuses</div>
-                                <div><input type="text" title="Other Bonuses"
-                                        name="data.derivedAttributes.{{name}}.otherBonuses"
-                                        value="{{dAttribute.otherBonuses}}" data-dtype="String" /></div>
+                                <div><input type="text"
+                                           title="Other Bonuses"
+                                           name="data.derivedAttributes.{{name}}.otherBonuses"
+                                           value="{{dAttribute.otherBonuses}}"
+                                           data-dtype="String" /></div>
                             </div>
                         </div>
                     {{else}}
-                        <div><input type="text" value="{{dAttribute.value}}" data-dtype="Number" disabled="true" />
+                        <div><input type="text"
+                                   value="{{dAttribute.value}}"
+                                   data-dtype="Number"
+                                   disabled="true" />
                         </div>
                         <div class="base-bonus-popup">
                             <div class="flexcol">
                                 <div>Other Bonuses</div>
-                                <div><input type="text" title="Other Bonuses"
-                                        name="data.derivedAttributes.{{name}}.otherBonuses"
-                                        value="{{dAttribute.otherBonuses}}" data-dtype="Number" /></div>
+                                <div><input type="text"
+                                           title="Other Bonuses"
+                                           name="data.derivedAttributes.{{name}}.otherBonuses"
+                                           value="{{dAttribute.otherBonuses}}"
+                                           data-dtype="Number" /></div>
                             </div>
                         </div>
                     {{/if}}
@@ -82,10 +118,10 @@
     </div>
 </div>
 <div class="flexrow">
-    <div class="column1">
+    <div class="column1 flex-3">
         {{> "systems/metalsaviors/templates/actor/parts/actor-items.hbs"}}
     </div>
-    <div class="column2">
+    <div class="column2 flex-2">
         {{> "systems/metalsaviors/templates/actor/parts/actor-skills.hbs"}}
     </div>
 </div>
