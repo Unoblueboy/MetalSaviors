@@ -55,6 +55,8 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 		}
 		rollData[""] = { label: "Other" };
 		context.rollData = rollData;
+		context.weaponName = this.weapon.name;
+		context.attackerName = this.weapon.getOwnerName();
 
 		context.includeToHit = this.includeToHit;
 		context.includeDamage = this.includeDamage;
@@ -96,7 +98,10 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 	}
 
 	static _processAttackRollData(form, includeToHit, includeDamage) {
-		const data = {};
+		const data = {
+			weaponName: form.weaponName.value,
+			attackerName: form.attackerName.value,
+		};
 		data.includeToHit = includeToHit;
 		if (includeToHit) {
 			data.weaponToHitBonus = form.toHitBonus.value || null;
@@ -106,6 +111,7 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 		if (includeDamage) {
 			data.weaponDamageRoll = form.damageRoll.value || "0";
 			data.otherDamageBonuses = form.otherDamageBonuses.value || null;
+			data.damageType = form.damageType.value || null;
 		}
 		return data;
 	}

@@ -24,6 +24,20 @@ export class MetalSaviorsWeapon extends Item {
 		return this.getFlag("metalsaviors", "owner");
 	}
 
+	getOwnerName() {
+		if (!this.actor) {
+			return null;
+		}
+
+		const ownerData = this.getFlag("metalsaviors", "owner");
+		if (ownerData?.type === "pilot") {
+			return this.actor.name;
+		}
+
+		const cav = this.actor.items.get(ownerData.id);
+		return cav?.name;
+	}
+
 	setOwner(ownerId) {
 		if (!this.actor) {
 			return;
@@ -51,11 +65,22 @@ export class MetalSaviorsWeapon extends Item {
 		}
 	}
 
-	async roll() {
-		const data = await this.getWeaponData();
+	async roll(event) {
+		const getOptions = event.shiftKey;
+		const itemData = this.data.data;
 
-		if (data.cancelled) {
-			return;
+		let data = {
+			weaponName: this.name,
+			attackerName: this.getOwnerName(),
+			weaponToHitBonus: itemData.rolls.Normal.toHitBonus,
+			weaponDamageRoll: itemData.rolls.Normal.damageRoll,
+		};
+		if (getOptions) {
+			data = await this.getWeaponData();
+
+			if (data.cancelled) {
+				return;
+			}
 		}
 
 		rollAttack(this.actor, data);

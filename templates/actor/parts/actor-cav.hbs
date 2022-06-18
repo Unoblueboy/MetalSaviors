@@ -226,17 +226,16 @@
                         <tr class="learned-skill item-controls-container item" data-item-id="{{skill._id}}">
                             <td class="div-cell-wrapper">
                                 {{#if (gt (lookup skill.data.cavValue ../_id) skill.data.value)}}
-                                    <div class="cav-boon">
+                                    <div class="name cav-boon">
                                 {{/if}}
                                 {{#if (lt (lookup skill.data.cavValue ../_id) skill.data.value)}}
-                                    <div class="cav-bane">
+                                    <div class="name cav-bane">
                                 {{/if}}
                                 {{#if (eq (lookup skill.data.cavValue ../_id) skill.data.value)}}
-                                    <div>
+                                    <div class="name">
                                 {{/if}}
                                 {{skill.name}}
         </div>
-        &nbsp;
         <div class="item-controls">
             <a class="item-roll rollable" data-roll-type="item" data-cav-id="{{../_id}}"><i class="fas fa-dice"></i></a>
             <a class="item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

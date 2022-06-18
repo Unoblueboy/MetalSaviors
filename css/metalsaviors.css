@@ -303,6 +303,14 @@ tr.table-break {
   vertical-align: top;
 }
 
+.item-controls-container .name {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 0px;
+  flex: 1 1 0;
+  -ms-flex-item-align: center;
+  align-self: center;
+}
+
 .item-controls {
   max-width: 0px;
   -webkit-transition: max-width 1s;
@@ -310,6 +318,8 @@ tr.table-break {
   transition: max-width 1s;
   overflow: hidden;
   white-space: nowrap;
+  -ms-flex-item-align: center;
+  align-self: center;
 }
 
 .atb {
@@ -346,11 +356,13 @@ tr.table-break {
   padding: 0px 0px 0px 10px;
 }
 
-.cav-boon {
+.cav-boon,
+.cav-boon:disabled {
   color: green;
 }
 
-.cav-bane {
+.cav-bane,
+.cav-bane:disabled {
   color: red;
 }
 
@@ -465,4 +477,12 @@ img.profile-img {
   -webkit-box-flex: 0;
   -ms-flex: 0;
   flex: 0;
+}
+
+.dice-total.critical.success {
+  background-color: #002000;
+}
+
+.dice-total.critical.failure {
+  background-color: #200000;
 }

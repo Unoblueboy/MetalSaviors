@@ -1,36 +1,46 @@
-{{#each data.attributes as |attribute key|}}
-	<div class="atb">
-		<div>{{attribute.label}}</div>
-		<div class="exit-submit">
-			<div class="atb-value" data-atb-key="{{key}}"><input
-					type="text"
-					name="data.attributes.{{key}}.value"
-					value="{{attribute.value}}"
-					data-dtype="Number"
-					disabled="true"
-				/></div>
-			<div class="base-bonus-popup">
-				<div class="flexcol">
-					<div>Base Value</div>
-					<div><input
-							type="text"
-							title="Base Value"
-							name="data.attributes.{{key}}.baseValue"
-							value="{{attribute.baseValue}}"
-							data-dtype="Number"
-						/></div>
-				</div>
-				<div class="flexcol">
-					<div>Other Bonuses</div>
-					<div><input
-							type="text"
-							title="Other Bonuses"
-							name="data.attributes.{{key}}.otherBonuses"
-							value="{{attribute.otherBonuses}}"
-							data-dtype="Number"
-						/></div>
-				</div>
-			</div>
-		</div>
-	</div>
+{{#each attributes as |attribute key|}}
+    <div class="atb">
+        <div class="item-controls-container">
+            <div class="div-cell-wrapper">
+                <div class="name">{{lookup ../attributeLabels key}}</div>
+                <div class="item-controls">
+                    <a class="item-roll rollable"
+                       data-roll-type="atb"
+                       data-key="{{key}}"
+                       {{#if ../cavId}}data-cav-id="{{../cavId}}"
+                       {{/if}}><i class="fas fa-dice"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="exit-submit">
+            <div class="atb-value name"
+                 data-atb-key="{{key}}"><input type="text"
+                       {{#if attribute.bane}}class="cav-bane"
+                       {{/if}}
+                       name="data.{{../attributeSection}}.{{key}}.value"
+                       value="{{attribute.value}}"
+                       data-dtype="Number"
+                       disabled="true" /></div>
+            {{#if ../popup}}
+                <div class="base-bonus-popup">
+                    <div class="flexcol">
+                        <div>Base Value</div>
+                        <div><input type="text"
+                                   title="Base Value"
+                                   name="data.{{../attributeSection}}.{{key}}.baseValue"
+                                   value="{{attribute.baseValue}}"
+                                   data-dtype="Number" /></div>
+                    </div>
+                    <div class="flexcol">
+                        <div>Other Bonuses</div>
+                        <div><input type="text"
+                                   title="Other Bonuses"
+                                   name="data.{{../attributeSection}}.{{key}}.otherBonuses"
+                                   value="{{attribute.otherBonuses}}"
+                                   data-dtype="Number" /></div>
+                    </div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
 {{/each}}

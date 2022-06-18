@@ -13,6 +13,7 @@
                     <th>Increase Per Level</th>
                     <th>Number of Acquisitions</th>
                     <th>Other Bonuses</th>
+                    <th>Level Acquired</th>
                     <th>Value</th>
                     <th>Manual Override?</th>
                 </tr>
@@ -24,6 +25,8 @@
                     <td><input type="text" name="data.numAcquisitions" value="{{data.numAcquisitions}}"
                             data-dtype="Number" {{#disabled data.override.active}}{{/disabled}} /></td>
                     <td><input type="text" name="data.otherBonuses" value="{{data.otherBonuses}}" data-dtype="Number"
+                            {{#disabled data.override.active}}{{/disabled}} /></td>
+                    <td><input type="number" name="data.lvlAcquired" value="{{data.lvlAcquired}}" data-dtype="Number"
                             {{#disabled data.override.active}}{{/disabled}} /></td>
                     <td>
                         {{#if data.override.active}}

@@ -1,0 +1,8 @@
+.dice-total.critical {
+	&.success {
+		background-color: #002000;
+	}
+	&.failure {
+		background-color: #200000;
+	}
+}

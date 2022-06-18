@@ -8,33 +8,49 @@ export function attributeCalculator(actorData, data) {
 		attributeDicts[key] = attributeDict;
 	}
 
+	const cavAttributes = {};
+
 	for (const item of actorData.items) {
-		if (item.type !== "atbSkill") {
+		if (!["atbSkill", "cav"].includes(item.type)) {
 			continue;
 		}
 
-		const itemData = item.data;
-		for (const [name, bonus] of Object.entries(
-			itemData.data.attributeBonuses
-		)) {
-			attributeDicts[name].bonusesFromAtbSkills += bonus;
+		if (item.type === "atbSkill") {
+			const itemData = item.data;
+			for (const [name, bonus] of Object.entries(itemData.data.attributeBonuses)) {
+				attributeDicts[name].bonusesFromAtbSkills += bonus;
+			}
+		}
+
+		if (item.type == "cav") {
+			cavAttributes[item.id] = {};
 		}
 	}
 
+	const cavs = actorData.items.filter((x) => x.type === "cav");
+	const licences = actorData.items.filter((x) => x.type === "pilotLicense");
+
 	for (let [key, attributeDict] of Object.entries(attributeDicts)) {
-		data.attributes[key].value = _calculateAttributeValue(
-			attributeDict,
-			data
-		);
+		const [value, cavValue] = _calculateAttributeValue(attributeDict, licences, cavs);
+		data.attributes[key].value = value;
+
+		for (let [cavId, cavAttr] of Object.entries(cavAttributes)) {
+			cavAttr[key] = cavValue[cavId];
+		}
 	}
+	data.cavAttributes = cavAttributes;
 }
 
-function _calculateAttributeValue(attributeDict, data) {
-	return (
-		attributeDict.baseValue +
-		attributeDict.otherBonuses +
-		attributeDict.bonusesFromAtbSkills
-	);
+function _calculateAttributeValue(attributeDict, licences, cavs) {
+	const pilotValue = attributeDict.baseValue + attributeDict.otherBonuses + attributeDict.bonusesFromAtbSkills;
+	const cavValues = {};
+	for (let cav of cavs) {
+		cavValues[cav.id] = { origValue: pilotValue, value: pilotValue, bane: false };
+		if (licences.every((x) => x.name !== cav.data.data.requiredLicense)) {
+			cavValues[cav.id].bane = true;
+		}
+	}
+	return [pilotValue, cavValues];
 }
 
 export function derivedAttributeCalculator(actorData, data) {
@@ -51,69 +67,45 @@ export function derivedAttributeCalculator(actorData, data) {
 		cavInitiativeModifier: 0,
 	};
 
-	const atbSkills =
-		actorData.items?.filter((x) => x.type === "atbSkill") ?? [];
+	const atbSkills = actorData.items?.filter((x) => x.type === "atbSkill") ?? [];
 
 	for (const atbSkill of atbSkills) {
-		for (const [k, v] of Object.entries(
-			atbSkill.data.data.derivedAttributeBonuses
-		)) {
+		for (const [k, v] of Object.entries(atbSkill.data.data.derivedAttributeBonuses)) {
 			bonusToAttrDict[k] += v;
 		}
 	}
 
-	dAttributes.damageModifier.baseValue = _calculateBaseDamageModifier(
-		attributes.pow.value
-	);
-	dAttributes.damageModifier.value = _validateDamageModifier(
-		dAttributes.damageModifier
-	);
+	dAttributes.damageModifier.baseValue = _calculateBaseDamageModifier(attributes.pow.value);
+	dAttributes.damageModifier.value = _validateDamageModifier(dAttributes.damageModifier);
 
-	dAttributes.toHitModifier.baseValue = _calculateToHitModifier(
-		attributes.pow.value
-	);
+	dAttributes.toHitModifier.baseValue = _calculateToHitModifier(attributes.pow.value);
 	dAttributes.toHitModifier.value =
-		dAttributes.toHitModifier.baseValue +
-		dAttributes.toHitModifier.otherBonuses +
-		bonusToAttrDict.toHitModifier;
+		dAttributes.toHitModifier.baseValue + dAttributes.toHitModifier.otherBonuses + bonusToAttrDict.toHitModifier;
 
-	dAttributes.skillModifier.baseValue = _calculateSkillModifier(
-		attributes.int.value
-	);
+	dAttributes.skillModifier.baseValue = _calculateSkillModifier(attributes.int.value);
 	dAttributes.skillModifier.value =
-		dAttributes.skillModifier.baseValue +
-		dAttributes.skillModifier.otherBonuses +
-		bonusToAttrDict.skillModifier;
+		dAttributes.skillModifier.baseValue + dAttributes.skillModifier.otherBonuses + bonusToAttrDict.skillModifier;
 
-	dAttributes.reactionModifier.baseValue = _calculateReactionModifier(
-		attributes.bea.value
-	);
+	dAttributes.reactionModifier.baseValue = _calculateReactionModifier(attributes.bea.value);
 	dAttributes.reactionModifier.value =
 		dAttributes.reactionModifier.baseValue +
 		dAttributes.reactionModifier.otherBonuses +
 		bonusToAttrDict.reactionModifier;
 
-	dAttributes.initiativeModifier.baseValue = _calculateInitiativeModifier(
-		attributes.spd.value
-	);
+	dAttributes.initiativeModifier.baseValue = _calculateInitiativeModifier(attributes.spd.value);
 	dAttributes.initiativeModifier.value =
 		dAttributes.initiativeModifier.baseValue +
 		dAttributes.initiativeModifier.otherBonuses +
 		bonusToAttrDict.initiativeModifier;
 
-	dAttributes.spacesMoved.baseValue = _calculateSpacesMoved(
+	dAttributes.spacesMoved.baseValue = _calculateSpacesMoved(attributes.spd.value);
+	dAttributes.spacesMoved.value =
+		dAttributes.spacesMoved.baseValue + dAttributes.spacesMoved.otherBonuses + bonusToAttrDict.spacesMoved;
+
+	dAttributes.cavInitiativeModifier.baseValue = _calculateCavInitiativeModifier(
+		attributes.fin.value,
 		attributes.spd.value
 	);
-	dAttributes.spacesMoved.value =
-		dAttributes.spacesMoved.baseValue +
-		dAttributes.spacesMoved.otherBonuses +
-		bonusToAttrDict.spacesMoved;
-
-	dAttributes.cavInitiativeModifier.baseValue =
-		_calculateCavInitiativeModifier(
-			attributes.fin.value,
-			attributes.spd.value
-		);
 	dAttributes.cavInitiativeModifier.value =
 		dAttributes.cavInitiativeModifier.baseValue +
 		dAttributes.cavInitiativeModifier.otherBonuses +
@@ -275,30 +267,25 @@ export function CalculateSkillValue(skill, actor) {
 	if (skillData.data.override.active) {
 		return {
 			value: skillData.data.override.value,
-			cavValue: _calculateCavValue(
-				skillData.data.override.value,
-				cavBonuses
-			),
+			cavValue: _calculateCavValue(skillData.data.override.value, cavBonuses),
 		};
 	}
 
 	const lvl = actorData.data?.level?.value || 1;
+	const lvlAcquired = skill.data.data.lvlAcquired || 1;
+	const lvlDiff = lvl - lvlAcquired + 1;
 
-	const skillModifier =
-		actorData.data?.derivedAttributes?.skillModifier?.value || 0;
+	const skillModifier = lvlAcquired === 1 ? actorData.data?.derivedAttributes?.skillModifier?.value || 0 : 0;
 	const numAcquiredBonus = (skillData.data.numAcquisitions - 1) * 10;
 
-	const bonusesFromAtbSkills = _calculateSkillBonusesFromAtbSkills(
-		skillData.name,
-		actorData
-	);
+	const bonusesFromAtbSkills = _calculateSkillBonusesFromAtbSkills(skillData.name, actorData);
 
 	const skillValue =
 		skillData.data.baseValue +
 		numAcquiredBonus +
 		bonusesFromAtbSkills +
 		skillData.data.otherBonuses +
-		skillData.data.levelIncrease * lvl +
+		skillData.data.levelIncrease * lvlDiff +
 		skillModifier;
 
 	return {
@@ -353,8 +340,7 @@ function _calculateCavValue(skillValue, cavBonuses) {
 }
 
 function _calculateSkillBonusesFromAtbSkills(skillName, actorData) {
-	const atbSkills =
-		actorData.items?.filter((x) => x.type === "atbSkill") ?? [];
+	const atbSkills = actorData.items?.filter((x) => x.type === "atbSkill") ?? [];
 	let bonus = 0;
 
 	for (const atbSkill of atbSkills) {

@@ -14,7 +14,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			tabs: [
 				{
 					navSelector: ".sheet-tabs",
-					contentSelector: ".sheet-body",
+					contentSelector: "form",
 					initial: "pilot",
 				},
 			],
@@ -79,8 +79,9 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 	 */
 	_prepareCharacterData(context) {
 		// Handle ability scores.
+		context.attributeLabels = {};
 		for (let [k, v] of Object.entries(context.data.attributes)) {
-			v.label = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
+			context.attributeLabels[k] = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
 		}
 
 		for (const [key, derivedAttribute] of Object.entries(context.data.derivedAttributes)) {
@@ -166,8 +167,6 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		context.pilotLicenses = pilotLicenses;
 		context.cavs = cavs;
 		context.weapons = weapons;
-
-		console.log(context);
 	}
 
 	/* -------------------------------------------- */
@@ -199,7 +198,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			const itemPath = ev.target.dataset.itemPath;
 			const updateValue = ev.target.value;
 			const itemContainer = $(ev.target).parents(".item");
-			console.log("itemContainer", itemContainer);
+
 			const item = this.actor.items.get(itemContainer.data("itemId"));
 			item.update({ [`${itemPath}`]: updateValue });
 		});
@@ -250,7 +249,12 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			if (dataset.rollType == "item") {
 				const itemId = element.closest(".item").dataset.itemId;
 				const item = this.actor.items.get(itemId);
-				if (item) return item.roll(dataset);
+				if (item) return item.roll(event);
+			}
+
+			if (dataset.rollType == "atb") {
+				this.actor.rollAttribute(event);
+				return;
 			}
 		}
 
@@ -265,52 +269,5 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			});
 			return roll;
 		}
-	}
-
-	_rollSkill(skillName) {
-		let skillKey = generateSkillKey(skillName);
-		let roll = new Roll(`d100cs<=@skills.${skillKey}.value`, this.actor.getRollData());
-		const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-		const rollMode = game.settings.get("core", "rollMode");
-
-		roll.evaluate({ async: false });
-
-		const stringContent = this._getRollSkillStringContent(roll);
-		roll.toMessage({
-			content: stringContent,
-			speaker: speaker,
-			rollMode: rollMode,
-			flavor: `[Skill] ${skillName}`,
-		});
-		return roll;
-	}
-
-	_getRollSkillStringContent(roll) {
-		const dieRoll = roll.terms[0].results[0].result;
-
-		const isSuccess = roll.total === 1;
-		const isCritical = dieRoll % 11 === 0;
-		const resultString = (isCritical ? "Critical " : "") + (isSuccess ? "Success" : "Failure");
-		const stringContent = `<div class="dice-roll"><div class="dice-result">
-    <div class="dice-formula">${roll.formula}</div>
-    <div class="dice-tooltip" style="display: none;">
-<section class="tooltip-part">
-    <div class="dice">
-        <header class="part-header flexrow">
-            <span class="part-formula">${roll.formula}</span>
-            
-            <span class="part-total">${resultString}</span>
-        </header>
-        <ol class="dice-rolls">
-            <li class="roll die d100${isSuccess ? " success" : ""}">${dieRoll}</li>
-        </ol>
-    </div>
-</section>
-</div>
-
-    <h4 class="dice-total">${resultString}</h4>
-</div></div>`;
-
-		return stringContent;
 	}
 }

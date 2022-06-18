@@ -126,11 +126,17 @@ tr.table-break {
 	}
 }
 
+.item-controls-container .name {
+	flex: 1 1 0;
+	align-self: center;
+}
+
 .item-controls {
 	max-width: 0px;
 	transition: max-width 1s;
 	overflow: hidden;
 	white-space: nowrap;
+	align-self: center;
 }
 
 .atb {
@@ -164,11 +170,13 @@ tr.table-break {
 	padding: 0px 0px 0px 10px;
 }
 
-.cav-boon {
+.cav-boon,
+.cav-boon:disabled {
 	color: green;
 }
 
-.cav-bane {
+.cav-bane,
+.cav-bane:disabled {
 	color: red;
 }
 

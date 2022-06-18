@@ -1,0 +1,50 @@
+<div class="dialog-content">
+    <form>
+        <div class="form-group">
+            <label>Roll Type</label>
+            <select name="rollType"
+                    class="roll-type-select">
+                <option value="attribute"
+                        selected>Attribute Check</option>
+                <option value="skill">Skill Check</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Attribute Name</label>
+            <input type="text"
+                   name="name"
+                   {{#if name}}value="{{name}}"
+                   {{/if}}>
+        </div>
+        <div class="form-group">
+            <label>Value</label>
+            <input type="number"
+                   step="1"
+                   name="attributeValue"
+                   {{#if attributeValue}}value="{{attributeValue}}"
+                   {{/if}}>
+            <input type="hidden"
+                   step="1"
+                   name="skillValue"
+                   {{#if skillValue}}value="{{skillValue}}"
+                   {{/if}}>
+        </div>
+        <div class="form-group difficulty-penalty-div"
+             style="visibility:hidden">
+            <label>Difficulty Penalty</label>
+            <input type="text"
+                   name="difficultyPenalty"
+                   value="">
+        </div>
+    </form>
+</div>
+<div class="dialog-buttons">
+    <button class="dialog-button {{cssClass}}"
+            data-button="cancel">
+        Cancel
+    </button>
+    <button class="dialog-button {{cssClass}}"
+            data-button="normal">
+        Roll
+    </button>
+</div>
