@@ -47,7 +47,6 @@ function _calculateAttributeValue(attributeDict, licences, cavs) {
 	for (let cav of cavs) {
 		cavValues[cav.id] = { origValue: pilotValue, value: pilotValue, bane: false };
 		if (licences.every((x) => x.name !== cav.data.data.requiredLicense)) {
-			cavValues[cav.id].value -= 2;
 			cavValues[cav.id].bane = true;
 		}
 	}

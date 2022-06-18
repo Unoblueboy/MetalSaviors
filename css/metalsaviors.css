@@ -303,6 +303,14 @@ tr.table-break {
   vertical-align: top;
 }
 
+.item-controls-container .name {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 0px;
+  flex: 1 1 0;
+  -ms-flex-item-align: center;
+  align-self: center;
+}
+
 .item-controls {
   max-width: 0px;
   -webkit-transition: max-width 1s;
@@ -310,6 +318,8 @@ tr.table-break {
   transition: max-width 1s;
   overflow: hidden;
   white-space: nowrap;
+  -ms-flex-item-align: center;
+  align-self: center;
 }
 
 .atb {

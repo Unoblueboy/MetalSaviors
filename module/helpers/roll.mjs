@@ -105,7 +105,7 @@ export async function rollSkill(actor = null, { name = null, value = 0, difficul
 	const rollResult = Math.ceil(CONFIG.Dice.randomUniform() * 100) || 1;
 	const targetValue = value + difficultyPenalty;
 	const skillResult = _getSkillResult(rollResult, targetValue);
-	const skillResultClass = _getSkillResultClass(skillResult);
+	const skillResultClass = _getResultClass(skillResult);
 
 	const formula = difficultyPenalty ? `d100 <= ${value} + ${difficultyPenalty}` : `d100 <= ${value}`;
 
@@ -134,6 +134,38 @@ export async function rollSkill(actor = null, { name = null, value = 0, difficul
 	});
 }
 
+export async function rollAttributeCheck(actor = null, { name = null, value = 0 } = {}) {
+	const rollResult = Math.ceil(CONFIG.Dice.randomUniform() * 20) || 1;
+	const attributeCheckResult = rollResult <= value ? "Success" : "Failure";
+	const attributeCheckResultClass = _getResultClass(attributeCheckResult);
+
+	const formula = `d20 <= ${value}`;
+
+	const template = "/systems/metalsaviors/templates/chatMessage/roll/attribute-check.hbs";
+	const templateData = {
+		formula: formula,
+		rollResult: rollResult,
+		attributeCheckresult: attributeCheckResult,
+		attributeCheckResultClass: attributeCheckResultClass,
+	};
+
+	const content = await renderTemplate(template, templateData);
+
+	const flavor = `${actor.name} is rolling an attribute check for ${name}`;
+	const speaker = ChatMessage.getSpeaker({ actor: actor });
+	const rollMode = game.settings.get("core", "rollMode");
+	MetalSaviorsChatMessage.create({
+		user: game.user.id,
+		speaker: speaker,
+		rollMode: rollMode,
+		roll: null,
+		type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+		flavor: flavor,
+		content: content,
+		sound: CONFIG.sounds.dice,
+	});
+}
+
 function _getSkillResult(rollResult, targetValue) {
 	let skillResult = rollResult <= targetValue ? "Success" : "Failure";
 	if ([11, 22, 33, 44, 55, 66, 77, 88, 99, 100].includes(rollResult)) {
@@ -143,7 +175,7 @@ function _getSkillResult(rollResult, targetValue) {
 	return skillResult;
 }
 
-function _getSkillResultClass(skillResult) {
+function _getResultClass(skillResult) {
 	switch (skillResult) {
 		case "Success":
 			return "success";

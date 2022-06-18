@@ -51,11 +51,20 @@ export class MetalSaviorsWeapon extends Item {
 		}
 	}
 
-	async roll() {
-		const data = await this.getWeaponData();
+	async roll(event) {
+		const getOptions = event.shiftKey;
+		const itemData = this.data.data;
 
-		if (data.cancelled) {
-			return;
+		let data = {
+			weaponToHitBonus: itemData.rolls.Normal.toHitBonus,
+			weaponDamageRoll: itemData.rolls.Normal.damageRoll,
+		};
+		if (getOptions) {
+			data = await this.getWeaponData();
+
+			if (data.cancelled) {
+				return;
+			}
 		}
 
 		rollAttack(this.actor, data);

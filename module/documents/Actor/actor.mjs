@@ -3,6 +3,8 @@ import { attributeCalculator, derivedAttributeCalculator } from "../helpers/Calc
 import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
 
 import { METALSAVIORS } from "../../helpers/config.mjs";
+import { rollAttributeCheck, rollSkill } from "../../helpers/roll.mjs";
+import { MetalSaviorsAttributeRollDialog } from "./Dialogs/attributeRollDialog.mjs";
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -187,5 +189,59 @@ export class MetalSaviorsActor extends Actor {
 
 	getCavs() {
 		return this.itemTypes.cav;
+	}
+
+	async rollAttribute(event) {
+		const element = event.currentTarget;
+		const dataset = element.dataset;
+
+		const key = dataset.key;
+		const label = game.i18n.localize(CONFIG.METALSAVIORS.attributes[key]);
+		const cavId = dataset?.cavId;
+		const value = cavId ? this.data.data.cavAttributes[cavId][key].origValue : this.data.data.attributes[key].value;
+		const cavBane = cavId && this.data.data.cavAttributes[cavId][key].bane;
+
+		let skillValue = cavBane ? value - 15 : value;
+		let attributeValue = cavBane ? value - 2 : value;
+
+		const getOptions = event.shiftKey;
+		let rollAsSkill = event.ctrlKey;
+
+		let attributeData = {
+			name: label,
+			value: attributeValue,
+		};
+
+		let skillData = {
+			name: label,
+			value: skillValue,
+		};
+
+		if (getOptions) {
+			const data = await MetalSaviorsAttributeRollDialog.getAttributeOptions({
+				name: label,
+				skillValue: skillValue,
+				attributeValue: attributeValue,
+			});
+
+			if (data.cancelled) {
+				return;
+			}
+
+			if (data.rollAsSkill) {
+				skillData = data;
+			} else {
+				attributeData = data;
+			}
+
+			rollAsSkill = rollAsSkill || data.rollAsSkill;
+		}
+
+		if (rollAsSkill) {
+			rollSkill(this, skillData);
+			return;
+		}
+
+		rollAttributeCheck(this, attributeData);
 	}
 }

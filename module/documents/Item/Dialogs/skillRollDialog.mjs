@@ -30,7 +30,7 @@ export class MetalSaviorsSkillRollDialog extends Dialog {
 		return new Promise((resolve) => {
 			new MetalSaviorsSkillRollDialog(
 				{
-					normalCallback: (html) => resolve(this._processInitiativeOptions(html[0].querySelector("form"))),
+					normalCallback: (html) => resolve(this._processOptions(html[0].querySelector("form"))),
 					cancelCallback: (html) => resolve({ cancelled: true }),
 					skillData: skillData,
 				},
@@ -39,9 +39,9 @@ export class MetalSaviorsSkillRollDialog extends Dialog {
 		});
 	}
 
-	static _processInitiativeOptions(form) {
+	static _processOptions(form) {
 		return {
-			name: parseInt(form.name.value || 0),
+			name: form.name.value || "",
 			value: parseInt(form.value.value || 0),
 			difficultyPenalty: parseInt(form.difficultyPenalty.value || 0),
 		};

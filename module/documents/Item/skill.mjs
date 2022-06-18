@@ -47,21 +47,33 @@ export class MetalSaviorsSkill extends Item {
 	 * @param {Event} event   The originating click event
 	 * @private
 	 */
-	async roll(dataset) {
+	async roll(event) {
+		const element = event.currentTarget;
+		const dataset = element.dataset;
 		const cavId = dataset?.cavId;
-		if (this.type === "learnedSkill") {
-			if (this.type !== "learnedSkill") return;
+		const showOptions = event.shiftKey;
 
-			if (!this.actor) return;
+		if (this.type !== "learnedSkill") return;
 
-			let value = cavId ? this.data.data.cavValue[cavId] : this.data.data.value;
+		if (!this.actor) return;
 
-			const data = await MetalSaviorsSkillRollDialog.getSkillOptions({
+		let value = cavId ? this.data.data.cavValue[cavId] : this.data.data.value;
+
+		let data = {
+			name: this.name,
+			value: value,
+		};
+		if (showOptions) {
+			data = await MetalSaviorsSkillRollDialog.getSkillOptions({
 				name: this.name,
 				value: value,
 			});
 
-			await rollSkill(this.actor, data);
+			if (data.cancelled) {
+				return;
+			}
 		}
+
+		await rollSkill(this.actor, data);
 	}
 }
