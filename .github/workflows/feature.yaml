@@ -44,7 +44,7 @@ jobs:
                   asset_name: release.zip
                   asset_content_type: application/zip
             - name: Update Manifest URL for pre-releases
-              run: python ./.github/workflows/update_system_manifest.py "feature" ${{ steps.create_release.outputs.html_url }} ${{ steps.create_release.outputs.new_tag }}
+              run: python ./.github/workflows/update_system_manifest.py "feature" ${{ steps.create_release.outputs.html_url }} ${{ steps.bump_version.outputs.new_tag }}
             - name: Upload Release Json
               id: upload-release-json
               uses: actions/upload-release-asset@v1
