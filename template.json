@@ -1,6 +1,6 @@
 {
 	"Actor": {
-		"types": ["character", "infantry", "vehicle", "pike", "drone"],
+		"types": ["character", "infantry", "vehicle", "pike", "drone", "blank"],
 		"templates": {
 			"base": {
 				"health": {
@@ -166,6 +166,9 @@
 				"value": 50,
 				"max": 50
 			}
+		},
+		"blank": {
+			"description": ""
 		}
 	},
 	"Item": {
@@ -178,7 +181,8 @@
 			"weaponProficiency",
 			"pilotLicense",
 			"cav",
-			"weapon"
+			"weapon",
+			"concept"
 		],
 		"templates": {
 			"base": {
@@ -318,6 +322,10 @@
 			"MVV": 0,
 			"missileNum": 0,
 			"MSR": 0
+		},
+		"concept": {
+			"templates": ["base"],
+			"value": 5
 		}
 	}
 }

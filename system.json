@@ -2,7 +2,7 @@
 	"name": "metalsaviors",
 	"title": "Metal Saviors",
 	"description": "The Metal Saviors system for FoundryVTT!",
-	"version": "1.0.23",
+	"version": "1.0.24",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "9",
 	"author": "Notepad Anon",
@@ -51,6 +51,12 @@
 			"label": "Drones",
 			"path": "packs/drones.db",
 			"type": "Actor"
+		},
+		{
+			"name": "weapons",
+			"label": "Weapons",
+			"path": "packs/weapons.db",
+			"type": "Item"
 		}
 	],
 	"dependencies": [
@@ -68,8 +74,8 @@
 			"path": "lang/en.json"
 		}
 	],
-	"gridDistance": 5,
-	"gridUnits": "ft",
+	"gridDistance": 10,
+	"gridUnits": "m",
 	"socket": true,
 	"primaryTokenAttribute": "endurance",
 	"secondaryTokenAttribute": "health",

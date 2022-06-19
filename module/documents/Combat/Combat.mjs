@@ -339,6 +339,7 @@ export class MetalSaviorsCombat extends Combat {
 		});
 
 		if (this.combatant.getExtraMovementMomentum() !== 0) {
+			this.combatant.changeExtraMovementMomentum(-this.combatant.getExtraMovementMomentum());
 			await this._pushHistory({
 				type: "action",
 				actionName: "Zero Extra Movement Momentum",

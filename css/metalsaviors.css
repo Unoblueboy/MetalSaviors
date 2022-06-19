@@ -3,6 +3,29 @@
   height: 100%;
 }
 
+.fill-parent-width {
+  width: 100%;
+}
+
+.fill-parent-height {
+  width: 100%;
+}
+
+.fill-parent-offset-height-50 {
+  width: 100%;
+  height: calc(100%-50px);
+}
+
+.fill-parent-offset-height-100 {
+  width: 100%;
+  height: calc(100%-50px);
+}
+
+.fill-parent-offset-height-150 {
+  width: 100%;
+  height: calc(100%-50px);
+}
+
 .flex-0 {
   -webkit-box-flex: 0;
   -ms-flex: 0;
@@ -95,7 +118,8 @@ form.character,
 form.infantry,
 form.vehicle,
 form.pike,
-form.drone {
+form.drone,
+form.blank {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -106,6 +130,10 @@ form.drone {
   -webkit-box-align: stretch;
   -ms-flex-align: stretch;
   align-items: stretch;
+}
+
+select.character-type-select {
+  margin-bottom: 10px;
 }
 
 div.window-app.metalsaviors.sheet.actor {
@@ -283,6 +311,10 @@ form.weapon .editor {
   height: calc(100% - 50px);
 }
 
+form.blank .editor {
+  height: calc(100% - 100px);
+}
+
 tr.table-break {
   min-width: 4px;
   border-top: thin solid;
@@ -309,6 +341,10 @@ tr.table-break {
   flex: 1 1 0;
   -ms-flex-item-align: center;
   align-self: center;
+}
+
+table tr.current-movement-speed {
+  background-color: rgba(0, 128, 0, 0.25);
 }
 
 .item-controls {

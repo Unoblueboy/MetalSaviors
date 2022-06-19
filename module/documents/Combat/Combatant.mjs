@@ -30,11 +30,40 @@ export class MetalSaviorsCombatant extends Combatant {
 		}
 	}
 
+	static getMovementSpeedKey(movementSpeed) {
+		switch (movementSpeed) {
+			case 0:
+				return "halt";
+			case 1:
+				return "walk";
+			case 2:
+				return "pace";
+			case 3:
+				return "gallop";
+			case 4:
+				return "sprint";
+			default:
+				return null;
+		}
+	}
+
+	getCurMovementSpeedKey() {
+		const curMovementSpeed = this.getCurMovementSpeed();
+		return MetalSaviorsCombatant.getMovementSpeedKey(curMovementSpeed);
+	}
+
 	async changeMovementSpeed(dSpeed) {
 		const curSpeed = this.getFlag("metalsaviors", "curMovementSpeed");
 		const newSpeed = Math.clamped(curSpeed + dSpeed, 0, 4);
-		this.setFlag("metalsaviors", "curMovementSpeed", newSpeed);
+		await this.setFlag("metalsaviors", "curMovementSpeed", newSpeed);
+		this.updateActor();
 		return newSpeed;
+	}
+
+	updateActor() {
+		if (this.actor && this.actor?.sheet?.rendered) {
+			this.actor.render();
+		}
 	}
 
 	getCurMovementSpeed() {
@@ -60,7 +89,10 @@ export class MetalSaviorsCombatant extends Combatant {
 
 	async changeExtraMovementMomentum(dExtraMomentum) {
 		const baseExtraMovementMomentum = this.getExtraMovementMomentum();
-		return await this.setFlag("metalsaviors", "extraMovementMomentum", baseExtraMovementMomentum + dExtraMomentum);
+		const newExtraMomentum = baseExtraMovementMomentum + dExtraMomentum;
+		await this.setFlag("metalsaviors", "extraMovementMomentum", newExtraMomentum);
+		this.updateActor();
+		return newExtraMomentum;
 	}
 
 	getFinesse() {
@@ -72,7 +104,9 @@ export class MetalSaviorsCombatant extends Combatant {
 	}
 
 	async setRemainingActions(remActions) {
-		return await this.setFlag("metalsaviors", "remainingActions", remActions);
+		const result = await this.setFlag("metalsaviors", "remainingActions", remActions);
+		this.updateActor();
+		return result;
 	}
 
 	async resetForNewRound() {
@@ -138,6 +172,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		}
 
 		await Promise.all(asyncTasks);
+		this.updateActor();
 	}
 
 	async undoAction({ actionName = "", actionCost = 0, dInit = 0, dSpeed = 0, dExtraMomentum = 0 } = {}) {
@@ -166,6 +201,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		}
 
 		await Promise.all(asyncTasks);
+		this.updateActor();
 	}
 
 	async rollInitiative() {
@@ -191,5 +227,6 @@ export class MetalSaviorsCombatant extends Combatant {
 		});
 
 		this.update({ initiative: roll.total });
+		this.updateActor();
 	}
 }

@@ -55,3 +55,11 @@ METALSAVIORS.derivedAttributesAbbreviations = {
 METALSAVIORS.combat = {
 	defaultActionsPerRound: 1,
 };
+
+METALSAVIORS.combatSpeeds = {
+	halt: "METALSAVIORS.CombatSpeedHalt",
+	walk: "METALSAVIORS.CombatSpeedWalk",
+	pace: "METALSAVIORS.CombatSpeedPace",
+	gallop: "METALSAVIORS.CombatSpeedGallop",
+	sprint: "METALSAVIORS.CombatSpeedSprint",
+};

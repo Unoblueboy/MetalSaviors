@@ -1,0 +1,24 @@
+<form class="{{cssClass}}"
+      autocomplete="off">
+    <header class="sheet-header">
+        <div class="header-fields">
+            <h1 class="charname"><input name="name"
+                       type="text"
+                       value="{{item.name}}"
+                       placeholder="Name" /></h1>
+        </div>
+    </header>
+    <hr>
+    <div class="sheet-body">
+        <div class="form-group">
+            <label>Value</label>
+            <input name="data.value"
+                   type="text"
+                   value="{{data.value}}"
+                   placeholder="Value" />
+        </div>
+        <div class="tab">
+            {{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
+        </div>
+    </div>
+</form>
