@@ -74,48 +74,50 @@
             {{/if}}
         </div>
     </div>
-    <div class="sheet-body-group derived-atbs">
-        {{#each data.derivedAttributes as |dAttribute name|}}
-            <div class="flexcol flex-1">
-                <div class="flex-1">{{dAttribute.label}}</div>
-                <div class="exit-submit flex-0">
-                    {{#if (eq name "damageModifier")}}
-                        <div><input type="text"
-                                   value="{{dAttribute.value}}"
-                                   data-dtype="String"
-                                   disabled="true" />
-                        </div>
-                        <div class="base-bonus-popup">
-                            <div class="flexcol">
-                                <div>Other Bonuses</div>
-                                <div><input type="text"
-                                           title="Other Bonuses"
-                                           name="data.derivedAttributes.{{name}}.otherBonuses"
-                                           value="{{dAttribute.otherBonuses}}"
-                                           data-dtype="String" /></div>
+    {{#if (ne characterType "minorCharacter")}}
+        <div class="sheet-body-group derived-atbs">
+            {{#each data.derivedAttributes as |dAttribute name|}}
+                <div class="flexcol flex-1">
+                    <div class="flex-1">{{dAttribute.label}}</div>
+                    <div class="exit-submit flex-0">
+                        {{#if (eq name "damageModifier")}}
+                            <div><input type="text"
+                                       value="{{dAttribute.value}}"
+                                       data-dtype="Dice"
+                                       disabled="true" />
                             </div>
-                        </div>
-                    {{else}}
-                        <div><input type="text"
-                                   value="{{dAttribute.value}}"
-                                   data-dtype="Number"
-                                   disabled="true" />
-                        </div>
-                        <div class="base-bonus-popup">
-                            <div class="flexcol">
-                                <div>Other Bonuses</div>
-                                <div><input type="text"
-                                           title="Other Bonuses"
-                                           name="data.derivedAttributes.{{name}}.otherBonuses"
-                                           value="{{dAttribute.otherBonuses}}"
-                                           data-dtype="Number" /></div>
+                            <div class="base-bonus-popup">
+                                <div class="flexcol">
+                                    <div>Other Bonuses</div>
+                                    <div><input type="text"
+                                               title="Other Bonuses"
+                                               name="data.derivedAttributes.{{name}}.otherBonuses"
+                                               value="{{dAttribute.otherBonuses}}"
+                                               data-dtype="Dice" /></div>
+                                </div>
                             </div>
-                        </div>
-                    {{/if}}
+                        {{else}}
+                            <div><input type="text"
+                                       value="{{dAttribute.value}}"
+                                       data-dtype="Number"
+                                       disabled="true" />
+                            </div>
+                            <div class="base-bonus-popup">
+                                <div class="flexcol">
+                                    <div>Other Bonuses</div>
+                                    <div><input type="text"
+                                               title="Other Bonuses"
+                                               name="data.derivedAttributes.{{name}}.otherBonuses"
+                                               value="{{dAttribute.otherBonuses}}"
+                                               data-dtype="Number" /></div>
+                                </div>
+                            </div>
+                        {{/if}}
+                    </div>
                 </div>
-            </div>
-        {{/each}}
-    </div>
+            {{/each}}
+        </div>
+    {{/if}}
 </div>
 <div class="flexrow">
     <div class="column1 flex-3">

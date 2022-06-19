@@ -22,6 +22,7 @@ import { METALSAVIORS } from "./helpers/config.mjs";
 import { MetalSaviorsDroneSheet } from "./sheets/actor/drone-sheet.mjs";
 import { MetalSaviorsChatMessage } from "./documents/ChatMessage/chatMessage.mjs";
 import { MetalSaviorsBlankSheet } from "./sheets/actor/blank-sheet.mjs";
+import { MetalSaviorsConceptSheet } from "./sheets/item/concept-sheet.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -97,6 +98,10 @@ Hooks.once("init", async function () {
 	});
 	Items.registerSheet("metalsaviors", MetalSaviorsWeaponSheet, {
 		types: ["weapon"],
+		makeDefault: true,
+	});
+	Items.registerSheet("metalsaviors", MetalSaviorsConceptSheet, {
+		types: ["concept"],
 		makeDefault: true,
 	});
 

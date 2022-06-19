@@ -3,8 +3,14 @@ import { attributeCalculator, derivedAttributeCalculator } from "../helpers/Calc
 import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
 
 import { METALSAVIORS } from "../../helpers/config.mjs";
-import { rollAttributeCheck, rollSkill } from "../../helpers/roll.mjs";
-import { MetalSaviorsAttributeRollDialog } from "./Dialogs/attributeRollDialog.mjs";
+import { rollAttributeCheck, rollAttributeOrSkill, rollSkill } from "../../helpers/roll.mjs";
+import { MetalSaviorsAttributeRollDialog } from "./Dialogs/attributeOrSkillDialog.mjs";
+
+export const CharacterType = {
+	character: "Player Character",
+	minorCharacter: "Minor Character",
+	majorCharacter: "Major Character",
+};
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -22,6 +28,7 @@ export class MetalSaviorsActor extends Actor {
 
 		const sameNameTypeItems = actor.items.filter((x) => x.name === item.name && x.type === item.type);
 
+		// When a new item is added
 		if (sameNameTypeItems.length === 0) {
 			item.data.update({ "data.lvlAcquired": actor.data.data.level.value });
 			return;
@@ -33,13 +40,28 @@ export class MetalSaviorsActor extends Actor {
 			);
 		}
 
-		if (item.type === "learnedSkill") {
-			const origItem = sameNameTypeItems[0];
-			const origItemData = origItem.data;
-			origItem.update({
-				"data.numAcquisitions": origItemData.data.numAcquisitions + 1,
-			});
+		const origItem = sameNameTypeItems[0];
+		const origItemData = origItem.data;
+		switch (item.type) {
+			case "learnedSkill":
+				const newNumAcquisitions = origItemData.data.numAcquisitions + 1;
+				ui.notifications.info(
+					`The skill ${origItem.name} has been updated, it now has ${newNumAcquisitions} acquisition`
+				);
+				origItem.update({
+					"data.numAcquisitions": newNumAcquisitions,
+				});
+				break;
+			case "weaponProficiency":
+				ui.notifications.info(`The actor ${this.name} already has the Weapon Proficiency ${origItem.name}`);
+				break;
+			case "pilotLicense":
+				ui.notifications.info(`The actor ${this.name} already has the Pilot License ${origItem.name}`);
+				break;
+			default:
+				break;
 		}
+
 		return false;
 	}
 
@@ -54,13 +76,23 @@ export class MetalSaviorsActor extends Actor {
 
 		const sameTypeItems = actor.items.filter((x) => x.type === item.type);
 
-		if (sameTypeItems.length === 0) return;
+		if (sameTypeItems.length === 0) {
+			ui.notifications.info(
+				`The actor ${this.name} has added Combat Training,` +
+					` changing the Actions Per Round to ${item.data.data.actionsPerRound}`
+			);
+			return;
+		}
 
 		if (sameTypeItems.length > 1) {
 			console.log(`Expected there to be at most 1 ${item.type} with same name but ${sameTypeItems.length} found`);
 		}
 
 		const origItem = sameTypeItems[0];
+		ui.notifications.info(
+			`The actor ${this.name} has updated their Combat Training,` +
+				` changing the Actions Per Round to ${item.data.data.actionsPerRound}`
+		);
 		origItem.update({
 			name: item.name,
 			"data.actionsPerRound": item.data.data.actionsPerRound,
@@ -68,6 +100,20 @@ export class MetalSaviorsActor extends Actor {
 		});
 
 		return false;
+	}
+
+	_initialize() {
+		super._initialize();
+
+		if (!this.isOwner) return;
+		if (this.type !== "character") return;
+		if (this.getFlag("metalsaviors", "characterType")) return;
+
+		this.setCharacterType("character");
+	}
+
+	async setCharacterType(charType) {
+		await this.setFlag("metalsaviors", "characterType", charType);
 	}
 
 	/** @override */
@@ -210,41 +256,12 @@ export class MetalSaviorsActor extends Actor {
 		const getOptions = event.shiftKey;
 		let rollAsSkill = event.ctrlKey;
 
-		let attributeData = {
+		rollAttributeOrSkill(this, {
 			name: label,
-			value: attributeValue,
-		};
-
-		let skillData = {
-			name: label,
-			value: skillValue,
-		};
-
-		if (getOptions) {
-			const data = await MetalSaviorsAttributeRollDialog.getAttributeOptions({
-				name: label,
-				skillValue: skillValue,
-				attributeValue: attributeValue,
-			});
-
-			if (data.cancelled) {
-				return;
-			}
-
-			if (data.rollAsSkill) {
-				skillData = data;
-			} else {
-				attributeData = data;
-			}
-
-			rollAsSkill = rollAsSkill || data.rollAsSkill;
-		}
-
-		if (rollAsSkill) {
-			rollSkill(this, skillData);
-			return;
-		}
-
-		rollAttributeCheck(this, attributeData);
+			skillValue,
+			attributeValue,
+			getOptions,
+			rollAsSkill,
+		});
 	}
 }

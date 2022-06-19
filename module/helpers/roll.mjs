@@ -1,3 +1,4 @@
+import { MetalSaviorsAttributeRollDialog as MetalSaviorsAttributeOrSkillDialog } from "../documents/Actor/Dialogs/attributeOrSkillDialog.mjs";
 import { MetalSaviorsChatMessage } from "../documents/ChatMessage/chatMessage.mjs";
 
 export async function rollInitiative(combatant, { inCav = false, bonus = 0, createMessage = true, messageData = {} }) {
@@ -175,6 +176,48 @@ export async function rollAttributeCheck(actor = null, { name = null, value = 0 
 		content: content,
 		sound: CONFIG.sounds.dice,
 	});
+}
+
+export async function rollAttributeOrSkill(
+	actor = null,
+	{ name = "", skillValue = 0, attributeValue = 0, getOptions = false, rollAsSkill = false } = {}
+) {
+	let attributeData = {
+		name: name,
+		value: attributeValue,
+	};
+
+	let skillData = {
+		name: name,
+		value: skillValue,
+	};
+
+	if (getOptions) {
+		const data = await MetalSaviorsAttributeOrSkillDialog.getAttributeOptions({
+			name: name,
+			skillValue: skillValue,
+			attributeValue: attributeValue,
+		});
+
+		if (data.cancelled) {
+			return;
+		}
+
+		if (data.rollAsSkill) {
+			skillData = data;
+		} else {
+			attributeData = data;
+		}
+
+		rollAsSkill = rollAsSkill || data.rollAsSkill;
+	}
+
+	if (rollAsSkill) {
+		rollSkill(actor, skillData);
+		return;
+	}
+
+	rollAttributeCheck(actor, attributeData);
 }
 
 function _getSkillResult(rollResult, targetValue) {

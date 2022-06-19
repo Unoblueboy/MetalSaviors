@@ -2,6 +2,11 @@
       autocomplete="off">
     <div class="sidebar">
         <div>
+            <select class="character-type-select fill-parent-width">
+                {{selectOptions characterTypes selected=flags.metalsaviors.characterType}}
+            </select>
+        </div>
+        <div>
             <img class="profile-img"
                  src="{{actor.img}}"
                  data-edit="img"
@@ -15,7 +20,8 @@
                     attributes=data.attributes
                     attributeSection="attributes"
                     attributeLabels = attributeLabels
-                    popup=editable}}
+                    popup=editable
+                    characterType=flags.metalsaviors.characterType}}
             </div>
             {{#each data.cavAttributes as |cavAttributes id|}}
                 <div class="tab"
@@ -27,7 +33,8 @@
                         attributeSection=(concat "cavAttributes." id)
                         attributeLabels = ../attributeLabels
                         cavId = id
-                        popup=false}}
+                        popup=false
+                        characterType=../flags.metalsaviors.characterType}}
                 </div>
             {{/each}}
         </div>
@@ -51,24 +58,37 @@
                                value="{{data.callsign}}"
                                placeholder="Call Sign" /></div>
                 </div>
-                <div class="flexrow flex-1">
-                    <div class="flexcol">
-                        <div>Level</div>
-                        <div><input class="update-actor"
-                                   type="text"
-                                   name="data.level.value"
-                                   value="{{data.level.value}}"
-                                   data-dtype="Number" /></div>
+                {{#if (eq flags.metalsaviors.characterType "character")}}
+                    <div class="flexrow flex-1">
+                        <div class="flexcol">
+                            <div>Level</div>
+                            <div><input class="update-actor"
+                                       type="text"
+                                       name="data.level.value"
+                                       value="{{data.level.value}}"
+                                       data-dtype="Number" /></div>
+                        </div>
+                        <div class="flexcol">
+                            <div>Experience</div>
+                            <div><input class="update-actor"
+                                       type="text"
+                                       name="data.level.exp"
+                                       value="{{data.level.exp}}"
+                                       data-dtype="Number" /></div>
+                        </div>
                     </div>
-                    <div class="flexcol">
-                        <div>Experience</div>
-                        <div><input class="update-actor"
-                                   type="text"
-                                   name="data.level.exp"
-                                   value="{{data.level.exp}}"
-                                   data-dtype="Number" /></div>
+                {{else if (eq flags.metalsaviors.characterType "majorCharacter")}}
+                    <div class="flexrow flex-1">
+                        <div class="flexcol">
+                            <div>Level</div>
+                            <div><input class="update-actor"
+                                       type="text"
+                                       name="data.level.value"
+                                       value="{{data.level.value}}"
+                                       data-dtype="Number" /></div>
+                        </div>
                     </div>
-                </div>
+                {{/if}}
             </div>
         </header>
         <div class="sheet-tabs"
@@ -95,7 +115,8 @@
                  data-tab="pilot">
                 {{> "systems/metalsaviors/templates/actor/parts/actor-pilot.hbs" 
                     weapons=weapons.pilot
-                    editable=editable}}
+                    editable=editable
+                    characterType=flags.metalsaviors.characterType}}
             </div>
             {{#each cavs as |cav|}}
                 <div class="tab item"
@@ -108,7 +129,8 @@
                         editable=../editable
                         curMovementSpeed=../curMovementSpeed
                         excessMomentum=../excessMomentum
-                        CONFIG=../CONFIG}}
+                        CONFIG=../CONFIG
+                        characterType=../flags.metalsaviors.characterType}}
                 </div>
             {{/each}}
         </div>

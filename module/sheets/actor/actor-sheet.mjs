@@ -1,3 +1,4 @@
+import { CharacterType as CharacterTypes } from "../../documents/Actor/actor.mjs";
 import { MetalSaviorsCombatant } from "../../documents/Combat/Combatant.mjs";
 import { onManageActiveEffect, prepareActiveEffectCategories } from "../../helpers/effects.mjs";
 
@@ -94,6 +95,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 
 		context.curMovementSpeed = token.combatant?.getCurMovementSpeedKey();
 		context.excessMomentum = token.combatant?.getExtraMovementMomentum();
+		context.characterTypes = CharacterTypes;
 	}
 
 	/**
@@ -119,6 +121,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			pilot: [],
 			cav: Object.fromEntries(this.actor.getCavs().map((cav) => [cav.id, []])),
 		};
+		const concepts = {};
 
 		// Iterate through items, allocating to containers
 		for (let i of context.items) {
@@ -163,6 +166,9 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 
 					weaponList.push(i);
 					break;
+				case "concept":
+					concepts[i._id] = i;
+					break;
 			}
 		}
 
@@ -174,6 +180,7 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		context.pilotLicenses = pilotLicenses;
 		context.cavs = cavs;
 		context.weapons = weapons;
+		context.concepts = concepts;
 	}
 
 	/* -------------------------------------------- */
@@ -189,6 +196,10 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			item.sheet.render(true);
 		});
 
+		// -------------------------------------------------------------
+		// Everything below here is only needed if the sheet is editable
+		if (!this.isEditable) return;
+
 		// Delete Inventory Item
 		html.find(".item-delete").click((ev) => {
 			const li = $(ev.currentTarget).closest(".item");
@@ -197,9 +208,8 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			li.slideUp(200, () => this.render(false));
 		});
 
-		// -------------------------------------------------------------
-		// Everything below here is only needed if the sheet is editable
-		if (!this.isEditable) return;
+		// Add Inventory Item
+		html.find(".item-create").click(this._onItemCreate.bind(this));
 
 		html.find(".cav-data").change((ev) => {
 			const itemPath = ev.target.dataset.itemPath;
@@ -218,6 +228,12 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			if (form) {
 				form.submit();
 			}
+		});
+
+		html.find(".character-type-select").change(async (ev) => {
+			const element = ev.target;
+			await this.actor.setCharacterType(element.value);
+			this.render();
 		});
 
 		// Drag events for macros.
@@ -239,6 +255,33 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 		}
 
 		this._onSubmit(event);
+	}
+
+	/**
+	 * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
+	 * @param {Event} event   The originating click event
+	 * @private
+	 */
+	async _onItemCreate(event) {
+		event.preventDefault();
+		const header = event.currentTarget;
+		// Get the type of item to create.
+		const type = header.dataset.type;
+		// Grab any data associated with this control.
+		const data = duplicate(header.dataset);
+		// Initialize a default name.
+		const name = `New ${type.capitalize()}`;
+		// Prepare the item object.
+		const itemData = {
+			name: name,
+			type: type,
+			data: data,
+		};
+		// Remove the type from the dataset since it's in the itemData.type prop.
+		delete itemData.data["type"];
+
+		// Finally, create the item!
+		return await Item.create(itemData, { parent: this.actor });
 	}
 
 	/**

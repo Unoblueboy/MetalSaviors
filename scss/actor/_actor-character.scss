@@ -11,6 +11,10 @@ form.blank {
 	@include flex-container($direction: row);
 }
 
+select.character-type-select {
+	margin-bottom: 10px;
+}
+
 div.window-app.metalsaviors.sheet.actor {
 	min-width: 600px;
 	min-height: 800px;

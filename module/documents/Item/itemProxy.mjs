@@ -2,6 +2,7 @@ import { MetalSaviorsItem } from "./item.mjs";
 import { MetalSaviorsSkill } from "./skill.mjs";
 import { MetalSaviorsCav } from "./cav.mjs";
 import { MetalSaviorsWeapon } from "./weapons/weapon.mjs";
+import { MetalSaviorsConcept } from "./concept.mjs";
 
 //Provide a type string to class object mapping to keep our code clean
 const itemMappings = {
@@ -14,6 +15,7 @@ const itemMappings = {
 	pilotLicense: MetalSaviorsSkill,
 	cav: MetalSaviorsCav,
 	weapon: MetalSaviorsWeapon,
+	concept: MetalSaviorsConcept,
 };
 
 export const MetalSaviorsItemProxy = new Proxy(function () {}, {
