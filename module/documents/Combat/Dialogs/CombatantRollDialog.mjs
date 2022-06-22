@@ -40,10 +40,29 @@ export class MetalSaviorsCombatantRollDialog extends Dialog {
 	}
 
 	static _processInitiativeOptions(form) {
-		return {
+		const inCav = form.inCav.checked;
+		const data = {
 			bonus: parseInt(form.bonus.value || 0),
-			inCav: form.inCav.checked,
+			inCav: inCav,
 		};
+		if (inCav) {
+			data.combatSpeed = form.combatSpeed.value;
+		}
+		return data;
+	}
+
+	activateListeners(html) {
+		super.activateListeners(html);
+		const combatSpeedDiv = html.find(".combat-speed-div").get(0);
+
+		html.find(".in-cav-checkbox").change((ev) => {
+			const inCav = ev.target.checked;
+			if (inCav) {
+				combatSpeedDiv.style.visibility = "visible";
+			} else {
+				combatSpeedDiv.style.visibility = "hidden";
+			}
+		});
 	}
 }
 
@@ -91,11 +110,12 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 
 	static _processInitiativeOptions(form, combatants) {
 		const options = {};
+		const inCav = form[`${combatant.id}_inCav`].checked;
 
 		for (const combatant of combatants) {
 			options[combatant.id] = {
 				bonus: parseInt(form[`${combatant.id}_bonus`].value || 0),
-				inCav: form[`${combatant.id}_inCav`].checked,
+				inCav: inCav,
 			};
 		}
 

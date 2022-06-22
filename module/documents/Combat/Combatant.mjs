@@ -55,6 +55,11 @@ export class MetalSaviorsCombatant extends Combatant {
 	async changeMovementSpeed(dSpeed) {
 		const curSpeed = this.getFlag("metalsaviors", "curMovementSpeed");
 		const newSpeed = Math.clamped(curSpeed + dSpeed, 0, 4);
+		return await this.setMovementSpeed(newSpeed);
+	}
+
+	async setMovementSpeed(newMovementSpeed) {
+		const newSpeed = Math.clamped(newMovementSpeed, 0, 4);
 		await this.setFlag("metalsaviors", "curMovementSpeed", newSpeed);
 		this.updateActor();
 		return newSpeed;
@@ -227,6 +232,9 @@ export class MetalSaviorsCombatant extends Combatant {
 		});
 
 		this.update({ initiative: roll.total });
+		if (initiativeOptions.combatSpeed !== undefined) {
+			await this.setMovementSpeed(initiativeOptions.combatSpeed);
+		}
 		this.updateActor();
 	}
 }
