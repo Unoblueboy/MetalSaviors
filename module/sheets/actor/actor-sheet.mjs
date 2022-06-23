@@ -88,14 +88,14 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			derivedAttribute.label = game.i18n.localize(CONFIG.METALSAVIORS.derivedAttributes[key]) ?? key;
 		}
 
-		// Get current movement speed (if in combat)
+		context.characterTypes = CharacterTypes;
 
 		const token = this.actor.getActiveTokens(true, true)[0];
 		if (!token) return;
 
+		// The following are only included for tokens
 		context.curMovementSpeed = token.combatant?.getCurMovementSpeedKey();
 		context.excessMomentum = token.combatant?.getExtraMovementMomentum();
-		context.characterTypes = CharacterTypes;
 	}
 
 	/**

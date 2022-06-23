@@ -13,11 +13,19 @@ export class MetalSaviorsWeapon extends Item {
 			return;
 		}
 
-		if (this.actor.type !== "character") {
+		if (!["character", "drone", "vehicle"].includes(this.actor.type)) {
 			return;
 		}
 
-		this.setFlag("metalsaviors", "owner", { type: "pilot", id: this.actor.id });
+		switch (this.actor.type) {
+			case "character":
+				this.setFlag("metalsaviors", "owner", { type: "pilot", id: this.actor.id });
+				break;
+
+			default:
+				this.setFlag("metalsaviors", "owner", { type: this.actor.type, id: this.actor.id });
+				break;
+		}
 	}
 
 	getOwner() {
@@ -30,7 +38,7 @@ export class MetalSaviorsWeapon extends Item {
 		}
 
 		const ownerData = this.getFlag("metalsaviors", "owner");
-		if (ownerData?.type === "pilot") {
+		if (!["pilot", "drone", "vehicle"].includes(ownerData?.type)) {
 			return this.actor.name;
 		}
 
@@ -68,13 +76,27 @@ export class MetalSaviorsWeapon extends Item {
 	async roll(event) {
 		const getOptions = event.shiftKey;
 		const itemData = this.data.data;
+		let data;
 
-		let data = {
-			weaponName: this.name,
-			attackerName: this.getOwnerName(),
-			weaponToHitBonus: itemData.rolls.Normal.toHitBonus,
-			weaponDamageRoll: itemData.rolls.Normal.damageRoll,
-		};
+		switch (this.weaponType) {
+			case "missile":
+				data = {
+					weaponName: this.name,
+					attackerName: this.getOwnerName(),
+					includeToHit: false,
+					weaponDamageRoll: itemData.rolls.Normal.damageRoll,
+				};
+				break;
+			default:
+				data = {
+					weaponName: this.name,
+					attackerName: this.getOwnerName(),
+					weaponToHitBonus: itemData.rolls.Normal.toHitBonus,
+					weaponDamageRoll: itemData.rolls.Normal.damageRoll,
+				};
+				break;
+		}
+
 		if (getOptions) {
 			data = await this.getWeaponData();
 
