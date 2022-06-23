@@ -68,13 +68,27 @@ export class MetalSaviorsWeapon extends Item {
 	async roll(event) {
 		const getOptions = event.shiftKey;
 		const itemData = this.data.data;
+		let data;
 
-		let data = {
-			weaponName: this.name,
-			attackerName: this.getOwnerName(),
-			weaponToHitBonus: itemData.rolls.Normal.toHitBonus,
-			weaponDamageRoll: itemData.rolls.Normal.damageRoll,
-		};
+		switch (this.weaponType) {
+			case "missile":
+				data = {
+					weaponName: this.name,
+					attackerName: this.getOwnerName(),
+					includeToHit: false,
+					weaponDamageRoll: itemData.rolls.Normal.damageRoll,
+				};
+				break;
+			default:
+				data = {
+					weaponName: this.name,
+					attackerName: this.getOwnerName(),
+					weaponToHitBonus: itemData.rolls.Normal.toHitBonus,
+					weaponDamageRoll: itemData.rolls.Normal.damageRoll,
+				};
+				break;
+		}
+
 		if (getOptions) {
 			data = await this.getWeaponData();
 
