@@ -40,10 +40,35 @@ export class MetalSaviorsCombatantRollDialog extends Dialog {
 	}
 
 	static _processInitiativeOptions(form) {
-		return {
+		const inCav = form.inCav.checked;
+		const data = {
 			bonus: parseInt(form.bonus.value || 0),
-			inCav: form.inCav.checked,
+			inCav: inCav,
 		};
+		if (inCav) {
+			data.combatSpeed = form.combatSpeed.value;
+		}
+		return data;
+	}
+
+	getData() {
+		const context = super.getData();
+		context.combatSpeedOptions = this.combatant.getCombatSpeedOptions();
+		return context;
+	}
+
+	activateListeners(html) {
+		super.activateListeners(html);
+		const combatSpeedDiv = html.find(".combat-speed-div").get(0);
+
+		html.find(".in-cav-checkbox").change((ev) => {
+			const inCav = ev.target.checked;
+			if (inCav) {
+				combatSpeedDiv.style.visibility = "visible";
+			} else {
+				combatSpeedDiv.style.visibility = "hidden";
+			}
+		});
 	}
 }
 
@@ -93,10 +118,14 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 		const options = {};
 
 		for (const combatant of combatants) {
+			const inCav = form[`${combatant.id}_inCav`].checked;
 			options[combatant.id] = {
 				bonus: parseInt(form[`${combatant.id}_bonus`].value || 0),
-				inCav: form[`${combatant.id}_inCav`].checked,
+				inCav: inCav,
 			};
+			if (inCav) {
+				options[combatant.id].combatSpeed = form[`${combatant.id}_combatSpeed`].value;
+			}
 		}
 
 		return options;
@@ -107,7 +136,23 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 		context.combatants = [...this.combatants].map((c) => ({
 			id: c.id,
 			name: c.name,
+			combatSpeedOptions: c.getCombatSpeedOptions(),
 		}));
 		return context;
+	}
+
+	activateListeners(html) {
+		super.activateListeners(html);
+
+		html.find(".in-cav-checkbox").change((ev) => {
+			const element = ev.target;
+			const inCav = element.checked;
+			const combatSpeedCell = $(element).closest("td").siblings(".combat-speed-td").get(0);
+			if (inCav) {
+				combatSpeedCell.style.visibility = "visible";
+			} else {
+				combatSpeedCell.style.visibility = "hidden";
+			}
+		});
 	}
 }

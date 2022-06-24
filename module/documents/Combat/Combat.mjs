@@ -120,6 +120,10 @@ export class MetalSaviorsCombat extends Combat {
 				messageData,
 			});
 
+			if (initiativeOptions.combatSpeed !== undefined) {
+				await combatant.setMovementSpeed(initiativeOptions.combatSpeed);
+			}
+
 			updates.push({ _id: id, initiative: roll.total });
 		}
 

@@ -2,19 +2,34 @@
     <form>
         <div class="form-group">
             <label>Bonus</label>
-            <input type="number" name="bonus" value="0" step="1" />
+            <input type="number"
+                   name="bonus"
+                   value="0"
+                   step="1" />
         </div>
         <div class="form-group">
             <label>In CAV</label>
-            <input type="checkbox" name="inCav" />
+            <input type="checkbox"
+                   name="inCav"
+                   class="in-cav-checkbox" />
+        </div>
+        <div class="form-group combat-speed-div"
+             style="visibility:hidden;">
+            <label>Combat Speed</label>
+            <select type="checkbox"
+                    name="combatSpeed">
+                {{selectOptions combatSpeedOptions}}
+            </select>
         </div>
     </form>
 </div>
 <div class="dialog-buttons">
-    <button class="dialog-button {{cssClass}}" data-button="cancel">
+    <button class="dialog-button {{cssClass}}"
+            data-button="cancel">
         Cancel
     </button>
-    <button class="dialog-button {{cssClass}}" data-button="normal">
+    <button class="dialog-button {{cssClass}}"
+            data-button="normal">
         Roll Initiative
     </button>
 </div>

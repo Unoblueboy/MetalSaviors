@@ -151,44 +151,7 @@
                            disabled="true" /></div>
             </div>
         </div>
-        <div>
-            Combat Speeds
-            <table>
-                <tr>
-                    <th></th>
-                    <th>Hit Bonus</th>
-                    <th>Momentum</th>
-                    <th>Spaces Moved</th>
-                </tr>
-                {{#each data.speed.combatSpeeds as |combatSpeedData key|}}
-                    <tr {{#if (eq ../curMovementSpeed key)}}
-                        class="current-movement-speed"
-                        {{/if}}>
-                        <th>{{localize (lookup ../CONFIG.combatSpeeds key)}}</th>
-                        <td><input type="text"
-                                   data-item-path="data.speed.combatSpeeds.{{key}}.hitBonus"
-                                   value="{{combatSpeedData.hitBonus}}"
-                                   data-dtype="Number"
-                                   disabled="true" />
-                        </td>
-                        <td><input type="text"
-                                   data-item-path="data.speed.combatSpeeds.{{key}}.momentum"
-                                   value="{{combatSpeedData.momentum~}} 
-                                   &nbsp;{{#if (and (eq ../curMovementSpeed key) ../excessMomentum)~}} + {{../excessMomentum~}}
-                                   {{/if}}"
-                                   data-dtype="Number"
-                                   disabled="true" />
-                        </td>
-                        <td><input type="text"
-                                   data-item-path="data.speed.combatSpeeds.{{key}}.spacesMoved"
-                                   value="{{combatSpeedData.spacesMoved}}"
-                                   data-dtype="Number"
-                                   disabled="true" />
-                        </td>
-                    </tr>
-                {{/each}}
-            </table>
-        </div>
+        {{> "systems/metalsaviors/templates/actor/parts/actor-combat-speeds.hbs" combatSpeeds = data.speed.combatSpeeds }}
         <div>
             <h3>Traits</h3>
             {{#each data.traits as |description name|}}

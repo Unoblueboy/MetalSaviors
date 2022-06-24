@@ -20,6 +20,9 @@ export class MetalSaviorsVehicleSheet extends ActorSheet {
 		context.data = actorData.data;
 
 		this._prepareItems(context);
+		this._prepareVehicleData(context);
+
+		context.CONFIG = CONFIG.METALSAVIORS;
 
 		return context;
 	}
@@ -46,5 +49,14 @@ export class MetalSaviorsVehicleSheet extends ActorSheet {
 		// Assign and return
 		context.gear = gear;
 		context.combatTraining = combatTraining;
+	}
+
+	_prepareVehicleData(context) {
+		const token = this.actor.getActiveTokens(true, true)[0];
+		if (!token) return;
+
+		// The following are only included for tokens
+		context.curMovementSpeed = token.combatant?.getCurMovementSpeedKey();
+		context.excessMomentum = token.combatant?.getExtraMovementMomentum();
 	}
 }

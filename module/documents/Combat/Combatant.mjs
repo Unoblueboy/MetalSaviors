@@ -1,7 +1,18 @@
 import { rollInitiative } from "../../helpers/roll.mjs";
+import { CombatSpeedHelper } from "../../helpers/CombatSpeedHelper.mjs";
 import { MetalSaviorsCombatantRollDialog } from "./Dialogs/CombatantRollDialog.mjs";
 
 export class MetalSaviorsCombatant extends Combatant {
+	/* TODO Add logic for max speeds (e.g character goes up to galloping while pikes
+        only go up to pacing) */
+	CombatSpeeds = {
+		0: game.i18n.localize(CONFIG.METALSAVIORS.combatSpeeds["halt"]),
+		1: game.i18n.localize(CONFIG.METALSAVIORS.combatSpeeds["walk"]),
+		2: game.i18n.localize(CONFIG.METALSAVIORS.combatSpeeds["pace"]),
+		3: game.i18n.localize(CONFIG.METALSAVIORS.combatSpeeds["gallop"]),
+		4: game.i18n.localize(CONFIG.METALSAVIORS.combatSpeeds["sprint"]),
+	};
+
 	_onCreate(data, options, userID) {
 		super._onCreate(data, options, userID);
 		if (this.isOwner) {
@@ -13,48 +24,36 @@ export class MetalSaviorsCombatant extends Combatant {
 		}
 	}
 
-	static getMovementSpeedString(movementSpeed) {
-		switch (movementSpeed) {
-			case 0:
-				return "Halt";
-			case 1:
-				return "Walking";
-			case 2:
-				return "Pacing";
-			case 3:
-				return "Galloping";
-			case 4:
-				return "Sprinting";
+	getMaxSpeed() {
+		switch (this.actor?.type) {
+			case "character":
+			case "vehicle":
+				return CombatSpeedHelper.getMovementSpeedIntFromKey("sprint");
+			case "pike":
+				return CombatSpeedHelper.getMovementSpeedIntFromKey("pace");
 			default:
-				return null;
+				return 0;
 		}
 	}
 
-	static getMovementSpeedKey(movementSpeed) {
-		switch (movementSpeed) {
-			case 0:
-				return "halt";
-			case 1:
-				return "walk";
-			case 2:
-				return "pace";
-			case 3:
-				return "gallop";
-			case 4:
-				return "sprint";
-			default:
-				return null;
-		}
+	getCombatSpeedOptions() {
+		const entries = Object.entries(this.CombatSpeeds).filter(([index, value]) => index <= this.getMaxSpeed());
+		return Object.fromEntries(entries);
 	}
 
 	getCurMovementSpeedKey() {
 		const curMovementSpeed = this.getCurMovementSpeed();
-		return MetalSaviorsCombatant.getMovementSpeedKey(curMovementSpeed);
+		return CombatSpeedHelper.getMovementSpeedKey(curMovementSpeed);
 	}
 
 	async changeMovementSpeed(dSpeed) {
 		const curSpeed = this.getFlag("metalsaviors", "curMovementSpeed");
-		const newSpeed = Math.clamped(curSpeed + dSpeed, 0, 4);
+		const newSpeed = Math.clamped(curSpeed + dSpeed, 0, this.getMaxSpeed());
+		return await this.setMovementSpeed(newSpeed);
+	}
+
+	async setMovementSpeed(newMovementSpeed) {
+		const newSpeed = Math.clamped(newMovementSpeed, 0, this.getMaxSpeed());
 		await this.setFlag("metalsaviors", "curMovementSpeed", newSpeed);
 		this.updateActor();
 		return newSpeed;
@@ -227,6 +226,9 @@ export class MetalSaviorsCombatant extends Combatant {
 		});
 
 		this.update({ initiative: roll.total });
+		if (initiativeOptions.combatSpeed !== undefined) {
+			await this.setMovementSpeed(initiativeOptions.combatSpeed);
+		}
 		this.updateActor();
 	}
 }
