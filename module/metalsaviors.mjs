@@ -23,6 +23,7 @@ import { MetalSaviorsDroneSheet } from "./sheets/actor/drone-sheet.mjs";
 import { MetalSaviorsChatMessage } from "./documents/ChatMessage/chatMessage.mjs";
 import { MetalSaviorsBlankSheet } from "./sheets/actor/blank-sheet.mjs";
 import { MetalSaviorsConceptSheet } from "./sheets/item/concept-sheet.mjs";
+import { MetalSaviorsToken } from "./documents/Token/Token.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -47,6 +48,7 @@ Hooks.once("init", async function () {
 	CONFIG.Combat.documentClass = MetalSaviorsCombat;
 	CONFIG.Combatant.documentClass = MetalSaviorsCombatant;
 	CONFIG.ChatMessage.documentClass = MetalSaviorsChatMessage;
+	CONFIG.Token.objectClass = MetalSaviorsToken;
 	CONFIG.ui.combat = MetalSaviorsCombatTracker;
 	CONFIG.time.roundTime = 10;
 
