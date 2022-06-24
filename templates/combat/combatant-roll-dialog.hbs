@@ -18,11 +18,7 @@
             <label>Combat Speed</label>
             <select type="checkbox"
                     name="combatSpeed">
-                <option value="0">{{localize "METALSAVIORS.CombatSpeedHalt"}}</option>
-                <option value="1">{{localize "METALSAVIORS.CombatSpeedWalk"}}</option>
-                <option value="2">{{localize "METALSAVIORS.CombatSpeedPace"}}</option>
-                <option value="3">{{localize "METALSAVIORS.CombatSpeedGallop"}}</option>
-                <option value="4">{{localize "METALSAVIORS.CombatSpeedSprint"}}</option>
+                {{selectOptions combatSpeedOptions}}
             </select>
         </div>
     </form>

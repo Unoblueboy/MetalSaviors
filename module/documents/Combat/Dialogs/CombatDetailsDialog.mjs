@@ -1,4 +1,4 @@
-import { MetalSaviorsCombatant } from "../Combatant.mjs";
+import { CombatSpeedHelper } from "../../../helpers/CombatSpeedHelper.mjs";
 
 export class MetalSaviorsCombatDetailsDialog extends Dialog {
 	// TODO: Consider whether combatant in or out of CAV.
@@ -251,20 +251,21 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 		const combatant = this.combatant;
 		const curSpeed = combatant.getCurMovementSpeed();
 		const decSpeed = curSpeed - 1 < 0 ? null : curSpeed - 1;
-		const accSpeed = curSpeed + 1 > 4 ? null : curSpeed + 1;
+		const accSpeed = curSpeed + 1 > combatant.getMaxSpeed() ? null : curSpeed + 1;
 		return {
 			currentSpeed: {
 				value: curSpeed,
-				label: MetalSaviorsCombatant.getMovementSpeedString(curSpeed),
+				label: CombatSpeedHelper.getMovementSpeedString(curSpeed),
 			},
 			decelerateSpeed: {
 				value: decSpeed,
-				label: MetalSaviorsCombatant.getMovementSpeedString(decSpeed),
+				label: CombatSpeedHelper.getMovementSpeedString(decSpeed),
 			},
 			accelerateSpeed: {
 				value: accSpeed,
-				label: MetalSaviorsCombatant.getMovementSpeedString(accSpeed),
+				label: CombatSpeedHelper.getMovementSpeedString(accSpeed),
 			},
+			combatSpeedOptions: combatant.getCombatSpeedOptions(),
 		};
 	}
 

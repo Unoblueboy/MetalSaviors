@@ -51,6 +51,12 @@ export class MetalSaviorsCombatantRollDialog extends Dialog {
 		return data;
 	}
 
+	getData() {
+		const context = super.getData();
+		context.combatSpeedOptions = this.combatant.getCombatSpeedOptions();
+		return context;
+	}
+
 	activateListeners(html) {
 		super.activateListeners(html);
 		const combatSpeedDiv = html.find(".combat-speed-div").get(0);
@@ -130,6 +136,7 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 		context.combatants = [...this.combatants].map((c) => ({
 			id: c.id,
 			name: c.name,
+			combatSpeedOptions: c.getCombatSpeedOptions(),
 		}));
 		return context;
 	}
