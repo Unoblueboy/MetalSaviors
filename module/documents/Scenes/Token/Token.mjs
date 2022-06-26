@@ -45,7 +45,9 @@ export class MetalSaviorsToken extends Token {
 
 		const sin = 1 / 2;
 		const cos = Math.sqrt(3) / 2;
-		const tiles = 4;
+		const tiles = game.settings.get("metalsaviors", "facingOverlayLength");
+
+		if (!tiles) return this.facingOverlay;
 
 		let magnitude = Math.max(tiles + 0.5, 0) * d.size;
 		if ([4, 5].includes(canvas.scene.data.gridType)) {
@@ -54,20 +56,6 @@ export class MetalSaviorsToken extends Token {
 
 		const x = magnitude * cos;
 		const y = magnitude * sin;
-
-		// this.facingOverlay.lineStyle({
-		// 	width: 10,
-		// 	color: this._getBorderColor() || 0x000000,
-		// 	alpha: 0.5,
-		// });
-		// this.facingOverlay.moveTo(0, 0);
-		// this.facingOverlay.lineTo(x, y);
-		// this.facingOverlay.moveTo(0, 0);
-		// this.facingOverlay.lineTo(x, -y);
-		// this.facingOverlay.moveTo(0, 0);
-		// this.facingOverlay.lineTo(-x, y);
-		// this.facingOverlay.moveTo(0, 0);
-		// this.facingOverlay.lineTo(-x, -y);
 
 		drawDottedLine(this.facingOverlay, magnitude, 10, Math.PI / 6, this._getBorderColor() || 0x000000, 0.5);
 		drawDottedLine(this.facingOverlay, magnitude, 10, (5 * Math.PI) / 6, this._getBorderColor() || 0x000000, 0.5);
@@ -90,7 +78,9 @@ export class MetalSaviorsToken extends Token {
 	_refreshFacing() {
 		this.facingOverlay.clear();
 
-		if (!this._hover && !this._controlled) return;
+		const isTargetted = Array.from(this.targeted).some((u) => u === game.user);
+
+		if (!(this._hover || this._controlled || isTargetted)) return;
 
 		this._drawfacing();
 	}

@@ -110,6 +110,23 @@ Hooks.once("init", async function () {
 		makeDefault: true,
 	});
 
+	// Add system settings
+	game.settings.register("metalsaviors", "facingOverlayLength", {
+		name: "Facing Overlay Length",
+		hint:
+			"The length of the facing overlay displayed when a token is hovered over. " +
+			"If the length is 0, then no facing overlays will be displayed",
+		scope: "client",
+		config: true,
+		type: Number,
+		range: {
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		default: 10,
+	});
+
 	// Preload Handlebars templates.
 	return preloadHandlebarsTemplates();
 });
