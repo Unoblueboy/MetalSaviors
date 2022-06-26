@@ -23,6 +23,8 @@ import { MetalSaviorsDroneSheet } from "./sheets/actor/drone-sheet.mjs";
 import { MetalSaviorsChatMessage } from "./documents/ChatMessage/chatMessage.mjs";
 import { MetalSaviorsBlankSheet } from "./sheets/actor/blank-sheet.mjs";
 import { MetalSaviorsConceptSheet } from "./sheets/item/concept-sheet.mjs";
+import { MetalSaviorsToken } from "./documents/Scenes/Token/Token.mjs";
+import { GridOverlayLayer } from "./documents/Scenes/Layers/GridOverlayLayer.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -47,8 +49,11 @@ Hooks.once("init", async function () {
 	CONFIG.Combat.documentClass = MetalSaviorsCombat;
 	CONFIG.Combatant.documentClass = MetalSaviorsCombatant;
 	CONFIG.ChatMessage.documentClass = MetalSaviorsChatMessage;
+	CONFIG.Token.objectClass = MetalSaviorsToken;
 	CONFIG.ui.combat = MetalSaviorsCombatTracker;
 	CONFIG.time.roundTime = 10;
+	addGridOverlayLayer(CONFIG.Canvas.layers);
+	console.log(CONFIG.Canvas.layers);
 
 	// Add new data-dtypes
 	window.Dice = (value) => {
@@ -105,9 +110,48 @@ Hooks.once("init", async function () {
 		makeDefault: true,
 	});
 
+	// Add system settings
+	game.settings.register("metalsaviors", "facingOverlayLength", {
+		name: "Facing Overlay Length",
+		hint:
+			"The length of the facing overlay displayed when a token is hovered over. " +
+			"If the length is 0, then no facing overlays will be displayed",
+		scope: "client",
+		config: true,
+		type: Number,
+		range: {
+			min: 0,
+			max: 100,
+			step: 1,
+		},
+		default: 10,
+	});
+
 	// Preload Handlebars templates.
 	return preloadHandlebarsTemplates();
 });
+
+function addGridOverlayLayer(layers) {
+	CONFIG.Canvas.layers = {
+		background: layers.background,
+		drawings: layers.drawings,
+		grid: layers.grid,
+		templates: layers.templates,
+		tokens: layers.tokens,
+		gridOverlay: {
+			layerClass: GridOverlayLayer,
+			group: "primary",
+		},
+		foreground: layers.foreground,
+		walls: layers.walls,
+		lighting: layers.lighting,
+		weather: layers.weather,
+		sight: layers.sight,
+		sounds: layers.sounds,
+		notes: layers.notes,
+		controls: layers.controls,
+	};
+}
 
 /* -------------------------------------------- */
 /*  Handlebars Helpers                          */
