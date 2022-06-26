@@ -1,18 +1,4 @@
-class SyncTransformObject extends PIXI.Container {
-	constructor(object) {
-		super();
-
-		this.object = object;
-
-		this.transform = new SynchronizedTransform(this.object.transform);
-	}
-
-	/** @override */
-	get visible() {
-		return this.object.visible;
-	}
-	set visible(value) {}
-}
+import { SyncTransformObject } from "./SyncTransformObject";
 
 export class MetalSaviorsToken extends Token {
 	constructor(...args) {
@@ -25,11 +11,12 @@ export class MetalSaviorsToken extends Token {
 	async draw() {
 		await super.draw();
 
-		this._drawfacing();
+		this._drawFacing();
+		this._drawWeaponRange();
 		return this;
 	}
 
-	_drawfacing() {
+	_drawFacing() {
 		if (!this.facing.parent) canvas.gridOverlay.facings.addChild(this.facing);
 
 		this.facing.removeChildren();
@@ -37,6 +24,8 @@ export class MetalSaviorsToken extends Token {
 
 		return this.facing;
 	}
+
+	_drawWeaponRange() {}
 
 	_createFacingOverlay() {
 		this.facingOverlay = this.facingOverlay || new PIXI.Graphics();
@@ -82,7 +71,7 @@ export class MetalSaviorsToken extends Token {
 
 		if (!(this._hover || this._controlled || isTargetted)) return;
 
-		this._drawfacing();
+		this._drawFacing();
 	}
 
 	destroy(options) {
