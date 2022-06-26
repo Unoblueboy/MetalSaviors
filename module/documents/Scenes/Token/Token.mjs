@@ -45,7 +45,7 @@ export class MetalSaviorsToken extends Token {
 
 		const sin = 1 / 2;
 		const cos = Math.sqrt(3) / 2;
-		const tiles = 5;
+		const tiles = 4;
 
 		let magnitude = Math.max(tiles + 0.5, 0) * d.size;
 		if ([4, 5].includes(canvas.scene.data.gridType)) {
@@ -55,17 +55,28 @@ export class MetalSaviorsToken extends Token {
 		const x = magnitude * cos;
 		const y = magnitude * sin;
 
-		this.facingOverlay.lineStyle(10, this._getBorderColor() || 0x000000);
-		this.facingOverlay.moveTo(0, 0);
-		this.facingOverlay.lineTo(x, y);
-		this.facingOverlay.moveTo(0, 0);
-		this.facingOverlay.lineTo(x, -y);
-		this.facingOverlay.moveTo(0, 0);
-		this.facingOverlay.lineTo(-x, y);
-		this.facingOverlay.moveTo(0, 0);
-		this.facingOverlay.lineTo(-x, -y);
+		// this.facingOverlay.lineStyle({
+		// 	width: 10,
+		// 	color: this._getBorderColor() || 0x000000,
+		// 	alpha: 0.5,
+		// });
+		// this.facingOverlay.moveTo(0, 0);
+		// this.facingOverlay.lineTo(x, y);
+		// this.facingOverlay.moveTo(0, 0);
+		// this.facingOverlay.lineTo(x, -y);
+		// this.facingOverlay.moveTo(0, 0);
+		// this.facingOverlay.lineTo(-x, y);
+		// this.facingOverlay.moveTo(0, 0);
+		// this.facingOverlay.lineTo(-x, -y);
+
+		drawDottedLine(this.facingOverlay, magnitude, 10, Math.PI / 6, this._getBorderColor() || 0x000000, 0.5);
+		drawDottedLine(this.facingOverlay, magnitude, 10, (5 * Math.PI) / 6, this._getBorderColor() || 0x000000, 0.5);
+		drawDottedLine(this.facingOverlay, magnitude, 10, (7 * Math.PI) / 6, this._getBorderColor() || 0x000000, 0.5);
+		drawDottedLine(this.facingOverlay, magnitude, 10, (11 * Math.PI) / 6, this._getBorderColor() || 0x000000, 0.5);
+
 		this.facingOverlay.position.x = this.bounds.width / 2;
 		this.facingOverlay.position.y = this.bounds.height / 2;
+		this.facingOverlay.rotation = this.icon.rotation;
 
 		return this.facingOverlay;
 	}
@@ -87,5 +98,79 @@ export class MetalSaviorsToken extends Token {
 	destroy(options) {
 		this.facing.destroy();
 		return super.destroy(options);
+	}
+}
+
+function drawRotatedRoundedRect(graphic, x, y, width, height, radius, angle = 0) {
+	if (width < 2 * radius) return;
+	if (height < 2 * radius) return;
+
+	const rotMatrixTranspose = [
+		[Math.cos(angle), Math.sin(angle)],
+		[-Math.sin(angle), Math.cos(angle)],
+	];
+	const pointMatrixTranspose = [
+		[radius, 0],
+
+		[width, 0],
+		[width, radius],
+
+		[width, height],
+		[width - radius, height],
+
+		[0, height],
+		[0, height - radius],
+
+		[0, 0],
+		[radius, 0],
+	];
+
+	const rotatedPoints = matrixMultiplication(pointMatrixTranspose, rotMatrixTranspose);
+
+	graphic.moveTo(x + rotatedPoints[0][0], y + rotatedPoints[0][1]);
+	for (let i = 0; i < 4; i++) {
+		const point1 = rotatedPoints[2 * i + 1];
+		const point2 = rotatedPoints[2 * i + 2];
+		graphic.arcTo(x + point1[0], y + point1[1], x + point2[0], y + point2[1], radius);
+	}
+}
+
+function matrixMultiplication(matrix1, matrix2) {
+	// matrix 1: m x p, matrix 2: p x n, result: m x n
+	if (!matrix1.every((row) => row.length === matrix2.length)) throw Error("Matrices not of conforming sizes");
+	const m = matrix1.length;
+	const n = matrix2[0].length;
+	const p = matrix2.length;
+	const result = new Array(m).fill().map((x) => new Array(n).fill(0));
+
+	for (let i = 0; i < m; i++) {
+		for (let j = 0; j < n; j++) {
+			for (let k = 0; k < p; k++) {
+				result[i][j] += matrix1[i][k] * matrix2[k][j];
+			}
+		}
+	}
+
+	return result;
+}
+
+function drawDottedLine(graphic, length, width, angle, color, alpha) {
+	const cos = Math.cos(angle);
+	const sin = Math.sin(angle);
+	let totalLength = 0;
+	const spaceLength = 20;
+	const solidLength = 60;
+	while (totalLength < length) {
+		const x = totalLength * cos + (width / 2) * sin;
+		const y = totalLength * sin - (width / 2) * cos;
+		const segmentLength = Math.min(length - totalLength, solidLength);
+		totalLength += segmentLength;
+
+		graphic.beginFill(color, alpha);
+		graphic.lineStyle(0);
+		drawRotatedRoundedRect(graphic, x, y, segmentLength, width, width / 3, angle);
+		graphic.endFill();
+
+		totalLength += spaceLength;
 	}
 }
