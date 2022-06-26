@@ -39,30 +39,51 @@ export class MetalSaviorsToken extends Token {
 	}
 
 	_createFacingOverlay() {
-		const graphy = new PIXI.Graphics();
+		this.facingOverlay = this.facingOverlay || new PIXI.Graphics();
+
+		const d = canvas.dimensions;
 
 		const sin = 1 / 2;
 		const cos = Math.sqrt(3) / 2;
-		const magnitude = 500;
+		const tiles = 5;
+
+		let magnitude = Math.max(tiles + 0.5, 0) * d.size;
+		if ([4, 5].includes(canvas.scene.data.gridType)) {
+			magnitude *= Math.sqrt(3) / 2;
+		}
+
 		const x = magnitude * cos;
 		const y = magnitude * sin;
 
-		graphy.lineStyle(10, 0x000000);
-		graphy.moveTo(0, 0);
-		graphy.lineTo(x, y);
-		graphy.moveTo(0, 0);
-		graphy.lineTo(x, -y);
-		graphy.moveTo(0, 0);
-		graphy.lineTo(-x, y);
-		graphy.moveTo(0, 0);
-		graphy.lineTo(-x, -y);
-		graphy.position.x = this.bounds.width / 2;
-		graphy.position.y = this.bounds.height / 2;
+		this.facingOverlay.lineStyle(10, this._getBorderColor() || 0x000000);
+		this.facingOverlay.moveTo(0, 0);
+		this.facingOverlay.lineTo(x, y);
+		this.facingOverlay.moveTo(0, 0);
+		this.facingOverlay.lineTo(x, -y);
+		this.facingOverlay.moveTo(0, 0);
+		this.facingOverlay.lineTo(-x, y);
+		this.facingOverlay.moveTo(0, 0);
+		this.facingOverlay.lineTo(-x, -y);
+		this.facingOverlay.position.x = this.bounds.width / 2;
+		this.facingOverlay.position.y = this.bounds.height / 2;
 
-		return graphy;
+		return this.facingOverlay;
 	}
 
-	/** @inheritdoc */
+	refresh() {
+		super.refresh();
+		if (this.facing && this.facingOverlay) this._refreshFacing();
+		return this;
+	}
+
+	_refreshFacing() {
+		this.facingOverlay.clear();
+
+		if (!this._hover && !this._controlled) return;
+
+		this._drawfacing();
+	}
+
 	destroy(options) {
 		this.facing.destroy();
 		return super.destroy(options);
