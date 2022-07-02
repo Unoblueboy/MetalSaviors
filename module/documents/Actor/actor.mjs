@@ -107,13 +107,17 @@ export class MetalSaviorsActor extends Actor {
 
 		if (!this.isOwner) return;
 		if (this.type !== "character") return;
-		if (this.getFlag("metalsaviors", "characterType")) return;
+		if (this.getCharacterType()) return;
 
 		this.setCharacterType("character");
 	}
 
 	async setCharacterType(charType) {
 		await this.setFlag("metalsaviors", "characterType", charType);
+	}
+
+	getCharacterType() {
+		return this.getFlag("metalsaviors", "characterType");
 	}
 
 	/** @override */

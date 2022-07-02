@@ -59,6 +59,14 @@ export class MetalSaviorsCombatant extends Combatant {
 		return newSpeed;
 	}
 
+	hasDerivedInitiativeBonuses() {
+		return (
+			this.actor &&
+			this.actor.type == "character" &&
+			["character", "majorCharacter"].includes(this.actor.getCharacterType())
+		);
+	}
+
 	updateActor() {
 		if (this.actor && this.actor?.sheet?.rendered) {
 			this.actor.render();
