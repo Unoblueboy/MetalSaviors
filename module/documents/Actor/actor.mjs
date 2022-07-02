@@ -152,7 +152,22 @@ export class MetalSaviorsActor extends Actor {
 		const data = actorData.data;
 
 		attributeCalculator(actorData, data);
-		derivedAttributeCalculator(actorData, data);
+		if (this.getCharacterType() !== "minorCharacter") {
+			derivedAttributeCalculator(actorData, data);
+		} else {
+			for (const [name, dAttribute] of Object.entries(data.derivedAttributes)) {
+				if (name == "damageModifier") {
+					dAttribute.baseValue = "0";
+					dAttribute.value = "0";
+					dAttribute.otherBonuses = null;
+					continue;
+				}
+				dAttribute.baseValue = 0;
+				dAttribute.value = 0;
+				dAttribute.otherBonuses = 0;
+			}
+		}
+
 		data.nsr.value = (data.nsr.baseValue || 0) + (data.nsr.otherBonuses || 0);
 
 		// Learned skills values need to be recalculated to take into account the derived attribute

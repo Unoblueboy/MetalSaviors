@@ -40,15 +40,7 @@ export class MetalSaviorsCombatantRollDialog extends Dialog {
 	}
 
 	static _processInitiativeOptions(form) {
-		const inCav = form.inCav.checked;
-		const data = {
-			bonus: parseInt(form.bonus.value || 0),
-			inCav: inCav,
-		};
-		if (inCav) {
-			data.combatSpeed = form.combatSpeed.value;
-		}
-		return data;
+		return processCombatantFormData(form);
 	}
 
 	getData() {
@@ -139,14 +131,12 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 		const options = {};
 
 		for (const combatant of combatants) {
-			const inCav = form[`${combatant.id}_inCav`].checked;
-			options[combatant.id] = {
-				bonus: parseInt(form[`${combatant.id}_bonus`].value || 0),
-				inCav: inCav,
+			const combatantForm = {
+				inCav: form[`${combatant.id}_inCav`],
+				bonus: form[`${combatant.id}_bonus`],
+				combatSpeed: form[`${combatant.id}_combatSpeed`],
 			};
-			if (inCav) {
-				options[combatant.id].combatSpeed = form[`${combatant.id}_combatSpeed`].value;
-			}
+			options[combatant.id] = processCombatantFormData(combatantForm);
 		}
 
 		return options;
@@ -209,4 +199,17 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 			}
 		});
 	}
+}
+
+function processCombatantFormData(form) {
+	const inCav = form.inCav?.checked ?? false;
+	const data = {
+		bonus: parseInt(form.bonus.value || 0),
+		inCav: inCav,
+	};
+	const combatSpeed = form.combatSpeed?.value;
+	if (combatSpeed) {
+		data.combatSpeed = combatSpeed;
+	}
+	return data;
 }
