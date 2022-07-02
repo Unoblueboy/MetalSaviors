@@ -125,6 +125,28 @@ Hooks.once("init", async function () {
 			step: 1,
 		},
 		default: 10,
+		onChange: (value) => {
+			if (!game.scenes.active) return;
+			game.scenes.active.tokens.forEach((x) => x.object.refresh());
+		},
+	});
+	game.settings.register("metalsaviors", "facingOverlayOpacity", {
+		name: "Facing Overlay Opacity",
+		hint:
+			"The Opacity of the facing overlay displayed when a token is hovered over. " +
+			"If the Opacity is 0, then no facing overlays will be displayed",
+		scope: "client",
+		config: true,
+		type: Number,
+		range: {
+			min: 0,
+			max: 100,
+		},
+		default: 50,
+		onChange: (value) => {
+			if (!game.scenes.active) return;
+			game.scenes.active.tokens.forEach((x) => x.object.refresh());
+		},
 	});
 
 	// Preload Handlebars templates.
