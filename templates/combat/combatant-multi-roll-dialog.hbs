@@ -6,6 +6,7 @@
                 <th>Bonus</th>
                 <th>In Cav</th>
                 <th>Combat Speed</th>
+                <th>Base Initative Modifiers</th>
             </tr>
             {{#each combatants as |combatant|}}
                 <tr>
@@ -14,15 +15,33 @@
                                name="{{combatant.id}}_bonus"
                                value="0"
                                step="1" /></td>
-                    <td><input type="checkbox"
-                               name="{{combatant.id}}_inCav"
-                               class="in-cav-checkbox" /></td>
-                    <td class="form-group combat-speed-td"
-                        style="visibility:hidden;">
-                        <select type="checkbox"
-                                name="{{combatant.id}}_combatSpeed">
-                            {{selectOptions combatant.combatSpeedOptions}}
-                        </select>
+                    <td>{{#if combatant.hasCav}}<input type="checkbox"
+                                   name="{{combatant.id}}_inCav"
+                                   class="in-cav-checkbox" />{{/if}}</td>
+                    <td class="combat-speed-td">
+                        {{#if (gt (len combatant.combatSpeedOptions) 0)}}
+                            <select type="checkbox"
+                                    name="{{combatant.id}}_combatSpeed"
+                                    {{#if combatant.hasCav}}
+                                    style="visibility:hidden;"
+                                    {{/if}}>
+                                {{selectOptions combatant.combatSpeedOptions}}
+                            </select>
+                        {{/if}}
+                    </td>
+                    <td class="base-initative-modifiers-td">
+                        {{#if combatant.includeModifiers}}
+                            <input type="number"
+                                   value="{{cavInitativeModifier}}"
+                                   disabled="true"
+                                   style="display:none;"
+                                   class="cav-initative-modifier" />
+                            <input type="number"
+                                   value="{{pilotInitativeModifier}}"
+                                   disabled="true"
+                                   style="display:flex;"
+                                   class="pilot-initative-modifier" />
+                        {{/if}}
                     </td>
                 </tr>
             {{/each}}
