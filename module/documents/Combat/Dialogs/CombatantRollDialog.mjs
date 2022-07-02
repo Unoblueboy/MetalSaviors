@@ -54,6 +54,7 @@ export class MetalSaviorsCombatantRollDialog extends Dialog {
 	getData() {
 		const context = super.getData();
 		context.combatSpeedOptions = this.combatant.getCombatSpeedOptions();
+		context.hasCav = this.combatant.hasCav;
 		if (this.combatant.hasDerivedInitiativeBonuses()) {
 			const data = this.combatant.actor.data.data;
 			context.includeModifiers = true;
@@ -158,6 +159,7 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 				id: c.id,
 				name: c.name,
 				combatSpeedOptions: c.getCombatSpeedOptions(),
+				hasCav: c.hasCav,
 			};
 			if (c.hasDerivedInitiativeBonuses()) {
 				const data = c.actor.data.data;

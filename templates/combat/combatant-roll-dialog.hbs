@@ -23,20 +23,26 @@
                        disabled="true" />
             </div>
         {{/if}}
-        <div class="form-group">
-            <label>In CAV</label>
-            <input type="checkbox"
-                   name="inCav"
-                   class="in-cav-checkbox" />
-        </div>
-        <div class="form-group combat-speed-div"
-             style="visibility:hidden;">
-            <label>Combat Speed</label>
-            <select type="checkbox"
-                    name="combatSpeed">
-                {{selectOptions combatSpeedOptions}}
-            </select>
-        </div>
+        {{#if hasCav}}
+            <div class="form-group">
+                <label>In CAV</label>
+                <input type="checkbox"
+                       name="inCav"
+                       class="in-cav-checkbox" />
+            </div>
+        {{/if}}
+        {{#if (gt (len combatSpeedOptions) 0)}}
+            <div class="form-group combat-speed-div"
+                 {{#if hasCav}}
+                 style="visibility:hidden;"
+                 {{/if}}>
+                <label>Combat Speed</label>
+                <select type="checkbox"
+                        name="combatSpeed">
+                    {{selectOptions combatSpeedOptions}}
+                </select>
+            </div>
+        {{/if}}
     </form>
 </div>
 <div class="dialog-buttons">

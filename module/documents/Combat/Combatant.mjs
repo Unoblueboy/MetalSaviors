@@ -3,8 +3,6 @@ import { CombatSpeedHelper } from "../../helpers/CombatSpeedHelper.mjs";
 import { MetalSaviorsCombatantRollDialog } from "./Dialogs/CombatantRollDialog.mjs";
 
 export class MetalSaviorsCombatant extends Combatant {
-	/* TODO Add logic for max speeds (e.g character goes up to galloping while pikes
-        only go up to pacing) */
 	CombatSpeeds = {
 		0: game.i18n.localize(CONFIG.METALSAVIORS.combatSpeeds["halt"]),
 		1: game.i18n.localize(CONFIG.METALSAVIORS.combatSpeeds["walk"]),
@@ -32,8 +30,12 @@ export class MetalSaviorsCombatant extends Combatant {
 			case "pike":
 				return CombatSpeedHelper.getMovementSpeedIntFromKey("pace");
 			default:
-				return 0;
+				return -1;
 		}
+	}
+
+	get hasCav() {
+		return this.actor && this.actor.itemTypes["cav"].length > 0;
 	}
 
 	getCombatSpeedOptions() {

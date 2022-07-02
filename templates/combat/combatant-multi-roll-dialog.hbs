@@ -15,18 +15,22 @@
                                name="{{combatant.id}}_bonus"
                                value="0"
                                step="1" /></td>
-                    <td><input type="checkbox"
-                               name="{{combatant.id}}_inCav"
-                               class="in-cav-checkbox" /></td>
+                    <td>{{#if combatant.hasCav}}<input type="checkbox"
+                                   name="{{combatant.id}}_inCav"
+                                   class="in-cav-checkbox" />{{/if}}</td>
                     <td class="combat-speed-td">
-                        <select type="checkbox"
-                                name="{{combatant.id}}_combatSpeed"
-                                style="visibility:hidden;">
-                            {{selectOptions combatant.combatSpeedOptions}}
-                        </select>
+                        {{#if (gt (len combatant.combatSpeedOptions) 0)}}
+                            <select type="checkbox"
+                                    name="{{combatant.id}}_combatSpeed"
+                                    {{#if combatant.hasCav}}
+                                    style="visibility:hidden;"
+                                    {{/if}}>
+                                {{selectOptions combatant.combatSpeedOptions}}
+                            </select>
+                        {{/if}}
                     </td>
-                    {{#if includeModifiers}}
-                        <td class="base-initative-modifiers-td">
+                    <td class="base-initative-modifiers-td">
+                        {{#if combatant.includeModifiers}}
                             <input type="number"
                                    value="{{cavInitativeModifier}}"
                                    disabled="true"
@@ -37,10 +41,8 @@
                                    disabled="true"
                                    style="display:flex;"
                                    class="pilot-initative-modifier" />
-                        </td>
-                    {{else}}
-                        <td></td>
-                    {{/if}}
+                        {{/if}}
+                    </td>
                 </tr>
             {{/each}}
         </table>
