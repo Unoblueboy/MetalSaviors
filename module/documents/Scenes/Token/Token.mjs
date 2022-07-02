@@ -5,6 +5,7 @@ export class MetalSaviorsToken extends Token {
 		super(...args);
 
 		this.facing = new SyncTransformObject(this);
+		this.weaponRange = new SyncTransformObject(this);
 	}
 
 	/** @override */
@@ -58,9 +59,34 @@ export class MetalSaviorsToken extends Token {
 		return this.facingOverlay;
 	}
 
+	_drawWeaponRange() {
+		if (!this.weaponRange.parent) canvas.gridOverlay.ranges.addChild(this.weaponRange);
+
+		this.weaponRange.removeChildren();
+		this.weaponRange.addChild(this._createWeaponRangeOverlay());
+
+		return this.weaponRange;
+	}
+
+	_createWeaponRangeOverlay() {
+		const poly = canvas.grid.grid.getPolygon(0, 0);
+
+		this.weaponRangeOverlay = new PIXI.Graphics();
+
+		this.weaponRangeOverlay.beginFill(0x123456, 1);
+		this.weaponRangeOverlay.drawShape(poly).endFill();
+
+		this.weaponRangeOverlay.position.x = this.bounds.width / 2;
+		this.weaponRangeOverlay.position.y = this.bounds.height / 2;
+
+		return this.weaponRangeOverlay;
+	}
+
 	refresh() {
 		super.refresh();
 		if (this.facing && this.facingOverlay) this._refreshFacing();
+
+		if (this.weaponRange && this.weaponRangeOverlay) this._refreshWeaponRange();
 		return this;
 	}
 
@@ -74,8 +100,13 @@ export class MetalSaviorsToken extends Token {
 		this._drawFacing();
 	}
 
+	_refreshWeaponRange() {
+		this.weaponRangeOverlay.clear();
+	}
+
 	destroy(options) {
 		this.facing.destroy();
+		this.weaponRange.destroy();
 		return super.destroy(options);
 	}
 }
