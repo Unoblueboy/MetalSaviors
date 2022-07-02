@@ -107,13 +107,17 @@ export class MetalSaviorsActor extends Actor {
 
 		if (!this.isOwner) return;
 		if (this.type !== "character") return;
-		if (this.getFlag("metalsaviors", "characterType")) return;
+		if (this.getCharacterType()) return;
 
 		this.setCharacterType("character");
 	}
 
 	async setCharacterType(charType) {
 		await this.setFlag("metalsaviors", "characterType", charType);
+	}
+
+	getCharacterType() {
+		return this.getFlag("metalsaviors", "characterType");
 	}
 
 	/** @override */
@@ -148,7 +152,22 @@ export class MetalSaviorsActor extends Actor {
 		const data = actorData.data;
 
 		attributeCalculator(actorData, data);
-		derivedAttributeCalculator(actorData, data);
+		if (this.getCharacterType() !== "minorCharacter") {
+			derivedAttributeCalculator(actorData, data);
+		} else {
+			for (const [name, dAttribute] of Object.entries(data.derivedAttributes)) {
+				if (name == "damageModifier") {
+					dAttribute.baseValue = "0";
+					dAttribute.value = "0";
+					dAttribute.otherBonuses = null;
+					continue;
+				}
+				dAttribute.baseValue = 0;
+				dAttribute.value = 0;
+				dAttribute.otherBonuses = 0;
+			}
+		}
+
 		data.nsr.value = (data.nsr.baseValue || 0) + (data.nsr.otherBonuses || 0);
 
 		// Learned skills values need to be recalculated to take into account the derived attribute
