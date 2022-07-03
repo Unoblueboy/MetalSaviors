@@ -1,4 +1,4 @@
-import { SyncTransformObject } from "./SyncTransformObject";
+import { SyncTransformObject } from "./SyncTransformObject.mjs";
 
 export class MetalSaviorsToken extends Token {
 	constructor(...args) {
@@ -25,8 +25,6 @@ export class MetalSaviorsToken extends Token {
 
 		return this.facing;
 	}
-
-	_drawWeaponRange() {}
 
 	_createFacingOverlay() {
 		this.facingOverlay = this.facingOverlay || new PIXI.Graphics();
@@ -98,15 +96,62 @@ export class MetalSaviorsToken extends Token {
 	}
 
 	_createWeaponRangeOverlay() {
-		const poly = canvas.grid.grid.getPolygon(0, 0);
+		this.weaponRangeOverlay = this.weaponRangeOverlay || new PIXI.Graphics();
 
-		this.weaponRangeOverlay = new PIXI.Graphics();
+		const weaponRange = 1;
 
-		this.weaponRangeOverlay.beginFill(0x123456, 1);
-		this.weaponRangeOverlay.drawShape(poly).endFill();
+		const pointCloseBoundary = Math.max(Math.floor(weaponRange / 4), 1);
+		const closeMediumBoundary = Math.max(Math.floor(weaponRange / 2), pointCloseBoundary);
+		const mediumLongBoundary = Math.max(weaponRange - 1, closeMediumBoundary);
+		const longExtremeBoundary = Math.max(2 * weaponRange, mediumLongBoundary);
 
-		this.weaponRangeOverlay.position.x = this.bounds.width / 2;
-		this.weaponRangeOverlay.position.y = this.bounds.height / 2;
+		// Draw Point Blank Range
+		highlightConcentricHexagons(
+			this.weaponRangeOverlay,
+			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			{
+				gridSize: 100,
+				innerRadius: 1,
+				outerRadius: pointCloseBoundary,
+			},
+			{ color: 0xff0000, alpha: 0.5 }
+		);
+
+		// Draw Close Range
+		highlightConcentricHexagons(
+			this.weaponRangeOverlay,
+			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			{
+				gridSize: 100,
+				innerRadius: pointCloseBoundary + 1,
+				outerRadius: closeMediumBoundary,
+			},
+			{ color: 0x00ff00, alpha: 0.5 }
+		);
+
+		// Draw Medium Range
+		highlightConcentricHexagons(
+			this.weaponRangeOverlay,
+			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			{
+				gridSize: 100,
+				innerRadius: closeMediumBoundary + 1,
+				outerRadius: mediumLongBoundary,
+			},
+			{ color: 0x0000ff, alpha: 0.5 }
+		);
+
+		// Draw Long Range
+		highlightConcentricHexagons(
+			this.weaponRangeOverlay,
+			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			{
+				gridSize: 100,
+				innerRadius: mediumLongBoundary + 1,
+				outerRadius: longExtremeBoundary,
+			},
+			{ color: 0x000000, alpha: 0.5 }
+		);
 
 		return this.weaponRangeOverlay;
 	}
@@ -131,6 +176,10 @@ export class MetalSaviorsToken extends Token {
 
 	_refreshWeaponRange() {
 		this.weaponRangeOverlay.clear();
+
+		if (!(this._hover || this._controlled) || !this.isOwner) return;
+
+		this._drawWeaponRange();
 	}
 
 	destroy(options) {
@@ -211,5 +260,57 @@ function drawDottedLine(graphic, length, width, angle, color, alpha) {
 		graphic.endFill();
 
 		totalLength += spaceLength;
+	}
+}
+
+function highlightConcentricHexagons(
+	graphic,
+	polygonGenerator,
+	{ gridSize = 100, innerRadius = 0, outerRadius = 5 } = {},
+	{ color = 0x123456, alpha = 0.5 }
+) {
+	const gridWidth = gridSize;
+	const gridHeight = (gridSize * Math.sqrt(3)) / 2;
+	for (let ring = innerRadius; ring <= outerRadius; ring++) {
+		if (ring === 0) {
+			const polygon = polygonGenerator(0, 0);
+			graphic.beginFill(color, alpha).drawPolygon(polygon).endFill();
+			continue;
+		}
+
+		const x1 = 0.75 * gridWidth * ring;
+		const x2 = 0;
+		const y1 = (gridHeight * ring) / 2;
+		const y2 = gridHeight * ring;
+
+		const polygon1 = polygonGenerator(x1, y1);
+		const polygon2 = polygonGenerator(x1, -y1);
+		const polygon3 = polygonGenerator(x2, -y2);
+		const polygon4 = polygonGenerator(-x1, -y1);
+		const polygon5 = polygonGenerator(-x1, y1);
+		const polygon6 = polygonGenerator(-x2, y2);
+
+		for (let i = 0; i < ring; i++) {
+			const newPolygon1 = polygon1.map((val, index) => (index % 2 === 0 ? val : val - gridHeight * i));
+			const newPolygon2 = polygon2.map((val, index) =>
+				index % 2 === 0 ? val - 0.75 * gridWidth * i : val - 0.5 * gridHeight * i
+			);
+			const newPolygon3 = polygon3.map((val, index) =>
+				index % 2 === 0 ? val - 0.75 * gridWidth * i : val + 0.5 * gridHeight * i
+			);
+			const newPolygon4 = polygon4.map((val, index) => (index % 2 === 0 ? val : val + gridHeight * i));
+			const newPolygon5 = polygon5.map((val, index) =>
+				index % 2 === 0 ? val + 0.75 * gridWidth * i : val + 0.5 * gridHeight * i
+			);
+			const newPolygon6 = polygon6.map((val, index) =>
+				index % 2 === 0 ? val + 0.75 * gridWidth * i : val - 0.5 * gridHeight * i
+			);
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon1).endFill();
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon2).endFill();
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon3).endFill();
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon4).endFill();
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon5).endFill();
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon6).endFill();
+		}
 	}
 }
