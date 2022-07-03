@@ -18,10 +18,10 @@
             </thead>
             <tbody>
                 {{#each weapons as |weapon id|}}
-                    <tr class="item item-controls-container"
+                    <tr class="item item-controls-container {{#if (eq weapon._id ../flags.metalsaviors.curWeapon)}}cur-weapon{{/if}}"
                         data-item-id="{{weapon._id}}">
                         <td class="item-name div-cell-wrapper">
-                            <div class="name">{{weapon.name}}</div>
+                            <div class="name"><a class="cur-weapon-select">{{weapon.name}}</a></div>
                             <div class="item-controls">
                                 {{#if ../editable}}
                                     <a class="item-roll rollable"

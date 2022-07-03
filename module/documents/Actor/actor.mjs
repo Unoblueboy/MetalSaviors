@@ -3,8 +3,7 @@ import { attributeCalculator, derivedAttributeCalculator } from "../helpers/Calc
 import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
 
 import { METALSAVIORS } from "../../helpers/config.mjs";
-import { rollAttributeCheck, rollAttributeOrSkill, rollSkill } from "../../helpers/roll.mjs";
-import { MetalSaviorsAttributeRollDialog } from "./Dialogs/attributeOrSkillDialog.mjs";
+import { rollAttributeOrSkill } from "../../helpers/roll.mjs";
 
 export const CharacterType = {
 	character: "Player Character",
@@ -110,6 +109,7 @@ export class MetalSaviorsActor extends Actor {
 		if (this.getCharacterType()) return;
 
 		this.setCharacterType("character");
+		this.setCurWeapon(null);
 	}
 
 	async setCharacterType(charType) {
@@ -118,6 +118,19 @@ export class MetalSaviorsActor extends Actor {
 
 	getCharacterType() {
 		return this.getFlag("metalsaviors", "characterType");
+	}
+
+	async setCurWeapon(curWeapon) {
+		await this.setFlag("metalsaviors", "curWeapon", curWeapon ? curWeapon.id : "");
+
+		const tokens = this.getActiveTokens(true, false);
+
+		tokens.forEach((x) => x.refresh());
+	}
+
+	getCurWeapon() {
+		const weaponId = this.getFlag("metalsaviors", "curWeapon");
+		return this.items.get(weaponId);
 	}
 
 	/** @override */
@@ -140,7 +153,6 @@ export class MetalSaviorsActor extends Actor {
 		// things organized.
 		this._prepareCharacterData(actorData);
 		this._prepareInfantryData(actorData);
-		// this._prepareNpcData(actorData);
 	}
 
 	/**
@@ -200,7 +212,6 @@ export class MetalSaviorsActor extends Actor {
 
 		// Prepare character roll data.
 		this._getCharacterRollData(data);
-		this._getNpcRollData(data);
 
 		return data;
 	}
@@ -224,15 +235,6 @@ export class MetalSaviorsActor extends Actor {
 		if (data.attributes.level) {
 			data.lvl = data.attributes.level.value ?? 0;
 		}
-	}
-
-	/**
-	 * Prepare NPC roll data.
-	 */
-	_getNpcRollData(data) {
-		if (this.data.type !== "npc") return;
-
-		// Process additional NPC data here.
 	}
 
 	getActionsPerRound() {

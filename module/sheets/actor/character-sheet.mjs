@@ -8,7 +8,7 @@ import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class MetalSaviorsActorSheet extends ActorSheet {
+export class MetalSaviorsCharacterSheet extends ActorSheet {
 	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
@@ -234,6 +234,17 @@ export class MetalSaviorsActorSheet extends ActorSheet {
 			const element = ev.target;
 			await this.actor.setCharacterType(element.value);
 			this.render();
+		});
+
+		html.find(".cur-weapon-select").click(async (ev) => {
+			const li = $(ev.currentTarget).closest(".item");
+			const weaponId = li.data("itemId");
+			const weapon = this.actor.items.get(weaponId);
+			if (weapon === this.actor.getCurWeapon()) {
+				this.actor.setCurWeapon(null);
+			} else {
+				this.actor.setCurWeapon(weapon);
+			}
 		});
 
 		// Drag events for macros.

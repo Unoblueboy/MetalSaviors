@@ -14,6 +14,7 @@ export class MetalSaviorsDroneSheet extends ActorSheet {
 		const context = super.getData();
 		const actorData = this.actor.data.toObject(false);
 		context.data = actorData.data;
+		context.flags = actorData.flags;
 
 		this._prepareItems(context);
 
@@ -65,6 +66,17 @@ export class MetalSaviorsDroneSheet extends ActorSheet {
 		});
 
 		html.find(".rollable").click(this._onRoll.bind(this));
+
+		html.find(".cur-weapon-select").click(async (ev) => {
+			const li = $(ev.currentTarget).closest(".item");
+			const weaponId = li.data("itemId");
+			const weapon = this.actor.items.get(weaponId);
+			if (weapon === this.actor.getCurWeapon()) {
+				this.actor.setCurWeapon(null);
+			} else {
+				this.actor.setCurWeapon(weapon);
+			}
+		});
 	}
 
 	_onRoll(event) {

@@ -6,7 +6,7 @@ import { MetalSaviorsItemProxy } from "./documents/Item/itemProxy.mjs";
 import { MetalSaviorsCombatant } from "./documents/Combat/Combatant.mjs";
 import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
 // Import sheet classes.
-import { MetalSaviorsActorSheet } from "./sheets/actor/actor-sheet.mjs";
+import { MetalSaviorsCharacterSheet } from "./sheets/actor/character-sheet.mjs";
 import { MetalSaviorsItemSheet } from "./sheets/item/item-sheet.mjs";
 import { MetalSaviorsSkillSheet } from "./sheets/item/skill-sheet.mjs";
 import { MetalSaviorsCavSheet } from "./sheets/item/cav-sheet.mjs";
@@ -53,7 +53,6 @@ Hooks.once("init", async function () {
 	CONFIG.ui.combat = MetalSaviorsCombatTracker;
 	CONFIG.time.roundTime = 10;
 	addGridOverlayLayer(CONFIG.Canvas.layers);
-	console.log(CONFIG.Canvas.layers);
 
 	// Add new data-dtypes
 	window.Dice = (value) => {
@@ -65,7 +64,7 @@ Hooks.once("init", async function () {
 
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
-	Actors.registerSheet("metalsaviors", MetalSaviorsActorSheet, {
+	Actors.registerSheet("metalsaviors", MetalSaviorsCharacterSheet, {
 		makeDefault: true,
 	});
 	Actors.registerSheet("metalsaviors", MetalSaviorsInfantrySheet, {
@@ -135,6 +134,24 @@ Hooks.once("init", async function () {
 		hint:
 			"The Opacity of the facing overlay displayed when a token is hovered over. " +
 			"If the Opacity is 0, then no facing overlays will be displayed",
+		scope: "client",
+		config: true,
+		type: Number,
+		range: {
+			min: 0,
+			max: 100,
+		},
+		default: 50,
+		onChange: (value) => {
+			if (!game.scenes.active) return;
+			game.scenes.active.tokens.forEach((x) => x.object.refresh());
+		},
+	});
+	game.settings.register("metalsaviors", "weaponRangeOverlayOpacity", {
+		name: "Weapon Range Overlay Opacity",
+		hint:
+			"The Opacity of the weapon range overlay displayed when a token is hovered over. " +
+			"If the Opacity is 0, then no weapon range overlays will be displayed",
 		scope: "client",
 		config: true,
 		type: Number,

@@ -1,35 +1,23 @@
-class SyncTransformObject extends PIXI.Container {
-	constructor(object) {
-		super();
-
-		this.object = object;
-
-		this.transform = new SynchronizedTransform(this.object.transform);
-	}
-
-	/** @override */
-	get visible() {
-		return this.object.visible;
-	}
-	set visible(value) {}
-}
+import { SyncTransformObject } from "./SyncTransformObject.mjs";
 
 export class MetalSaviorsToken extends Token {
 	constructor(...args) {
 		super(...args);
 
 		this.facing = new SyncTransformObject(this);
+		this.weaponRange = new SyncTransformObject(this);
 	}
 
 	/** @override */
 	async draw() {
 		await super.draw();
 
-		this._drawfacing();
+		this._drawFacing();
+		this._drawWeaponRange();
 		return this;
 	}
 
-	_drawfacing() {
+	_drawFacing() {
 		if (!this.facing.parent) canvas.gridOverlay.facings.addChild(this.facing);
 
 		this.facing.removeChildren();
@@ -46,9 +34,9 @@ export class MetalSaviorsToken extends Token {
 		const sin = 1 / 2;
 		const cos = Math.sqrt(3) / 2;
 		const tiles = game.settings.get("metalsaviors", "facingOverlayLength");
-		const transparency = game.settings.get("metalsaviors", "facingOverlayOpacity") / 100;
+		const opacity = game.settings.get("metalsaviors", "facingOverlayOpacity") / 100;
 
-		if (!tiles || !transparency) return this.facingOverlay;
+		if (!tiles || !opacity) return this.facingOverlay;
 
 		let magnitude = Math.max(tiles + 0.5, 0) * d.size;
 		if ([4, 5].includes(canvas.scene.data.gridType)) {
@@ -58,21 +46,14 @@ export class MetalSaviorsToken extends Token {
 		const x = magnitude * cos;
 		const y = magnitude * sin;
 
-		drawDottedLine(
-			this.facingOverlay,
-			magnitude,
-			10,
-			Math.PI / 6,
-			this._getBorderColor() || 0x000000,
-			transparency
-		);
+		drawDottedLine(this.facingOverlay, magnitude, 10, Math.PI / 6, this._getBorderColor() || 0x000000, opacity);
 		drawDottedLine(
 			this.facingOverlay,
 			magnitude,
 			10,
 			(5 * Math.PI) / 6,
 			this._getBorderColor() || 0x000000,
-			transparency
+			opacity
 		);
 		drawDottedLine(
 			this.facingOverlay,
@@ -80,7 +61,7 @@ export class MetalSaviorsToken extends Token {
 			10,
 			(7 * Math.PI) / 6,
 			this._getBorderColor() || 0x000000,
-			transparency
+			opacity
 		);
 		drawDottedLine(
 			this.facingOverlay,
@@ -88,7 +69,7 @@ export class MetalSaviorsToken extends Token {
 			10,
 			(11 * Math.PI) / 6,
 			this._getBorderColor() || 0x000000,
-			transparency
+			opacity
 		);
 
 		this.facingOverlay.position.x = this.bounds.width / 2;
@@ -98,9 +79,88 @@ export class MetalSaviorsToken extends Token {
 		return this.facingOverlay;
 	}
 
+	_drawWeaponRange() {
+		if (!this.weaponRange.parent) canvas.gridOverlay.ranges.addChild(this.weaponRange);
+
+		this.weaponRange.removeChildren();
+		this.weaponRange.addChild(this._createWeaponRangeOverlay());
+
+		return this.weaponRange;
+	}
+
+	_createWeaponRangeOverlay() {
+		this.weaponRangeOverlay = this.weaponRangeOverlay || new PIXI.Graphics();
+
+		const curWeapon = this.actor?.getCurWeapon();
+
+		if (!curWeapon) return this.weaponRangeOverlay;
+
+		const weaponRange = curWeapon.range;
+
+		const pointCloseBoundary = Math.max(Math.floor(weaponRange / 4), 1);
+		const closeMediumBoundary = Math.max(Math.floor(weaponRange / 2), pointCloseBoundary);
+		const mediumLongBoundary = Math.max(weaponRange - 1, closeMediumBoundary);
+		const longExtremeBoundary = Math.max(2 * weaponRange, mediumLongBoundary);
+
+		const gridSize = canvas.dimensions.size;
+		const opacity = game.settings.get("metalsaviors", "weaponRangeOverlayOpacity") / 100;
+
+		// Draw Point Blank Range
+		highlightConcentricHexagons(
+			this.weaponRangeOverlay,
+			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			{
+				gridSize: gridSize,
+				innerRadius: 1,
+				outerRadius: pointCloseBoundary,
+			},
+			{ color: 0xff0000, alpha: opacity }
+		);
+
+		// Draw Close Range
+		highlightConcentricHexagons(
+			this.weaponRangeOverlay,
+			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			{
+				gridSize: gridSize,
+				innerRadius: pointCloseBoundary + 1,
+				outerRadius: closeMediumBoundary,
+			},
+			{ color: 0x00ff00, alpha: opacity }
+		);
+
+		// Draw Medium Range
+		highlightConcentricHexagons(
+			this.weaponRangeOverlay,
+			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			{
+				gridSize: gridSize,
+				innerRadius: closeMediumBoundary + 1,
+				outerRadius: mediumLongBoundary,
+			},
+			{ color: 0x0000ff, alpha: opacity }
+		);
+
+		// Draw Long Range
+		highlightConcentricHexagons(
+			this.weaponRangeOverlay,
+			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			{
+				gridSize: gridSize,
+				innerRadius: mediumLongBoundary + 1,
+				outerRadius: longExtremeBoundary,
+			},
+			{ color: 0x000000, alpha: opacity }
+		);
+
+		return this.weaponRangeOverlay;
+	}
+
 	refresh() {
 		super.refresh();
 		if (this.facing && this.facingOverlay) this._refreshFacing();
+
+		if (this.weaponRange && this.weaponRangeOverlay) this._refreshWeaponRange();
 		return this;
 	}
 
@@ -111,11 +171,20 @@ export class MetalSaviorsToken extends Token {
 
 		if (!(this._hover || this._controlled || isTargetted)) return;
 
-		this._drawfacing();
+		this._drawFacing();
+	}
+
+	_refreshWeaponRange() {
+		this.weaponRangeOverlay.clear();
+
+		if (!(this._hover || this._controlled) || !this.isOwner) return;
+
+		this._drawWeaponRange();
 	}
 
 	destroy(options) {
 		this.facing.destroy();
+		this.weaponRange.destroy();
 		return super.destroy(options);
 	}
 }
@@ -191,5 +260,57 @@ function drawDottedLine(graphic, length, width, angle, color, alpha) {
 		graphic.endFill();
 
 		totalLength += spaceLength;
+	}
+}
+
+function highlightConcentricHexagons(
+	graphic,
+	polygonGenerator,
+	{ gridSize = 100, innerRadius = 0, outerRadius = 5 } = {},
+	{ color = 0x123456, alpha = 0.5 }
+) {
+	const gridWidth = gridSize;
+	const gridHeight = (gridSize * Math.sqrt(3)) / 2;
+	for (let ring = innerRadius; ring <= outerRadius; ring++) {
+		if (ring === 0) {
+			const polygon = polygonGenerator(0, 0);
+			graphic.beginFill(color, alpha).drawPolygon(polygon).endFill();
+			continue;
+		}
+
+		const x1 = 0.75 * gridWidth * ring;
+		const x2 = 0;
+		const y1 = (gridHeight * ring) / 2;
+		const y2 = gridHeight * ring;
+
+		const polygon1 = polygonGenerator(x1, y1);
+		const polygon2 = polygonGenerator(x1, -y1);
+		const polygon3 = polygonGenerator(x2, -y2);
+		const polygon4 = polygonGenerator(-x1, -y1);
+		const polygon5 = polygonGenerator(-x1, y1);
+		const polygon6 = polygonGenerator(-x2, y2);
+
+		for (let i = 0; i < ring; i++) {
+			const newPolygon1 = polygon1.map((val, index) => (index % 2 === 0 ? val : val - gridHeight * i));
+			const newPolygon2 = polygon2.map((val, index) =>
+				index % 2 === 0 ? val - 0.75 * gridWidth * i : val - 0.5 * gridHeight * i
+			);
+			const newPolygon3 = polygon3.map((val, index) =>
+				index % 2 === 0 ? val - 0.75 * gridWidth * i : val + 0.5 * gridHeight * i
+			);
+			const newPolygon4 = polygon4.map((val, index) => (index % 2 === 0 ? val : val + gridHeight * i));
+			const newPolygon5 = polygon5.map((val, index) =>
+				index % 2 === 0 ? val + 0.75 * gridWidth * i : val + 0.5 * gridHeight * i
+			);
+			const newPolygon6 = polygon6.map((val, index) =>
+				index % 2 === 0 ? val + 0.75 * gridWidth * i : val - 0.5 * gridHeight * i
+			);
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon1).endFill();
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon2).endFill();
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon3).endFill();
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon4).endFill();
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon5).endFill();
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon6).endFill();
+		}
 	}
 }
