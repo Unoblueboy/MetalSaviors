@@ -8,7 +8,7 @@ import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class MetalSaviorsActorSheet extends ActorSheet {
+export class MetalSaviorsCharacterSheet extends ActorSheet {
 	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {

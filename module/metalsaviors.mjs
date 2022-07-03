@@ -6,7 +6,7 @@ import { MetalSaviorsItemProxy } from "./documents/Item/itemProxy.mjs";
 import { MetalSaviorsCombatant } from "./documents/Combat/Combatant.mjs";
 import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
 // Import sheet classes.
-import { MetalSaviorsActorSheet } from "./sheets/actor/actor-sheet.mjs";
+import { MetalSaviorsCharacterSheet } from "./sheets/actor/character-sheet.mjs";
 import { MetalSaviorsItemSheet } from "./sheets/item/item-sheet.mjs";
 import { MetalSaviorsSkillSheet } from "./sheets/item/skill-sheet.mjs";
 import { MetalSaviorsCavSheet } from "./sheets/item/cav-sheet.mjs";
@@ -65,7 +65,7 @@ Hooks.once("init", async function () {
 
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
-	Actors.registerSheet("metalsaviors", MetalSaviorsActorSheet, {
+	Actors.registerSheet("metalsaviors", MetalSaviorsCharacterSheet, {
 		makeDefault: true,
 	});
 	Actors.registerSheet("metalsaviors", MetalSaviorsInfantrySheet, {
