@@ -53,7 +53,6 @@ Hooks.once("init", async function () {
 	CONFIG.ui.combat = MetalSaviorsCombatTracker;
 	CONFIG.time.roundTime = 10;
 	addGridOverlayLayer(CONFIG.Canvas.layers);
-	console.log(CONFIG.Canvas.layers);
 
 	// Add new data-dtypes
 	window.Dice = (value) => {
@@ -135,6 +134,24 @@ Hooks.once("init", async function () {
 		hint:
 			"The Opacity of the facing overlay displayed when a token is hovered over. " +
 			"If the Opacity is 0, then no facing overlays will be displayed",
+		scope: "client",
+		config: true,
+		type: Number,
+		range: {
+			min: 0,
+			max: 100,
+		},
+		default: 50,
+		onChange: (value) => {
+			if (!game.scenes.active) return;
+			game.scenes.active.tokens.forEach((x) => x.object.refresh());
+		},
+	});
+	game.settings.register("metalsaviors", "weaponRangeOverlayOpacity", {
+		name: "Weapon Range Overlay Opacity",
+		hint:
+			"The Opacity of the weapon range overlay displayed when a token is hovered over. " +
+			"If the Opacity is 0, then no weapon range overlays will be displayed",
 		scope: "client",
 		config: true,
 		type: Number,

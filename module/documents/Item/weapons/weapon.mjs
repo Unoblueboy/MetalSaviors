@@ -6,6 +6,10 @@ export class MetalSaviorsWeapon extends Item {
 		return this.data.data.type;
 	}
 
+	get range() {
+		return this.weaponType === "ranged" ? this.data.data.range : 0;
+	}
+
 	_onCreate(data, options, userId) {
 		super._onCreate(data, options, userId);
 

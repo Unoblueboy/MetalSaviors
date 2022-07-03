@@ -34,9 +34,9 @@ export class MetalSaviorsToken extends Token {
 		const sin = 1 / 2;
 		const cos = Math.sqrt(3) / 2;
 		const tiles = game.settings.get("metalsaviors", "facingOverlayLength");
-		const transparency = game.settings.get("metalsaviors", "facingOverlayOpacity") / 100;
+		const opacity = game.settings.get("metalsaviors", "facingOverlayOpacity") / 100;
 
-		if (!tiles || !transparency) return this.facingOverlay;
+		if (!tiles || !opacity) return this.facingOverlay;
 
 		let magnitude = Math.max(tiles + 0.5, 0) * d.size;
 		if ([4, 5].includes(canvas.scene.data.gridType)) {
@@ -46,21 +46,14 @@ export class MetalSaviorsToken extends Token {
 		const x = magnitude * cos;
 		const y = magnitude * sin;
 
-		drawDottedLine(
-			this.facingOverlay,
-			magnitude,
-			10,
-			Math.PI / 6,
-			this._getBorderColor() || 0x000000,
-			transparency
-		);
+		drawDottedLine(this.facingOverlay, magnitude, 10, Math.PI / 6, this._getBorderColor() || 0x000000, opacity);
 		drawDottedLine(
 			this.facingOverlay,
 			magnitude,
 			10,
 			(5 * Math.PI) / 6,
 			this._getBorderColor() || 0x000000,
-			transparency
+			opacity
 		);
 		drawDottedLine(
 			this.facingOverlay,
@@ -68,7 +61,7 @@ export class MetalSaviorsToken extends Token {
 			10,
 			(7 * Math.PI) / 6,
 			this._getBorderColor() || 0x000000,
-			transparency
+			opacity
 		);
 		drawDottedLine(
 			this.facingOverlay,
@@ -76,7 +69,7 @@ export class MetalSaviorsToken extends Token {
 			10,
 			(11 * Math.PI) / 6,
 			this._getBorderColor() || 0x000000,
-			transparency
+			opacity
 		);
 
 		this.facingOverlay.position.x = this.bounds.width / 2;
@@ -98,23 +91,30 @@ export class MetalSaviorsToken extends Token {
 	_createWeaponRangeOverlay() {
 		this.weaponRangeOverlay = this.weaponRangeOverlay || new PIXI.Graphics();
 
-		const weaponRange = 1;
+		const curWeapon = this.actor?.getCurWeapon();
+
+		if (!curWeapon) return this.weaponRangeOverlay;
+
+		const weaponRange = curWeapon.range;
 
 		const pointCloseBoundary = Math.max(Math.floor(weaponRange / 4), 1);
 		const closeMediumBoundary = Math.max(Math.floor(weaponRange / 2), pointCloseBoundary);
 		const mediumLongBoundary = Math.max(weaponRange - 1, closeMediumBoundary);
 		const longExtremeBoundary = Math.max(2 * weaponRange, mediumLongBoundary);
 
+		const gridSize = canvas.dimensions.size;
+		const opacity = game.settings.get("metalsaviors", "weaponRangeOverlayOpacity") / 100;
+
 		// Draw Point Blank Range
 		highlightConcentricHexagons(
 			this.weaponRangeOverlay,
 			(x, y) => canvas.grid.grid.getPolygon(x, y),
 			{
-				gridSize: 100,
+				gridSize: gridSize,
 				innerRadius: 1,
 				outerRadius: pointCloseBoundary,
 			},
-			{ color: 0xff0000, alpha: 0.5 }
+			{ color: 0xff0000, alpha: opacity }
 		);
 
 		// Draw Close Range
@@ -122,11 +122,11 @@ export class MetalSaviorsToken extends Token {
 			this.weaponRangeOverlay,
 			(x, y) => canvas.grid.grid.getPolygon(x, y),
 			{
-				gridSize: 100,
+				gridSize: gridSize,
 				innerRadius: pointCloseBoundary + 1,
 				outerRadius: closeMediumBoundary,
 			},
-			{ color: 0x00ff00, alpha: 0.5 }
+			{ color: 0x00ff00, alpha: opacity }
 		);
 
 		// Draw Medium Range
@@ -134,11 +134,11 @@ export class MetalSaviorsToken extends Token {
 			this.weaponRangeOverlay,
 			(x, y) => canvas.grid.grid.getPolygon(x, y),
 			{
-				gridSize: 100,
+				gridSize: gridSize,
 				innerRadius: closeMediumBoundary + 1,
 				outerRadius: mediumLongBoundary,
 			},
-			{ color: 0x0000ff, alpha: 0.5 }
+			{ color: 0x0000ff, alpha: opacity }
 		);
 
 		// Draw Long Range
@@ -146,11 +146,11 @@ export class MetalSaviorsToken extends Token {
 			this.weaponRangeOverlay,
 			(x, y) => canvas.grid.grid.getPolygon(x, y),
 			{
-				gridSize: 100,
+				gridSize: gridSize,
 				innerRadius: mediumLongBoundary + 1,
 				outerRadius: longExtremeBoundary,
 			},
-			{ color: 0x000000, alpha: 0.5 }
+			{ color: 0x000000, alpha: opacity }
 		);
 
 		return this.weaponRangeOverlay;

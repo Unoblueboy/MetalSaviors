@@ -169,7 +169,6 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 			const element = ev.target;
 			const inCav = element.checked;
 			const combatSpeedCell = $(element).closest("td").siblings(".combat-speed-td").find("select").get(0);
-			console.log($(element).closest("td").siblings(".base-initative-modifiers-td"));
 			const pilotInitativeModifierInput = $(element)
 				.closest("td")
 				.siblings(".base-initative-modifiers-td")

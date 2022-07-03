@@ -2,9 +2,9 @@ export class GridOverlayLayer extends CanvasLayer {
 	constructor() {
 		super();
 
-		this.facings = this.addChild(new PIXI.Container());
-
 		this.ranges = this.addChild(new PIXI.Container());
+
+		this.facings = this.addChild(new PIXI.Container());
 	}
 
 	static get layerOptions() {
