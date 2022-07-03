@@ -93,6 +93,7 @@
                 </div>
             </div>
             {{> "systems/metalsaviors/templates/actor/parts/actor-combat-speeds.hbs" combatSpeeds = data.combatSpeeds }}
+            {{> "systems/metalsaviors/templates/actor/parts/actor-weapons.hbs" }}
             <div class="fill-parent">
                 <h3>Notes</h4>
                     {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
