@@ -13,13 +13,16 @@ export class MetalSaviorsInfantrySheet extends ActorSheet {
 	getData() {
 		const context = super.getData();
 
+		const actorData = this.actor.data.toObject(false);
+		context.data = actorData.data;
+
 		context.squadTypes = [
 			{
 				name: "Anti-Vehicle",
 				description:
 					"Infantry armed with Anti-Armor weapons. " +
 					"Deals 2d6 Damage to other Infantry, and 2d6 Missile Damage to CAV Units. " +
-					"Standard Size is 6 to 10.",
+					"Standard Size is 6 to 10. Range 10.",
 			},
 			{
 				name: "Engineer",
