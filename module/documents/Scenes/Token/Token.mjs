@@ -36,8 +36,9 @@ export class MetalSaviorsToken extends Token {
 		const sin = 1 / 2;
 		const cos = Math.sqrt(3) / 2;
 		const tiles = game.settings.get("metalsaviors", "facingOverlayLength");
+		const transparency = game.settings.get("metalsaviors", "facingOverlayOpacity") / 100;
 
-		if (!tiles) return this.facingOverlay;
+		if (!tiles || !transparency) return this.facingOverlay;
 
 		let magnitude = Math.max(tiles + 0.5, 0) * d.size;
 		if ([4, 5].includes(canvas.scene.data.gridType)) {
@@ -47,10 +48,38 @@ export class MetalSaviorsToken extends Token {
 		const x = magnitude * cos;
 		const y = magnitude * sin;
 
-		drawDottedLine(this.facingOverlay, magnitude, 10, Math.PI / 6, this._getBorderColor() || 0x000000, 0.5);
-		drawDottedLine(this.facingOverlay, magnitude, 10, (5 * Math.PI) / 6, this._getBorderColor() || 0x000000, 0.5);
-		drawDottedLine(this.facingOverlay, magnitude, 10, (7 * Math.PI) / 6, this._getBorderColor() || 0x000000, 0.5);
-		drawDottedLine(this.facingOverlay, magnitude, 10, (11 * Math.PI) / 6, this._getBorderColor() || 0x000000, 0.5);
+		drawDottedLine(
+			this.facingOverlay,
+			magnitude,
+			10,
+			Math.PI / 6,
+			this._getBorderColor() || 0x000000,
+			transparency
+		);
+		drawDottedLine(
+			this.facingOverlay,
+			magnitude,
+			10,
+			(5 * Math.PI) / 6,
+			this._getBorderColor() || 0x000000,
+			transparency
+		);
+		drawDottedLine(
+			this.facingOverlay,
+			magnitude,
+			10,
+			(7 * Math.PI) / 6,
+			this._getBorderColor() || 0x000000,
+			transparency
+		);
+		drawDottedLine(
+			this.facingOverlay,
+			magnitude,
+			10,
+			(11 * Math.PI) / 6,
+			this._getBorderColor() || 0x000000,
+			transparency
+		);
 
 		this.facingOverlay.position.x = this.bounds.width / 2;
 		this.facingOverlay.position.y = this.bounds.height / 2;
