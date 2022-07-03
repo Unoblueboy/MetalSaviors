@@ -1,7 +1,7 @@
 import { MetalSaviorsAttributeRollDialog as MetalSaviorsAttributeOrSkillDialog } from "../documents/Actor/Dialogs/attributeOrSkillDialog.mjs";
 import { MetalSaviorsChatMessage } from "../documents/ChatMessage/chatMessage.mjs";
 
-export async function rollInitiative(combatant, { inCav = false, bonus = 0, createMessage = true, messageData = {} }) {
+export async function rollInitiative(combatant, { inCav = false, bonus = 0, makeSound = true, messageData = {} }) {
 	const actor = combatant.actor;
 	const rollData = actor.getRollData();
 
@@ -13,7 +13,15 @@ export async function rollInitiative(combatant, { inCav = false, bonus = 0, crea
 
 	const roll = new Roll(rollString, rollData);
 	await roll.evaluate({ async: true });
-	roll.toMessage(messageData, { create: createMessage });
+	const message = await roll.toMessage(messageData, { create: false });
+
+	// If the combatant is hidden, use a private roll unless an alternative rollMode was explicitly requested
+	message.rollMode = combatant.hidden ? CONST.DICE_ROLL_MODES.PRIVATE : message.rollMode;
+
+	if (!makeSound) {
+		message.sound = null;
+	}
+	await MetalSaviorsChatMessage.implementation.create([message]);
 
 	return roll;
 }

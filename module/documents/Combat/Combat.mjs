@@ -104,6 +104,7 @@ export class MetalSaviorsCombat extends Combat {
 
 		// Iterate over Combatants, performing an initiative roll for each
 		const updates = [];
+		let firstIter = true;
 		for (const [id, initiativeOptions] of Object.entries(allInitiativeOptions)) {
 			const combatant = this.combatants.get(id, { strict: true });
 			const messageData = {
@@ -113,11 +114,13 @@ export class MetalSaviorsCombat extends Combat {
 					alias: combatant.name,
 				}),
 				flavor: game.i18n.format("COMBAT.RollsInitiative", { name: combatant.name }),
+				flags: { "core.initiativeRoll": true },
 			};
 
 			const roll = await rollInitiative(combatant, {
 				...initiativeOptions,
 				messageData,
+				makeSound: firstIter,
 			});
 
 			if (initiativeOptions.combatSpeed !== undefined) {
@@ -125,6 +128,10 @@ export class MetalSaviorsCombat extends Combat {
 			}
 
 			updates.push({ _id: id, initiative: roll.total });
+
+			if (firstIter) {
+				firstIter = false;
+			}
 		}
 
 		if (!updates.length) return this;
