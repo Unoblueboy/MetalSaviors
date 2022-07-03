@@ -80,6 +80,7 @@
 		},
 		"infantry": {
 			"squadType": "Anti-Vehicle",
+			"isCivilian": false,
 			"cr": 10,
 			"healthPerSquadMember": 10,
 			"health": {
