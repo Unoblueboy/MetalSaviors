@@ -227,11 +227,11 @@ export class MetalSaviorsCombatant extends Combatant {
 				alias: this.name,
 			}),
 			flavor: game.i18n.format("COMBAT.RollsInitiative", { name: this.name }),
+			flags: { "core.initiativeRoll": true },
 		};
 
 		const roll = await rollInitiative(this, {
 			...initiativeOptions,
-			createMessage: true,
 			messageData,
 		});
 
