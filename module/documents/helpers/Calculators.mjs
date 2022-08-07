@@ -275,7 +275,7 @@ export function CalculateSkillValue(skill, actor) {
 	const lvlAcquired = skill.data.data.lvlAcquired || 1;
 	const lvlDiff = lvl - lvlAcquired + 1;
 
-	const skillModifier = lvlAcquired === 1 ? actorData.data?.derivedAttributes?.skillModifier?.value || 0 : 0;
+	const skillModifier = actorData.data?.derivedAttributes?.skillModifier?.value || 0;
 	const numAcquiredBonus = (skillData.data.numAcquisitions - 1) * 10;
 
 	const bonusesFromAtbSkills = _calculateSkillBonusesFromAtbSkills(skillData.name, actorData);
@@ -285,7 +285,7 @@ export function CalculateSkillValue(skill, actor) {
 		numAcquiredBonus +
 		bonusesFromAtbSkills +
 		skillData.data.otherBonuses +
-		skillData.data.levelIncrease * lvlDiff +
+		skillData.data.levelIncrease * (lvlDiff - 1) +
 		skillModifier;
 
 	return {
