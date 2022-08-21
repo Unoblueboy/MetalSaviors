@@ -2,23 +2,34 @@
     <form>
         <div class="form-group">
             <label>Roll Name</label>
-            <input type="text" name="name" {{#if name}}value="{{name}}" {{/if}}>
+            <input type="text"
+                   name="name"
+                   {{#if name}}value="{{name}}"
+                   {{/if}}>
         </div>
         <div class="form-group">
             <label>Value</label>
-            <input type="number" step="1" name="value" {{#if value}}value="{{value}}" {{/if}}>
+            <input type="number"
+                   step="1"
+                   name="value"
+                   {{#if value}}value="{{value}}"
+                   {{/if}}>
         </div>
         <div class="form-group">
-            <label>Difficulty Penalty</label>
-            <input type="text" name="difficultyPenalty" value="">
+            <label>Skill Bonus</label>
+            <input type="text"
+                   name="difficultyPenalty"
+                   value="">
         </div>
     </form>
 </div>
 <div class="dialog-buttons">
-    <button class="dialog-button {{cssClass}}" data-button="cancel">
+    <button class="dialog-button {{cssClass}}"
+            data-button="cancel">
         Cancel
     </button>
-    <button class="dialog-button {{cssClass}}" data-button="normal">
+    <button class="dialog-button {{cssClass}}"
+            data-button="normal">
         Roll Skill
     </button>
 </div>
