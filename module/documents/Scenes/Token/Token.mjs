@@ -97,7 +97,7 @@ export class MetalSaviorsToken extends Token {
 
 		const weaponRange = curWeapon.range;
 
-		const pointCloseBoundary = Math.max(Math.floor(weaponRange / 4), 1);
+		const pointCloseBoundary = 1;
 		const closeMediumBoundary = Math.max(Math.floor(weaponRange / 2), pointCloseBoundary);
 		const mediumLongBoundary = Math.max(weaponRange - 1, closeMediumBoundary);
 		const longExtremeBoundary = Math.max(2 * weaponRange, mediumLongBoundary);
@@ -105,12 +105,59 @@ export class MetalSaviorsToken extends Token {
 		const gridSize = canvas.dimensions.size;
 		const opacity = game.settings.get("metalsaviors", "weaponRangeOverlayOpacity") / 100;
 
+		if (canvas.grid.grid instanceof HexagonalGrid) {
+			const polygonGenerator = (x, y) => canvas.grid.grid.getPolygon(x, y);
+			const gridUseColumns = canvas.grid.grid.columns;
+			this.drawHexagonalWeaponRangeOverlay(
+				gridSize,
+				gridUseColumns,
+				opacity,
+				polygonGenerator,
+				pointCloseBoundary,
+				closeMediumBoundary,
+				mediumLongBoundary,
+				longExtremeBoundary
+			);
+		} else if (canvas.grid.grid instanceof SquareGrid) {
+			this.drawSquareWeaponRangeOverlay(
+				gridSize,
+				opacity,
+				pointCloseBoundary,
+				closeMediumBoundary,
+				mediumLongBoundary,
+				longExtremeBoundary
+			);
+		} else {
+			this.drawGridlessWeaponRangeOverlay(
+				gridSize,
+				opacity,
+				pointCloseBoundary,
+				closeMediumBoundary,
+				mediumLongBoundary,
+				longExtremeBoundary
+			);
+		}
+
+		return this.weaponRangeOverlay;
+	}
+
+	drawHexagonalWeaponRangeOverlay(
+		gridSize,
+		gridUseColumns,
+		opacity,
+		polygonGenerator,
+		pointCloseBoundary,
+		closeMediumBoundary,
+		mediumLongBoundary,
+		longExtremeBoundary
+	) {
 		// Draw Point Blank Range
 		highlightConcentricHexagons(
 			this.weaponRangeOverlay,
-			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			polygonGenerator,
 			{
 				gridSize: gridSize,
+				useColumns: gridUseColumns,
 				innerRadius: 1,
 				outerRadius: pointCloseBoundary,
 			},
@@ -120,9 +167,10 @@ export class MetalSaviorsToken extends Token {
 		// Draw Close Range
 		highlightConcentricHexagons(
 			this.weaponRangeOverlay,
-			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			polygonGenerator,
 			{
 				gridSize: gridSize,
+				useColumns: gridUseColumns,
 				innerRadius: pointCloseBoundary + 1,
 				outerRadius: closeMediumBoundary,
 			},
@@ -132,9 +180,10 @@ export class MetalSaviorsToken extends Token {
 		// Draw Medium Range
 		highlightConcentricHexagons(
 			this.weaponRangeOverlay,
-			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			polygonGenerator,
 			{
 				gridSize: gridSize,
+				useColumns: gridUseColumns,
 				innerRadius: closeMediumBoundary + 1,
 				outerRadius: mediumLongBoundary,
 			},
@@ -144,7 +193,61 @@ export class MetalSaviorsToken extends Token {
 		// Draw Long Range
 		highlightConcentricHexagons(
 			this.weaponRangeOverlay,
-			(x, y) => canvas.grid.grid.getPolygon(x, y),
+			polygonGenerator,
+			{
+				gridSize: gridSize,
+				useColumns: gridUseColumns,
+				innerRadius: mediumLongBoundary + 1,
+				outerRadius: longExtremeBoundary,
+			},
+			{ color: 0x000000, alpha: opacity }
+		);
+	}
+
+	drawSquareWeaponRangeOverlay(
+		gridSize,
+		opacity,
+		pointCloseBoundary,
+		closeMediumBoundary,
+		mediumLongBoundary,
+		longExtremeBoundary
+	) {
+		// Draw Point Blank Range
+		highlightConcentricSquares(
+			this.weaponRangeOverlay,
+			{
+				gridSize: gridSize,
+				innerRadius: 1,
+				outerRadius: pointCloseBoundary,
+			},
+			{ color: 0xff0000, alpha: opacity }
+		);
+
+		// Draw Close Range
+		highlightConcentricSquares(
+			this.weaponRangeOverlay,
+			{
+				gridSize: gridSize,
+				innerRadius: pointCloseBoundary + 1,
+				outerRadius: closeMediumBoundary,
+			},
+			{ color: 0x00ff00, alpha: opacity }
+		);
+
+		// Draw Medium Range
+		highlightConcentricSquares(
+			this.weaponRangeOverlay,
+			{
+				gridSize: gridSize,
+				innerRadius: closeMediumBoundary + 1,
+				outerRadius: mediumLongBoundary,
+			},
+			{ color: 0x0000ff, alpha: opacity }
+		);
+
+		// Draw Long Range
+		highlightConcentricSquares(
+			this.weaponRangeOverlay,
 			{
 				gridSize: gridSize,
 				innerRadius: mediumLongBoundary + 1,
@@ -152,8 +255,59 @@ export class MetalSaviorsToken extends Token {
 			},
 			{ color: 0x000000, alpha: opacity }
 		);
+	}
 
-		return this.weaponRangeOverlay;
+	drawGridlessWeaponRangeOverlay(
+		gridSize,
+		opacity,
+		pointCloseBoundary,
+		closeMediumBoundary,
+		mediumLongBoundary,
+		longExtremeBoundary
+	) {
+		// Draw Point Blank Range
+		highlightConcentricCircle(
+			this.weaponRangeOverlay,
+			{
+				gridSize: gridSize,
+				innerRadius: 0,
+				outerRadius: pointCloseBoundary,
+			},
+			{ color: 0xff0000, alpha: opacity }
+		);
+
+		// Draw Close Range
+		highlightConcentricCircle(
+			this.weaponRangeOverlay,
+			{
+				gridSize: gridSize,
+				innerRadius: pointCloseBoundary,
+				outerRadius: closeMediumBoundary,
+			},
+			{ color: 0x00ff00, alpha: opacity }
+		);
+
+		// Draw Medium Range
+		highlightConcentricCircle(
+			this.weaponRangeOverlay,
+			{
+				gridSize: gridSize,
+				innerRadius: closeMediumBoundary,
+				outerRadius: mediumLongBoundary + 1,
+			},
+			{ color: 0x0000ff, alpha: opacity }
+		);
+
+		// Draw Long Range
+		highlightConcentricCircle(
+			this.weaponRangeOverlay,
+			{
+				gridSize: gridSize,
+				innerRadius: mediumLongBoundary + 1,
+				outerRadius: longExtremeBoundary,
+			},
+			{ color: 0x000000, alpha: opacity }
+		);
 	}
 
 	refresh() {
@@ -266,11 +420,18 @@ function drawDottedLine(graphic, length, width, angle, color, alpha) {
 function highlightConcentricHexagons(
 	graphic,
 	polygonGenerator,
-	{ gridSize = 100, innerRadius = 0, outerRadius = 5 } = {},
+	{ gridSize = 100, useColumns = true, innerRadius = 0, outerRadius = 5 } = {},
 	{ color = 0x123456, alpha = 0.5 }
 ) {
-	const gridWidth = gridSize;
-	const gridHeight = (gridSize * Math.sqrt(3)) / 2;
+	let gridWidth, gridHeight;
+	if (useColumns) {
+		gridWidth = gridSize;
+		gridHeight = (gridSize * Math.sqrt(3)) / 2;
+	} else {
+		gridWidth = (gridSize * Math.sqrt(3)) / 2;
+		gridHeight = gridSize;
+	}
+
 	for (let ring = innerRadius; ring <= outerRadius; ring++) {
 		if (ring === 0) {
 			const polygon = polygonGenerator(0, 0);
@@ -278,39 +439,142 @@ function highlightConcentricHexagons(
 			continue;
 		}
 
+		let { polygon1, polygon2, polygon3, polygon4, polygon5, polygon6 } = getCornerHexagons(
+			useColumns,
+			gridWidth,
+			gridHeight,
+			ring,
+			polygonGenerator
+		);
+
+		let arrayOfPolygons = [polygon1, polygon2, polygon3, polygon4, polygon5, polygon6];
+
+		drawLinearInterpolatedRing(ring, arrayOfPolygons, graphic, color, alpha);
+	}
+}
+
+function getCornerHexagons(useColumns, gridWidth, gridHeight, ring, polygonGenerator) {
+	let polygon1, polygon2, polygon3, polygon4, polygon5, polygon6;
+
+	if (useColumns) {
 		const x1 = 0.75 * gridWidth * ring;
 		const x2 = 0;
 		const y1 = (gridHeight * ring) / 2;
 		const y2 = gridHeight * ring;
 
-		const polygon1 = polygonGenerator(x1, y1);
-		const polygon2 = polygonGenerator(x1, -y1);
-		const polygon3 = polygonGenerator(x2, -y2);
-		const polygon4 = polygonGenerator(-x1, -y1);
-		const polygon5 = polygonGenerator(-x1, y1);
-		const polygon6 = polygonGenerator(-x2, y2);
+		polygon1 = polygonGenerator(x1, y1);
+		polygon2 = polygonGenerator(x1, -y1);
+		polygon3 = polygonGenerator(x2, -y2);
+		polygon4 = polygonGenerator(-x1, -y1);
+		polygon5 = polygonGenerator(-x1, y1);
+		polygon6 = polygonGenerator(-x2, y2);
+	} else {
+		const x1 = 1 * gridWidth * ring;
+		const x2 = 0.5 * gridWidth * ring;
+		const y1 = 0;
+		const y2 = 0.75 * gridHeight * ring;
 
-		for (let i = 0; i < ring; i++) {
-			const newPolygon1 = polygon1.map((val, index) => (index % 2 === 0 ? val : val - gridHeight * i));
-			const newPolygon2 = polygon2.map((val, index) =>
-				index % 2 === 0 ? val - 0.75 * gridWidth * i : val - 0.5 * gridHeight * i
-			);
-			const newPolygon3 = polygon3.map((val, index) =>
-				index % 2 === 0 ? val - 0.75 * gridWidth * i : val + 0.5 * gridHeight * i
-			);
-			const newPolygon4 = polygon4.map((val, index) => (index % 2 === 0 ? val : val + gridHeight * i));
-			const newPolygon5 = polygon5.map((val, index) =>
-				index % 2 === 0 ? val + 0.75 * gridWidth * i : val + 0.5 * gridHeight * i
-			);
-			const newPolygon6 = polygon6.map((val, index) =>
-				index % 2 === 0 ? val + 0.75 * gridWidth * i : val - 0.5 * gridHeight * i
-			);
-			graphic.beginFill(color, alpha).drawPolygon(newPolygon1).endFill();
-			graphic.beginFill(color, alpha).drawPolygon(newPolygon2).endFill();
-			graphic.beginFill(color, alpha).drawPolygon(newPolygon3).endFill();
-			graphic.beginFill(color, alpha).drawPolygon(newPolygon4).endFill();
-			graphic.beginFill(color, alpha).drawPolygon(newPolygon5).endFill();
-			graphic.beginFill(color, alpha).drawPolygon(newPolygon6).endFill();
+		polygon1 = polygonGenerator(x1, y1);
+		polygon2 = polygonGenerator(x2, -y2);
+		polygon3 = polygonGenerator(-x2, -y2);
+		polygon4 = polygonGenerator(-x1, -y1);
+		polygon5 = polygonGenerator(-x2, y2);
+		polygon6 = polygonGenerator(x2, y2);
+	}
+	return { polygon1, polygon2, polygon3, polygon4, polygon5, polygon6 };
+}
+
+function linearInterpolatePolygons(polygon1, polygon2, t) {
+	if (polygon1.length != polygon2.length) {
+		throw new Error("Error Interpolating Polygons, both polygons must have the same number of points");
+	}
+
+	if (t < 0 || t > 1) {
+		throw new Error(`Error Interpolating Polygons, t = ${t} must be between 0 and 1`);
+	}
+
+	var newPolygon = [];
+
+	for (let i = 0; i < polygon1.length; i++) {
+		const ordinate1 = polygon1[i];
+		const ordinate2 = polygon2[i];
+		const newOrdinate = (1 - t) * ordinate1 + t * ordinate2;
+		newPolygon.push(newOrdinate);
+	}
+
+	return newPolygon;
+}
+
+function drawLinearInterpolatedRing(ringSize, arrayOfPolygons, graphic, color, alpha) {
+	const numOfPolygons = arrayOfPolygons.length;
+
+	for (let i = 0; i < ringSize; i++) {
+		for (let j = 0; j < numOfPolygons; j++) {
+			const poly1 = arrayOfPolygons[j];
+			const poly2 = arrayOfPolygons[(j + 1) % numOfPolygons];
+			const newPolygon = linearInterpolatePolygons(poly1, poly2, i / ringSize);
+			graphic.beginFill(color, alpha).drawPolygon(newPolygon).endFill();
 		}
+	}
+}
+
+function highlightConcentricSquares(
+	graphic,
+	{ gridSize = 100, innerRadius = 0, outerRadius = 5 } = {},
+	{ color = 0x123456, alpha = 0.5 }
+) {
+	const polygonGenerator = (x, y) => [x, y, x, y + gridSize, x + gridSize, y + gridSize, x + gridSize, y, x, y];
+
+	for (let ring = innerRadius; ring <= outerRadius; ring++) {
+		if (ring === 0) {
+			const polygon = polygonGenerator(0, 0);
+			graphic.beginFill(color, alpha).drawPolygon(polygon).endFill();
+			continue;
+		}
+
+		let { polygon1, polygon2, polygon3, polygon4 } = getCornerSquares(gridSize, ring, polygonGenerator);
+
+		let arrayOfPolygons = [polygon1, polygon2, polygon3, polygon4];
+
+		drawLinearInterpolatedRing(2 * ring, arrayOfPolygons, graphic, color, alpha);
+	}
+}
+
+function getCornerSquares(gridSize, ring, polygonGenerator) {
+	let polygon1, polygon2, polygon3, polygon4;
+
+	const x1 = gridSize * ring;
+	const y1 = gridSize * ring;
+
+	polygon1 = polygonGenerator(x1, y1);
+	polygon2 = polygonGenerator(x1, -y1);
+	polygon3 = polygonGenerator(-x1, -y1);
+	polygon4 = polygonGenerator(-x1, y1);
+
+	return { polygon1, polygon2, polygon3, polygon4 };
+}
+
+function highlightConcentricCircle(
+	graphic,
+	{ gridSize = 100, innerRadius = 0, outerRadius = 5 } = {},
+	{ color = 0x123456, alpha = 0.5 }
+) {
+	if (outerRadius <= innerRadius) {
+		return;
+	}
+
+	const x = gridSize / 2;
+	const y = gridSize / 2;
+
+	graphic
+		.beginFill(color, alpha)
+		.drawCircle(x, y, outerRadius * gridSize)
+		.endFill();
+
+	if (innerRadius > 0) {
+		graphic
+			.beginHole()
+			.drawCircle(x, y, innerRadius * gridSize)
+			.endHole();
 	}
 }
