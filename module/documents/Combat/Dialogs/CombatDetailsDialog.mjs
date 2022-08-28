@@ -87,6 +87,11 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 			pilotAction: true,
 		},
 		{
+			name: "Switch Weapon",
+			cavAction: true,
+			pilotAction: true,
+		},
+		{
 			name: "Unspecified",
 			cavAction: true,
 			pilotAction: true,
