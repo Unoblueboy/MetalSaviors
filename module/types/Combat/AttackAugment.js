@@ -18,6 +18,10 @@ export class AttackAugment {
 	}
 
 	static getAllAttackAugments() {
-		return Object.values(Action);
+		return Object.values(AttackAugment);
+	}
+
+	static getAttackAugment(type) {
+		return AttackAugment.getAllAttackAugments().filter(x.type.value);
 	}
 }
