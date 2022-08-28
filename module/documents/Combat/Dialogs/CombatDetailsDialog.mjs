@@ -1,102 +1,10 @@
 import { CombatSpeedHelper } from "../../../helpers/CombatSpeedHelper.mjs";
+import { Action } from "../../../types/Combat/Action.js";
+import { AttackAugment } from "../../../types/Combat/AttackAugment.js";
+import { ActionType, AttackAugmentType } from "../../../types/Combat/Enums.js";
 
 export class MetalSaviorsCombatDetailsDialog extends Dialog {
 	// TODO: Consider whether combatant in or out of CAV.
-	actions = [
-		{
-			name: "Accelerate / Brake",
-			cavAction: true,
-		},
-		{
-			name: "Attack",
-			cavAction: true,
-			pilotAction: true,
-			augmentable: true,
-		},
-		{
-			name: "CAV System",
-			cavAction: true,
-		},
-		{
-			name: "Delay",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Ejection",
-			cavAction: true,
-		},
-		{
-			name: "Emergency Repairs",
-			cavAction: true,
-		},
-		{
-			name: "Maneuver",
-			cavAction: true,
-		},
-		{
-			name: "Other",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Refocus",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Reload",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Tool",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Block",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Dive",
-			pilotAction: true,
-		},
-		{
-			name: "Dodge",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Evasive Maneuvers",
-			cavAction: true,
-		},
-		{
-			name: "Parry",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Reorient",
-			cavAction: true,
-		},
-		{
-			name: "Roll with Punch",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Switch Weapon",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Unspecified",
-			cavAction: true,
-			pilotAction: true,
-		},
-	];
 
 	attackAugments = [
 		{
@@ -149,8 +57,8 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 			close: data.cancelCallback,
 		};
 
-		this.selectedAction = this.actions[0].name;
-		this.selectedAttackAugment = this.attackAugments[0].name;
+		this.selectedAction = Action.getAllActions()[0].type;
+		this.selectedAttackAugment = AttackAugment.getAllAttackAugments()[0].type;
 		this.combatant = data.combatant;
 	}
 
@@ -180,14 +88,15 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 
 	static _processActionDetails(form, combatant) {
 		const actionName = form.actionName.value;
-		switch (actionName) {
-			case "Accelerate / Brake":
+		const actionType = ActionType.parseValue(actionName);
+		switch (actionType) {
+			case ActionType.AccelerateBrake:
 				return {
 					actionName: actionName,
 					actionCost: 1,
 					dSpeed: parseInt(form.dSpeed.value),
 				};
-			case "Attack":
+			case ActionType.Attack:
 				const augmentActionCost = Number.isNumeric(form.augmentActionCost.value)
 					? parseInt(form.augmentActionCost.value)
 					: 1;
@@ -196,7 +105,7 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					actionName: actionName,
 					actionCost: actionCost,
 				};
-			case "Refocus":
+			case ActionType.Refocus:
 				// TODO: Make the roll output prettier
 				const roll = new Roll("1d6");
 				const speaker = ChatMessage.getSpeaker({ actor: combatant.actor });
@@ -212,7 +121,7 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					actionCost: 1,
 					dInit: result.total,
 				};
-			case "Unspecified":
+			case ActionType.Unspecified:
 				const curSpeed = combatant.getCurMovementSpeed();
 				const newSpeed = Number.isNumeric(form.newSpeed.value) ? parseInt(form.newSpeed.value) : curSpeed;
 				const curInitiative = combatant.data.initiative;
@@ -237,7 +146,8 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 	getData(options) {
 		const context = {};
 
-		context.actions = this.actions;
+		context.actions = Action.getAllActions();
+		context.actionTypes = ActionType.getAllEnumEntries();
 		context.actionDetails = {
 			selectedAction: this.selectedAction,
 			speedDetails: this._getSpeedDetails(),
@@ -278,12 +188,12 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 		super.activateListeners(html);
 
 		html.find(".action-name-select").change((ev) => {
-			this.selectedAction = ev.target.value;
+			this.selectedAction = ActionType.parseValue(ev.target.value);
 			this.render({});
 		});
 
 		html.find(".attack-augment-select").change((ev) => {
-			this.selectedAttackAugment = ev.target.value;
+			this.selectedAttackAugment = AttackAugmentType.parseValue(ev.target.value);
 			this.render({});
 		});
 	}
