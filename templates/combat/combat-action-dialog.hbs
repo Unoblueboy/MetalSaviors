@@ -215,6 +215,15 @@
                        disabled="true" />
             </div>
         {{/if}}
+        {{#if (eq actionDetails.selectedAction "Switch Weapon")}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text"
+                       name="actionCost"
+                       value="1"
+                       disabled="true" />
+            </div>
+        {{/if}}
         {{#if (eq actionDetails.selectedAction "Unspecified")}}
             <div class="form-group">
                 <label>New Speed</label>
