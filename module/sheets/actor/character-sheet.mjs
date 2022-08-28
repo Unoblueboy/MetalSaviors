@@ -162,13 +162,14 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 						break;
 					}
 
-					try {
-						weaponList = owner.type === "cav" ? weapons.cav[owner.id] : weapons[owner.type];
-
-						weaponList.push(i);
-					} catch {
-						console.log(`There was an error adding the object ${i}`);
+					if (owner.type === "cav" && !Object.keys(weapons.cav).includes(owner.id)) {
+						item.delete();
+						break;
 					}
+
+					weaponList = owner.type === "cav" ? weapons.cav[owner.id] : weapons[owner.type];
+
+					weaponList.push(i);
 
 					break;
 				case "concept":
