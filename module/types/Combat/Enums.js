@@ -16,6 +16,10 @@ class Enum {
 	}
 }
 
+Enum.prototype.toString = function dogToString() {
+	return this.value;
+};
+
 export class ActionType extends Enum {
 	static AccelerateBrake = new ActionType("Accelerate / Brake");
 	static Attack = new ActionType("Attack");
@@ -37,6 +41,7 @@ export class ActionType extends Enum {
 	static RollWithPunch = new ActionType("Roll with Punch");
 	static SwitchWeapon = new ActionType("Switch Weapon");
 	static Unspecified = new ActionType("Unspecified");
+	static SpendExcessActions = new ActionType("Spend Excess Actions");
 }
 
 export class AttackAugmentType extends Enum {

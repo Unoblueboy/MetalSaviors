@@ -1,6 +1,7 @@
 import { rollInitiative } from "../../helpers/roll.mjs";
 import { CombatSpeedHelper } from "../../helpers/CombatSpeedHelper.mjs";
 import { MetalSaviorsCombatantRollDialog } from "./Dialogs/CombatantRollDialog.mjs";
+import { ActionType } from "../../types/Combat/Enums.js";
 
 export class MetalSaviorsCombatant extends Combatant {
 	CombatSpeeds = {
@@ -125,11 +126,17 @@ export class MetalSaviorsCombatant extends Combatant {
 		]);
 	}
 
-	async performAction({ actionName = "", actionCost = 0, dInit = 0, dSpeed = 0, dExtraMomentum = 0 } = {}) {
+	async performAction(combatAction) {
+		var actionType = combatAction.type;
+		var actionCost = combatAction.actionCost;
+		var dInit = combatAction.dInit;
+		var dSpeed = combatAction.dSpeed;
+		var dExtraMomentum = combatAction.dExtraMomentum;
+
 		if (this.getFlag("metalsaviors", "remainingActions") < actionCost) {
 			ui.notifications.warn(
 				`Combatant [${this.name}] does not have the remaining combat actions ` +
-					`this round to perform the "${actionName}" action`
+					`this round to perform the "${actionType}" action`
 			);
 			return;
 		}
@@ -154,14 +161,14 @@ export class MetalSaviorsCombatant extends Combatant {
 			asyncTasks.push(this.changeExtraMovementMomentum(dExtraMomentum));
 		}
 
-		if (actionName === "Spend Excess Actions") {
+		if (actionType.value === ActionType.SpendExcessActions) {
 			await this.changeCumExcessInitIncrease(dInit);
 		}
 
 		const data = {
 			type: "action",
 			combatantId: this.id,
-			actionName,
+			actionName: actionType.value,
 			actionCost,
 			dInit,
 			dSpeed,

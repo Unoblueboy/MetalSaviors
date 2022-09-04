@@ -1,14 +1,13 @@
-{{log this}}
 <div class="dialog-content">
     <form>
         <div class="form-group">
             <label>Action Name</label>
             <select class="action-name-select"
                     name="actionName">
-                {{selectOptions actionTypes selected=actionDetails.selectedAction.value nameAttr="value" labelAttr="value"}}
+                {{selectOptions actionTypes selected=actionDetails.selectedActionType.value nameAttr="value" labelAttr="value"}}
             </select>
         </div>
-        {{#if (eq actionDetails.selectedAction.value actionTypes.AccelerateBrake.value)}}
+        {{#if (eq actionDetails.selectedActionType.value actionTypes.AccelerateBrake.value)}}
             <div class="form-group">
                 <label>Current Movement Speed</label>
                 <input type="text"
@@ -36,7 +35,7 @@
                        value="1"
                        disabled="true" />
             </div>
-        {{else if (eq actionDetails.selectedAction.value actionTypes.Attack.value)}}
+        {{else if (eq actionDetails.selectedActionType.value actionTypes.Attack.value)}}
             <!-- TODO: Attack Augments-->
             <div class="form-group">
                 <label>Base Action Cost</label>
@@ -48,16 +47,16 @@
                 <label>Augment</label>
                 <select class="attack-augment-select"
                         name="attackAugmentName">
-                    {{selectOptions attackAugments selected=attackAugmentsDetails.selectedAttackAugment nameAttr="name" labelAttr="name"}}
+                    {{selectOptions attackAugmentTypes selected=attackAugmentsDetails.selectedAttackAugmentType.value nameAttr="value" labelAttr="value"}}
                 </select>
             </div>
             <div class="form-group">
-                {{#if (eq attackAugmentsDetails.selectedAttackAugment "Unspecified")}}
+                {{#if (eq attackAugmentsDetails.selectedAttackAugmentType attackAugmentTypes.Unspecified)}}
                     <label>Additional Augment Cost</label>
                     <input type="text"
                            name="augmentActionCost"
                            value="1" />
-                {{else if (eq attackAugmentsDetails.selectedAttackAugment "None")}}
+                {{else if (eq attackAugmentsDetails.selectedAttackAugmentType attackAugmentTypes.None)}}
                     <input type="hidden"
                            name="augmentActionCost"
                            value="0" />
@@ -69,7 +68,7 @@
                            disabled="true" />
                 {{/if}}
             </div>
-        {{else if (eq actionDetails.selectedAction.value actionTypes.Unspecified.value)}}
+        {{else if (eq actionDetails.selectedActionType.value actionTypes.Unspecified.value)}}
             <div class="form-group">
                 <label>New Speed</label>
                 <select name="newSpeed">

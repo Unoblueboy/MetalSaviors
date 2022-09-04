@@ -22,6 +22,11 @@ export class AttackAugment {
 	}
 
 	static getAttackAugment(type) {
-		return AttackAugment.getAllAttackAugments().filter(x.type.value);
+		return AttackAugment.getAllAttackAugments().filter((x) => x.type == type)[0];
+	}
+
+	static getAdditionalActions(type) {
+		var augment = this.getAttackAugment(type);
+		return augment?.additionalActions;
 	}
 }
