@@ -24,10 +24,10 @@ export class MetalSaviorsCavSheet extends ItemSheet {
 		// Retrieve base data structure.
 		const context = super.getData();
 
-		// Use a safe clone of the item data for further operations.
-		const itemData = context.item.data;
+		// // Use a safe clone of the item data for further operations.
+		// const itemData = context.item.data;
 
-		context.data = foundry.utils.deepClone(itemData.data);
+		context.system = foundry.utils.deepClone(this.item.system);
 
 		return context;
 	}
@@ -43,10 +43,10 @@ export class MetalSaviorsCavSheet extends ItemSheet {
 			if (newName === prevName) {
 				return;
 			}
-			const bonus = this.item.data.data.cavUnitPiloting[prevName];
+			const bonus = this.item.system.cavUnitPiloting[prevName];
 			this.item.update({
-				[`data.cavUnitPiloting.${newName}`]: bonus,
-				[`data.cavUnitPiloting.-=${prevName}`]: null,
+				[`system.cavUnitPiloting.${newName}`]: bonus,
+				[`system.cavUnitPiloting.-=${prevName}`]: null,
 			});
 		});
 		html.find(".add-cav-unit-skill").click((ev) => {
@@ -58,7 +58,7 @@ export class MetalSaviorsCavSheet extends ItemSheet {
 				return;
 			}
 
-			const cavUnitPilotingSkills = Object.keys(this.item.data.data.cavUnitPiloting);
+			const cavUnitPilotingSkills = Object.keys(this.item.system.cavUnitPiloting);
 			if (cavUnitPilotingSkills.includes(newName)) {
 				return;
 			}
@@ -69,14 +69,14 @@ export class MetalSaviorsCavSheet extends ItemSheet {
 			}
 
 			this.item.update({
-				[`data.cavUnitPiloting.${newName}`]: bonus,
+				[`system.cavUnitPiloting.${newName}`]: bonus,
 			});
 		});
 		html.find(".delete-cav-unit-skill").click((ev) => {
 			const curTarget = $(ev.target).parents(".delete-cav-unit-skill");
 			const cavSkillName = curTarget.siblings(".cav-skill-name").children("input").val();
 			this.item.update({
-				[`data.cavUnitPiloting.-=${cavSkillName}`]: null,
+				[`system.cavUnitPiloting.-=${cavSkillName}`]: null,
 			});
 		});
 
@@ -87,10 +87,10 @@ export class MetalSaviorsCavSheet extends ItemSheet {
 			if (newName === prevName) {
 				return;
 			}
-			const bonus = this.item.data.data.traits[prevName];
+			const bonus = this.item.system.traits[prevName];
 			this.item.update({
-				[`data.traits.${newName}`]: bonus,
-				[`data.traits.-=${prevName}`]: null,
+				[`system.traits.${newName}`]: bonus,
+				[`system.traits.-=${prevName}`]: null,
 			});
 		});
 		html.find(".add-cav-trait").click((ev) => {
@@ -102,7 +102,7 @@ export class MetalSaviorsCavSheet extends ItemSheet {
 				return;
 			}
 
-			const traits = Object.keys(this.item.data.data.traits);
+			const traits = Object.keys(this.item.system.traits);
 			if (traits.includes(newName)) {
 				return;
 			}
