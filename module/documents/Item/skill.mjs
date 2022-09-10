@@ -25,8 +25,8 @@ export class MetalSaviorsSkill extends Item {
 
 		const actor = this.actor ?? {};
 		const { value, cavValue } = CalculateSkillValue(this, actor);
-		this.data.data.value = value;
-		this.data.data.cavValue = cavValue;
+		this.system.value = value;
+		this.system.cavValue = cavValue;
 	}
 
 	/**
@@ -37,7 +37,7 @@ export class MetalSaviorsSkill extends Item {
 		// If present, return the actor's roll data.
 		if (!this.actor) return null;
 		const rollData = this.actor.getRollData();
-		rollData.item = foundry.utils.deepClone(this.data.data);
+		rollData.item = foundry.utils.deepClone(this.system);
 
 		return rollData;
 	}
@@ -57,7 +57,7 @@ export class MetalSaviorsSkill extends Item {
 
 		if (!this.actor) return;
 
-		let value = cavId ? this.data.data.cavValue[cavId] : this.data.data.value;
+		let value = cavId ? this.system.cavValue[cavId] : this.system.value;
 
 		let data = {
 			name: this.name,

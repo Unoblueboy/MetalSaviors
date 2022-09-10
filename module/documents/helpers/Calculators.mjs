@@ -54,7 +54,6 @@ function _calculateAttributeValue(attributeDict, licences, cavs) {
 }
 
 export function derivedAttributeCalculator(actorData) {
-	console.log("derivedAttributeCalculator", actorData);
 	let dAttributes = actorData.derivedAttributes;
 	let attributes = actorData.attributes;
 
@@ -264,7 +263,7 @@ export function CalculateSkillValue(skill, actor) {
 
 	const actorData = _getActorData(actor);
 	const actorItems = actor.items;
-	const cavBonuses = _getCavBonuses(skillData.name, actorItems);
+	const cavBonuses = _getCavBonuses(skill.name, actorItems);
 
 	if (skillData.override.active) {
 		return {
