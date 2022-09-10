@@ -52,7 +52,7 @@ Hooks.once("init", async function () {
 	CONFIG.Token.objectClass = MetalSaviorsToken;
 	CONFIG.ui.combat = MetalSaviorsCombatTracker;
 	CONFIG.time.roundTime = 10;
-	addGridOverlayLayer(CONFIG.Canvas.layers);
+	addGridOverlayLayer();
 
 	// Add new data-dtypes
 	window.Dice = (value) => {
@@ -170,25 +170,10 @@ Hooks.once("init", async function () {
 	return preloadHandlebarsTemplates();
 });
 
-function addGridOverlayLayer(layers) {
-	CONFIG.Canvas.layers = {
-		background: layers.background,
-		drawings: layers.drawings,
-		grid: layers.grid,
-		templates: layers.templates,
-		tokens: layers.tokens,
-		gridOverlay: {
-			layerClass: GridOverlayLayer,
-			group: "primary",
-		},
-		foreground: layers.foreground,
-		walls: layers.walls,
-		lighting: layers.lighting,
-		weather: layers.weather,
-		sight: layers.sight,
-		sounds: layers.sounds,
-		notes: layers.notes,
-		controls: layers.controls,
+function addGridOverlayLayer() {
+	CONFIG.Canvas.layers.gridOverlay = {
+		layerClass: GridOverlayLayer,
+		group: "interface",
 	};
 }
 

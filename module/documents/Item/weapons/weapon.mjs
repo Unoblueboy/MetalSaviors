@@ -3,11 +3,11 @@ import { MetalSaviorsWeaponAttackDialog } from "./dialogs/weaponAttackDialog.mjs
 
 export class MetalSaviorsWeapon extends Item {
 	get weaponType() {
-		return this.data.data.type;
+		return this.system.type;
 	}
 
 	get range() {
-		return this.weaponType === "ranged" ? this.data.data.range : 0;
+		return this.weaponType === "ranged" ? this.system.range : 0;
 	}
 
 	_onCreate(data, options, userId) {

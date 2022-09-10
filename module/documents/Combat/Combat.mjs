@@ -19,7 +19,7 @@ export class MetalSaviorsCombat extends Combat {
     */
 	constructor(data, context) {
 		super(data, context);
-		socket.on("system.metalsaviors", (arg) => this._socketEventHandler(arg));
+		game.socket.on("system.metalsaviors", (arg) => this._socketEventHandler(arg));
 	}
 
 	async _socketEventHandler(data) {

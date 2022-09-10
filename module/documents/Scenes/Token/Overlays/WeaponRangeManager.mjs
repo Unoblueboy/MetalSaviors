@@ -24,7 +24,7 @@ export class WeaponRangeManager extends OverlayManager {
 
 		if (canvas.grid.grid instanceof HexagonalGrid) {
 			const polygonGenerator = (x, y) => canvas.grid.grid.getPolygon(x, y);
-			const gridUseColumns = canvas.grid.grid.columns;
+			const gridUseColumns = canvas.grid.grid.columnar;
 			this.drawHexagonalWeaponRangeOverlay(
 				gridSize,
 				gridUseColumns,
@@ -228,7 +228,7 @@ export class WeaponRangeManager extends OverlayManager {
 	}
 
 	containerIsActive() {
-		return (this.object._hover || this.object._controlled) && this.object.isOwner;
+		return (this.object.hover || this.object.controlled) && this.object.isOwner;
 	}
 }
 
@@ -240,11 +240,11 @@ function highlightConcentricHexagons(
 ) {
 	let gridWidth, gridHeight;
 	if (useColumns) {
-		gridWidth = gridSize;
-		gridHeight = (gridSize * Math.sqrt(3)) / 2;
-	} else {
-		gridWidth = (gridSize * Math.sqrt(3)) / 2;
+		gridWidth = (gridSize * 2) / Math.sqrt(3);
 		gridHeight = gridSize;
+	} else {
+		gridWidth = gridSize;
+		gridHeight = (gridSize * 2) / Math.sqrt(3);
 	}
 
 	for (let ring = innerRadius; ring <= outerRadius; ring++) {
@@ -276,6 +276,8 @@ function getCornerHexagons(useColumns, gridWidth, gridHeight, ring, polygonGener
 		const x2 = 0;
 		const y1 = (gridHeight * ring) / 2;
 		const y2 = gridHeight * ring;
+
+		console.log(x1, x2, y1, y2);
 
 		polygon1 = polygonGenerator(x1, y1);
 		polygon2 = polygonGenerator(x1, -y1);
