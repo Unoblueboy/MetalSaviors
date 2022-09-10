@@ -27,6 +27,7 @@ export class MetalSaviorsPikeSheet extends ActorSheet {
 	_prepareItems(context) {
 		// Initialize containers.
 		const gear = [];
+		const weapons = [];
 		let combatTraining = null;
 
 		// Iterate through items, allocating to containers
@@ -37,6 +38,9 @@ export class MetalSaviorsPikeSheet extends ActorSheet {
 				case "item":
 					gear.push(i);
 					break;
+				case "weapon":
+					weapons.push(i);
+					break;
 				case "combatTraining":
 					combatTraining = i;
 					break;
@@ -45,6 +49,7 @@ export class MetalSaviorsPikeSheet extends ActorSheet {
 
 		// Assign and return
 		context.gear = gear;
+		context.weapons = weapons;
 		context.combatTraining = combatTraining;
 	}
 
@@ -55,5 +60,66 @@ export class MetalSaviorsPikeSheet extends ActorSheet {
 		// The following are only included for tokens
 		context.curMovementSpeed = token.combatant?.getCurMovementSpeedKey();
 		context.excessMomentum = token.combatant?.getExtraMovementMomentum();
+	}
+
+	activateListeners(html) {
+		super.activateListeners(html);
+
+		// Render the item sheet for viewing/editing prior to the editable check.
+		html.find(".item-edit").click((ev) => {
+			const li = $(ev.currentTarget).parents(".item");
+			const item = this.actor.items.get(li.data("itemId"));
+			item.sheet.render(true);
+		});
+
+		if (!this.isEditable) return;
+
+		// Delete Inventory Item
+		html.find(".item-delete").click((ev) => {
+			const li = $(ev.currentTarget).closest(".item");
+			const item = this.actor.items.get(li.data("itemId"));
+			item.delete();
+			li.slideUp(200, () => this.render(false));
+		});
+
+		html.find(".rollable").click(this._onRoll.bind(this));
+
+		html.find(".cur-weapon-select").click(async (ev) => {
+			const li = $(ev.currentTarget).closest(".item");
+			const weaponId = li.data("itemId");
+			const weapon = this.actor.items.get(weaponId);
+			if (weapon === this.actor.getCurWeapon()) {
+				this.actor.setCurWeapon(null);
+			} else {
+				this.actor.setCurWeapon(weapon);
+			}
+		});
+	}
+
+	_onRoll(event) {
+		event.preventDefault();
+		const element = event.currentTarget;
+		const dataset = element.dataset;
+
+		// Handle item rolls.
+		if (dataset.rollType) {
+			if (dataset.rollType == "item") {
+				const itemId = element.closest(".item").dataset.itemId;
+				const item = this.actor.items.get(itemId);
+				if (item) return item.roll(event);
+			}
+		}
+
+		// Handle rolls that supply the formula directly.
+		if (dataset.roll) {
+			let label = dataset.label ? `[roll] ${dataset.label}` : "";
+			let roll = new Roll(dataset.roll, this.actor.getRollData());
+			roll.toMessage({
+				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+				flavor: label,
+				rollMode: game.settings.get("core", "rollMode"),
+			});
+			return roll;
+		}
 	}
 }
