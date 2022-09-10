@@ -4,10 +4,10 @@
             <label>Action Name</label>
             <select class="action-name-select"
                     name="actionName">
-                {{selectOptions actions selected=actionDetails.selectedAction nameAttr="name" labelAttr="name"}}
+                {{selectOptions actionTypes selected=actionDetails.selectedActionType.value nameAttr="value" labelAttr="value"}}
             </select>
         </div>
-        {{#if (eq actionDetails.selectedAction "Accelerate / Brake")}}
+        {{#if (eq actionDetails.selectedActionType.value actionTypes.AccelerateBrake.value)}}
             <div class="form-group">
                 <label>Current Movement Speed</label>
                 <input type="text"
@@ -35,8 +35,7 @@
                        value="1"
                        disabled="true" />
             </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Attack")}}
+        {{else if (eq actionDetails.selectedActionType.value actionTypes.Attack.value)}}
             <!-- TODO: Attack Augments-->
             <div class="form-group">
                 <label>Base Action Cost</label>
@@ -48,16 +47,16 @@
                 <label>Augment</label>
                 <select class="attack-augment-select"
                         name="attackAugmentName">
-                    {{selectOptions attackAugments selected=attackAugmentsDetails.selectedAttackAugment nameAttr="name" labelAttr="name"}}
+                    {{selectOptions attackAugmentTypes selected=attackAugmentsDetails.selectedAttackAugmentType.value nameAttr="value" labelAttr="value"}}
                 </select>
             </div>
             <div class="form-group">
-                {{#if (eq attackAugmentsDetails.selectedAttackAugment "Unspecified")}}
+                {{#if (eq attackAugmentsDetails.selectedAttackAugmentType attackAugmentTypes.Unspecified)}}
                     <label>Additional Augment Cost</label>
                     <input type="text"
                            name="augmentActionCost"
                            value="1" />
-                {{else if (eq attackAugmentsDetails.selectedAttackAugment "None")}}
+                {{else if (eq attackAugmentsDetails.selectedAttackAugmentType attackAugmentTypes.None)}}
                     <input type="hidden"
                            name="augmentActionCost"
                            value="0" />
@@ -69,162 +68,7 @@
                            disabled="true" />
                 {{/if}}
             </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "CAV System")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Delay")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Ejection")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Emergency Repairs")}}
-            <!-- TODO: Incorporate logic for this operation -->
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Maneuver")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Other")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Refocus")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Reload")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Tool")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Block")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Dive")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Dodge")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Evasive Maneuvers")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Parry")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Reorient")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Roll with Punch")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Switch Weapon")}}
-            <div class="form-group">
-                <label>Action Cost</label>
-                <input type="text"
-                       name="actionCost"
-                       value="1"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if (eq actionDetails.selectedAction "Unspecified")}}
+        {{else if (eq actionDetails.selectedActionType.value actionTypes.Unspecified.value)}}
             <div class="form-group">
                 <label>New Speed</label>
                 <select name="newSpeed">
@@ -242,6 +86,14 @@
                 <input type="text"
                        name="actionCost"
                        value="1" />
+            </div>
+        {{else}}
+            <div class="form-group">
+                <label>Action Cost</label>
+                <input type="text"
+                       name="actionCost"
+                       value="1"
+                       disabled="true" />
             </div>
         {{/if}}
     </form>

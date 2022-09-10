@@ -1,4 +1,6 @@
 import { rollInitiative } from "../../helpers/roll.mjs";
+import { CombatAction } from "../../types/Combat/CombatAction.js";
+import { ActionType } from "../../types/Combat/Enums.js";
 import { isExecutingGm } from "../helpers/SocketsHelper.mjs";
 import { MetalSaviorsCombatantMultiRollDialog } from "./Dialogs/CombatantRollDialog.mjs";
 import { MetalSaviorsCombatExcessActionsDialog } from "./Dialogs/CombatExcessActionsDialog.mjs";
@@ -266,12 +268,14 @@ export class MetalSaviorsCombat extends Combat {
 		}
 
 		const combatant = this.combatants.get(details.combatantId, { strict: true });
-		await combatant.performAction({
-			actionName: "Spend Excess Actions",
-			dInit: details.dInit,
-			dExtraMomentum: details.dExtraMomentum,
-			actionCost: details.actionCost,
-		});
+		await combatant.performAction(
+			new CombatAction({
+				type: ActionType.SpendExcessActions,
+				dInit: details.dInit,
+				dExtraMomentum: details.dExtraMomentum,
+				actionCost: details.actionCost,
+			})
+		);
 
 		await this.setFlag("metalsaviors", "endRoundObject", { [details.combatantId]: true });
 		endRoundObject = this.getFlag("metalsaviors", "endRoundObject");

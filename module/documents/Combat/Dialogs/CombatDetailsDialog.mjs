@@ -1,140 +1,11 @@
 import { CombatSpeedHelper } from "../../../helpers/CombatSpeedHelper.mjs";
+import { Action } from "../../../types/Combat/Action.js";
+import { CombatAction } from "../../../types/Combat/CombatAction.js";
+import { AttackAugment } from "../../../types/Combat/AttackAugment.js";
+import { ActionType, AttackAugmentType } from "../../../types/Combat/Enums.js";
 
 export class MetalSaviorsCombatDetailsDialog extends Dialog {
 	// TODO: Consider whether combatant in or out of CAV.
-	actions = [
-		{
-			name: "Accelerate / Brake",
-			cavAction: true,
-		},
-		{
-			name: "Attack",
-			cavAction: true,
-			pilotAction: true,
-			augmentable: true,
-		},
-		{
-			name: "CAV System",
-			cavAction: true,
-		},
-		{
-			name: "Delay",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Ejection",
-			cavAction: true,
-		},
-		{
-			name: "Emergency Repairs",
-			cavAction: true,
-		},
-		{
-			name: "Maneuver",
-			cavAction: true,
-		},
-		{
-			name: "Other",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Refocus",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Reload",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Tool",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Block",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Dive",
-			pilotAction: true,
-		},
-		{
-			name: "Dodge",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Evasive Maneuvers",
-			cavAction: true,
-		},
-		{
-			name: "Parry",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Reorient",
-			cavAction: true,
-		},
-		{
-			name: "Roll with Punch",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Switch Weapon",
-			cavAction: true,
-			pilotAction: true,
-		},
-		{
-			name: "Unspecified",
-			cavAction: true,
-			pilotAction: true,
-		},
-	];
-
-	attackAugments = [
-		{
-			name: "None",
-		},
-		{
-			name: "Aim Down Sights",
-			additionalActions: 2,
-		},
-		{
-			name: "All-In-Strike",
-			additionalActions: 2,
-		},
-		{
-			name: "Called Strike",
-			additionalActions: 1,
-		},
-		{
-			name: "Cleave",
-			additionalActions: 1,
-		},
-		{
-			name: "Feint",
-			additionalActions: 1,
-		},
-		{
-			name: "Precise Strike",
-			additionalActions: 2,
-		},
-		{
-			name: "Spray",
-			additionalActions: 1,
-		},
-		{
-			name: "Unspecified",
-		},
-	];
-
 	constructor(data, options) {
 		super(options);
 		this.data = {
@@ -149,8 +20,8 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 			close: data.cancelCallback,
 		};
 
-		this.selectedAction = this.actions[0].name;
-		this.selectedAttackAugment = this.attackAugments[0].name;
+		this.selectedActionType = Action.getAllActions()[0].type;
+		this.selectedAttackAugmentType = AttackAugment.getAllAttackAugments()[0].type;
 		this.combatant = data.combatant;
 	}
 
@@ -180,23 +51,24 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 
 	static _processActionDetails(form, combatant) {
 		const actionName = form.actionName.value;
-		switch (actionName) {
-			case "Accelerate / Brake":
-				return {
-					actionName: actionName,
+		const actionType = ActionType.parseValue(actionName);
+		switch (actionType) {
+			case ActionType.AccelerateBrake:
+				return new CombatAction({
+					type: actionType,
 					actionCost: 1,
 					dSpeed: parseInt(form.dSpeed.value),
-				};
-			case "Attack":
+				});
+			case ActionType.Attack:
 				const augmentActionCost = Number.isNumeric(form.augmentActionCost.value)
 					? parseInt(form.augmentActionCost.value)
 					: 1;
 				const actionCost = augmentActionCost + 1;
-				return {
-					actionName: actionName,
+				return new CombatAction({
+					type: actionType,
 					actionCost: actionCost,
-				};
-			case "Refocus":
+				});
+			case ActionType.Refocus:
 				// TODO: Make the roll output prettier
 				const roll = new Roll("1d6");
 				const speaker = ChatMessage.getSpeaker({ actor: combatant.actor });
@@ -207,12 +79,12 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					rollMode: rollMode,
 					flavor: `${combatant.actor.data.name} is refocusing`,
 				});
-				return {
-					actionName: actionName,
+				return new CombatAction({
+					type: actionType,
 					actionCost: 1,
 					dInit: result.total,
-				};
-			case "Unspecified":
+				});
+			case ActionType.Unspecified:
 				const curSpeed = combatant.getCurMovementSpeed();
 				const newSpeed = Number.isNumeric(form.newSpeed.value) ? parseInt(form.newSpeed.value) : curSpeed;
 				const curInitiative = combatant.data.initiative;
@@ -220,33 +92,34 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					? parseInt(form.newInitiative.value)
 					: curInitiative;
 
-				return {
-					actionName: actionName,
+				return new CombatAction({
+					type: actionType,
 					actionCost: Number.isNumeric(form.actionCost.value) ? parseInt(form.actionCost.value) : 0,
 					dSpeed: newSpeed - curSpeed,
 					dInit: newInitiative - curInitiative,
-				};
+				});
 			default:
-				return {
-					actionName: actionName,
+				return new CombatAction({
+					type: actionType,
 					actionCost: Number.isNumeric(form.actionCost.value) ? parseInt(form.actionCost.value) : 1,
-				};
+				});
 		}
 	}
 
 	getData(options) {
 		const context = {};
 
-		context.actions = this.actions;
+		context.actions = Action.getAllActions();
+		context.actionTypes = ActionType.getAllEnumEntries();
 		context.actionDetails = {
-			selectedAction: this.selectedAction,
+			selectedActionType: this.selectedActionType,
 			speedDetails: this._getSpeedDetails(),
 		};
-		context.attackAugments = this.attackAugments;
+		context.attackAugments = AttackAugment.getAllAttackAugments();
+		context.attackAugmentTypes = AttackAugmentType.getAllEnumEntries();
 		context.attackAugmentsDetails = {
-			selectedAttackAugment: this.selectedAttackAugment,
-			selectedAttackAugmentCost: this.attackAugments.find((x) => x.name == this.selectedAttackAugment)
-				.additionalActions,
+			selectedAttackAugmentType: this.selectedAttackAugmentType,
+			selectedAttackAugmentCost: AttackAugment.getAdditionalActions(this.selectedAttackAugmentType),
 		};
 		context.combatant = this.combatant;
 		return context;
@@ -278,12 +151,12 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 		super.activateListeners(html);
 
 		html.find(".action-name-select").change((ev) => {
-			this.selectedAction = ev.target.value;
+			this.selectedActionType = ActionType.parseValue(ev.target.value);
 			this.render({});
 		});
 
 		html.find(".attack-augment-select").change((ev) => {
-			this.selectedAttackAugment = ev.target.value;
+			this.selectedAttackAugmentType = AttackAugmentType.parseValue(ev.target.value);
 			this.render({});
 		});
 	}
