@@ -70,8 +70,8 @@ export class MetalSaviorsCombat extends Combat {
 		}
 
 		// On initiative ties, check finesse
-		const finA = _checkNumeric(a.actor.data.data.attributes.fin.value);
-		const finB = _checkNumeric(b.actor.data.data.attributes.fin.value);
+		const finA = _checkNumeric(a.actor.system.attributes.fin.value);
+		const finB = _checkNumeric(b.actor.system.attributes.fin.value);
 
 		const finDifference = finB - finA;
 		if (finDifference != 0) {
@@ -79,8 +79,8 @@ export class MetalSaviorsCombat extends Combat {
 		}
 
 		// On finesse ties, check speed
-		const spdA = _checkNumeric(a.actor.data.data.attributes.spd.value);
-		const spdB = _checkNumeric(b.actor.data.data.attributes.spd.value);
+		const spdA = _checkNumeric(a.actor.system.attributes.spd.value);
+		const spdB = _checkNumeric(b.actor.system.attributes.spd.value);
 
 		const spdDifference = spdB - spdA;
 		if (spdDifference != 0) {

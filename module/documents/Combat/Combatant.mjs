@@ -107,7 +107,7 @@ export class MetalSaviorsCombatant extends Combatant {
 
 	getFinesse() {
 		try {
-			return this.actor.data.data.attributes.fin.value;
+			return this.actor.system.attributes.fin.value;
 		} catch {
 			return 0;
 		}
@@ -144,7 +144,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		const asyncTasks = [];
 
 		if (dInit !== 0) {
-			const curInitiative = this.data.initiative;
+			const curInitiative = this.system.initiative;
 			asyncTasks.push(this.update({ initiative: curInitiative + dInit }));
 		}
 
@@ -195,7 +195,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		const asyncTasks = [];
 
 		if (dInit !== 0) {
-			const curInitiative = this.data.initiative;
+			const curInitiative = this.system.initiative;
 			asyncTasks.push(this.update({ initiative: curInitiative - dInit }));
 		}
 
