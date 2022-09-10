@@ -26,7 +26,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 
 	/** @override */
 	get template() {
-		return `systems/metalsaviors/templates/actor/actor-${this.actor.data.type}-sheet.hbs`;
+		return `systems/metalsaviors/templates/actor/actor-${this.actor.type}-sheet.hbs`;
 	}
 
 	/* -------------------------------------------- */
@@ -40,11 +40,12 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		const context = super.getData();
 
 		// Use a safe clone of the actor data for further operations.
-		const actorData = this.actor.data.toObject(false);
+		const actorSystem = this.actor.system;
+		const actorFlags = this.actor.flags;
 
-		// Add the actor's data to context.data for easier access, as well as flags.
-		context.data = actorData.data;
-		context.flags = actorData.flags;
+		// Add the actor's data to context.system for easier access, as well as flags.
+		context.system = actorSystem;
+		context.flags = actorFlags;
 
 		// Add some rendering options to the context
 		this.renderOptions = this.renderOptions ?? {
@@ -53,7 +54,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		context.renderOptions = this.renderOptions;
 
 		// Prepare character data and items.
-		if (actorData.type == "character") {
+		if (this.actor.type == "character") {
 			this._prepareItems(context);
 			this._prepareCharacterData(context);
 		}
@@ -80,11 +81,11 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 	_prepareCharacterData(context) {
 		// Handle ability scores.
 		context.attributeLabels = {};
-		for (let [k, v] of Object.entries(context.data.attributes)) {
+		for (let [k, v] of Object.entries(context.system.attributes)) {
 			context.attributeLabels[k] = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
 		}
 
-		for (const [key, derivedAttribute] of Object.entries(context.data.derivedAttributes)) {
+		for (const [key, derivedAttribute] of Object.entries(context.system.derivedAttributes)) {
 			derivedAttribute.label = game.i18n.localize(CONFIG.METALSAVIORS.derivedAttributes[key]) ?? key;
 		}
 
@@ -155,7 +156,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 				case "weapon":
 					let weaponList;
 
-					const item = this.actor.data.items.get(i._id);
+					const item = this.actor.items.get(i._id);
 					const owner = item.getFlag("metalsaviors", "owner");
 
 					if (!owner) {

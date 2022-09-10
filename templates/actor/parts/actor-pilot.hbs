@@ -5,14 +5,14 @@
             <div class="flexrow">
                 <div><input class="update-actor"
                            type="text"
-                           name="data.endurance.value"
-                           value="{{data.endurance.value}}"
+                           name="system.endurance.value"
+                           value="{{system.endurance.value}}"
                            data-dtype="Number" /></div>
                 <div class="flex-0">/</div>
                 <div><input class="update-actor"
                            type="text"
-                           name="data.endurance.max"
-                           value="{{data.endurance.max}}"
+                           name="system.endurance.max"
+                           value="{{system.endurance.max}}"
                            data-dtype="Number" /></div>
             </div>
         </div>
@@ -21,14 +21,14 @@
             <div class="flexrow">
                 <div><input class="update-actor"
                            type="text"
-                           name="data.health.value"
-                           value="{{data.health.value}}"
+                           name="system.health.value"
+                           value="{{system.health.value}}"
                            data-dtype="Number" /></div>
                 <div class="flex-0">/</div>
                 <div><input class="update-actor"
                            type="text"
-                           name="data.health.max"
-                           value="{{data.health.max}}"
+                           name="system.health.max"
+                           value="{{system.health.max}}"
                            data-dtype="Number" /></div>
             </div>
         </div>
@@ -36,7 +36,7 @@
             <div>NSR</div>
             <div class="exit-submit">
                 <div><input type="text"
-                           value="{{data.nsr.value}}"
+                           value="{{system.nsr.value}}"
                            data-dtype="Number"
                            disabled="true" /></div>
                 <div class="base-bonus-popup">
@@ -44,16 +44,16 @@
                         <div>Base Value</div>
                         <div><input type="text"
                                    title="Base Value"
-                                   name="data.nsr.baseValue"
-                                   value="{{data.nsr.baseValue}}"
+                                   name="system.nsr.baseValue"
+                                   value="{{system.nsr.baseValue}}"
                                    data-dtype="Number" /></div>
                     </div>
                     <div class="flexcol">
                         <div>Other Bonuses</div>
                         <div><input type="text"
                                    title="Other Bonuses"
-                                   name="data.nsr.otherBonuses"
-                                   value="{{data.nsr.otherBonuses}}"
+                                   name="system.nsr.otherBonuses"
+                                   value="{{system.nsr.otherBonuses}}"
                                    data-dtype="Number" /></div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
             <div>Actions/Round</div>
             {{#if combatTraining}}
                 <div><input type="text"
-                           value="{{combatTraining.data.actionsPerRound}}"
+                           value="{{combatTraining.system.actionsPerRound}}"
                            data-dtype="Number"
                            disabled="true"> </div>
             {{else}}
@@ -76,7 +76,7 @@
     </div>
     {{#if (ne characterType "minorCharacter")}}
         <div class="sheet-body-group derived-atbs">
-            {{#each data.derivedAttributes as |dAttribute name|}}
+            {{#each system.derivedAttributes as |dAttribute name|}}
                 <div class="flexcol flex-1">
                     <div class="flex-1">{{dAttribute.label}}</div>
                     <div class="exit-submit flex-0">
@@ -91,7 +91,7 @@
                                     <div>Other Bonuses</div>
                                     <div><input type="text"
                                                title="Other Bonuses"
-                                               name="data.derivedAttributes.{{name}}.otherBonuses"
+                                               name="system.derivedAttributes.{{name}}.otherBonuses"
                                                value="{{dAttribute.otherBonuses}}"
                                                data-dtype="Dice" /></div>
                                 </div>
@@ -107,7 +107,7 @@
                                     <div>Other Bonuses</div>
                                     <div><input type="text"
                                                title="Other Bonuses"
-                                               name="data.derivedAttributes.{{name}}.otherBonuses"
+                                               name="system.derivedAttributes.{{name}}.otherBonuses"
                                                value="{{dAttribute.otherBonuses}}"
                                                data-dtype="Number" /></div>
                                 </div>

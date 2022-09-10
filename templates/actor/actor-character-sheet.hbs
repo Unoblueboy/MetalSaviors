@@ -17,13 +17,13 @@
                  data-group="primary"
                  data-tab="pilot">
                 {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs" 
-                    attributes=data.attributes
+                    attributes=system.attributes
                     attributeSection="attributes"
                     attributeLabels = attributeLabels
                     popup=editable
                     characterType=flags.metalsaviors.characterType}}
             </div>
-            {{#each data.cavAttributes as |cavAttributes id|}}
+            {{#each system.cavAttributes as |cavAttributes id|}}
                 <div class="tab"
                      data-group="primary"
                      data-tab="cav_{{id}}"
@@ -53,9 +53,9 @@
                 <div class="flexcol flex-1">
                     <div>Call Sign</div>
                     <div><input class="update-actor"
-                               name="data.callsign"
+                               name="system.callsign"
                                type="text"
-                               value="{{data.callsign}}"
+                               value="{{system.callsign}}"
                                placeholder="Call Sign" /></div>
                 </div>
                 {{#if (eq flags.metalsaviors.characterType "character")}}
@@ -64,16 +64,16 @@
                             <div>Level</div>
                             <div><input class="update-actor"
                                        type="text"
-                                       name="data.level.value"
-                                       value="{{data.level.value}}"
+                                       name="system.level.value"
+                                       value="{{system.level.value}}"
                                        data-dtype="Number" /></div>
                         </div>
                         <div class="flexcol">
                             <div>Experience</div>
                             <div><input class="update-actor"
                                        type="text"
-                                       name="data.level.exp"
-                                       value="{{data.level.exp}}"
+                                       name="system.level.exp"
+                                       value="{{system.level.exp}}"
                                        data-dtype="Number" /></div>
                         </div>
                     </div>
@@ -83,8 +83,8 @@
                             <div>Level</div>
                             <div><input class="update-actor"
                                        type="text"
-                                       name="data.level.value"
-                                       value="{{data.level.value}}"
+                                       name="system.level.value"
+                                       value="{{system.level.value}}"
                                        data-dtype="Number" /></div>
                         </div>
                     </div>

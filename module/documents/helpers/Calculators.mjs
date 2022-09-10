@@ -1,6 +1,6 @@
-export function attributeCalculator(actorData, data) {
+export function attributeCalculator(actorSystem, actorItems) {
 	const attributeDicts = {};
-	for (let [key, attribute] of Object.entries(data.attributes)) {
+	for (let [key, attribute] of Object.entries(actorSystem.attributes)) {
 		const attributeDict = {
 			...attribute,
 			bonusesFromAtbSkills: 0,
@@ -10,14 +10,14 @@ export function attributeCalculator(actorData, data) {
 
 	const cavAttributes = {};
 
-	for (const item of actorData.items) {
+	for (const item of actorItems) {
 		if (!["atbSkill", "cav"].includes(item.type)) {
 			continue;
 		}
 
 		if (item.type === "atbSkill") {
-			const itemData = item.data;
-			for (const [name, bonus] of Object.entries(itemData.data.attributeBonuses)) {
+			const itemData = item.system;
+			for (const [name, bonus] of Object.entries(itemData.attributeBonuses)) {
 				attributeDicts[name].bonusesFromAtbSkills += bonus;
 			}
 		}
@@ -27,18 +27,18 @@ export function attributeCalculator(actorData, data) {
 		}
 	}
 
-	const cavs = actorData.items.filter((x) => x.type === "cav");
-	const licences = actorData.items.filter((x) => x.type === "pilotLicense");
+	const cavs = actorItems.filter((x) => x.type === "cav");
+	const licences = actorItems.filter((x) => x.type === "pilotLicense");
 
 	for (let [key, attributeDict] of Object.entries(attributeDicts)) {
 		const [value, cavValue] = _calculateAttributeValue(attributeDict, licences, cavs);
-		data.attributes[key].value = value;
+		actorSystem.attributes[key].value = value;
 
 		for (let [cavId, cavAttr] of Object.entries(cavAttributes)) {
 			cavAttr[key] = cavValue[cavId];
 		}
 	}
-	data.cavAttributes = cavAttributes;
+	actorSystem.cavAttributes = cavAttributes;
 }
 
 function _calculateAttributeValue(attributeDict, licences, cavs) {
@@ -46,16 +46,17 @@ function _calculateAttributeValue(attributeDict, licences, cavs) {
 	const cavValues = {};
 	for (let cav of cavs) {
 		cavValues[cav.id] = { origValue: pilotValue, value: pilotValue, bane: false };
-		if (licences.every((x) => x.name !== cav.data.data.requiredLicense)) {
+		if (licences.every((x) => x.name !== cav.system.requiredLicense)) {
 			cavValues[cav.id].bane = true;
 		}
 	}
 	return [pilotValue, cavValues];
 }
 
-export function derivedAttributeCalculator(actorData, data) {
-	let dAttributes = data.derivedAttributes;
-	let attributes = data.attributes;
+export function derivedAttributeCalculator(actorData) {
+	console.log("derivedAttributeCalculator", actorData);
+	let dAttributes = actorData.derivedAttributes;
+	let attributes = actorData.attributes;
 
 	let bonusToAttrDict = {
 		damageModifier: 0,
@@ -70,7 +71,7 @@ export function derivedAttributeCalculator(actorData, data) {
 	const atbSkills = actorData.items?.filter((x) => x.type === "atbSkill") ?? [];
 
 	for (const atbSkill of atbSkills) {
-		for (const [k, v] of Object.entries(atbSkill.data.data.derivedAttributeBonuses)) {
+		for (const [k, v] of Object.entries(atbSkill.system.derivedAttributeBonuses)) {
 			bonusToAttrDict[k] += v;
 		}
 	}
@@ -259,33 +260,34 @@ function _calculateCavInitiativeModifier(finesse, speed) {
  * @returns {number} The skill Value
  */
 export function CalculateSkillValue(skill, actor) {
-	const skillData = skill.data;
+	const skillData = skill.system;
 
 	const actorData = _getActorData(actor);
-	const cavBonuses = _getCavBonuses(skillData.name, actorData);
+	const actorItems = actor.items;
+	const cavBonuses = _getCavBonuses(skillData.name, actorItems);
 
-	if (skillData.data.override.active) {
+	if (skillData.override.active) {
 		return {
-			value: skillData.data.override.value,
-			cavValue: _calculateCavValue(skillData.data.override.value, cavBonuses),
+			value: skillData.override.value,
+			cavValue: _calculateCavValue(skillData.override.value, cavBonuses),
 		};
 	}
 
-	const lvl = actorData.data?.level?.value || 1;
-	const lvlAcquired = skill.data.data.lvlAcquired || 1;
+	const lvl = actorData?.level?.value || 1;
+	const lvlAcquired = skill.system.lvlAcquired || 1;
 	const lvlDiff = lvl - lvlAcquired + 1;
 
-	const skillModifier = actorData.data?.derivedAttributes?.skillModifier?.value || 0;
-	const numAcquiredBonus = (skillData.data.numAcquisitions - 1) * 10;
+	const skillModifier = actorData?.derivedAttributes?.skillModifier?.value || 0;
+	const numAcquiredBonus = (skillData.numAcquisitions - 1) * 10;
 
 	const bonusesFromAtbSkills = _calculateSkillBonusesFromAtbSkills(skillData.name, actorData);
 
 	const skillValue =
-		skillData.data.baseValue +
+		skillData.baseValue +
 		numAcquiredBonus +
 		bonusesFromAtbSkills +
-		skillData.data.otherBonuses +
-		skillData.data.levelIncrease * (lvlDiff - 1) +
+		skillData.otherBonuses +
+		skillData.levelIncrease * (lvlDiff - 1) +
 		skillModifier;
 
 	return {
@@ -295,29 +297,27 @@ export function CalculateSkillValue(skill, actor) {
 }
 
 function _getActorData(actor) {
-	if (!!actor.data) return actor.data;
+	if (!!actor.system) return actor.system;
 
 	return {
-		data: {
-			level: {
-				value: 1,
-			},
-			derivedAttributes: {
-				skillModifier: {
-					value: 0,
-				},
+		level: {
+			value: 1,
+		},
+		derivedAttributes: {
+			skillModifier: {
+				value: 0,
 			},
 		},
 	};
 }
 
-function _getCavBonuses(skillName, actorData) {
-	const cavs = actorData.items?.filter((x) => x.type === "cav") ?? [];
+function _getCavBonuses(skillName, actorItems) {
+	const cavs = actorItems?.filter((x) => x.type === "cav") ?? [];
 	let bonus = {};
 	for (const cav of cavs) {
-		const cavBonus = cav.data.data.cavUnitPiloting[skillName] || 0;
-		const requiredLicense = cav.data.data.requiredLicense;
-		const hasRequiredLicense = (actorData.items ?? []).some(
+		const cavBonus = cav.system.cavUnitPiloting[skillName] || 0;
+		const requiredLicense = cav.system.requiredLicense;
+		const hasRequiredLicense = (actorItems ?? []).some(
 			(x) => x.type === "pilotLicense" && x.name === requiredLicense
 		);
 
@@ -344,8 +344,8 @@ function _calculateSkillBonusesFromAtbSkills(skillName, actorData) {
 	let bonus = 0;
 
 	for (const atbSkill of atbSkills) {
-		if (Object.keys(atbSkill.data.data.skillBonuses).includes(skillName)) {
-			bonus += atbSkill.data.data.skillBonuses[skillName];
+		if (Object.keys(atbSkill.system.skillBonuses).includes(skillName)) {
+			bonus += atbSkill.system.skillBonuses[skillName];
 		}
 	}
 	return bonus;
