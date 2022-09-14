@@ -99,7 +99,7 @@ export async function rollAttack(
 	};
 	const content = await renderTemplate(template, templateData);
 
-	attackerName = attackerName || actor.data.name;
+	attackerName = attackerName || actor.name;
 	let flavor = `${attackerName} is making an attack`;
 	if (weaponName) {
 		flavor += ` with their ${weaponName}`;
@@ -113,7 +113,6 @@ export async function rollAttack(
 		user: game.user.id,
 		speaker: speaker,
 		rollMode: rollMode,
-		roll: null,
 		type: CONST.CHAT_MESSAGE_TYPES.ROLL,
 		flavor: flavor,
 		content: content,
@@ -139,14 +138,13 @@ export async function rollSkill(actor = null, { name = null, value = 0, difficul
 
 	const content = await renderTemplate(template, templateData);
 
-	const flavor = name ? `${actor.data.name} is rolling the skill ${name}` : `${actor.data.name} is rolling a skill`;
+	const flavor = name ? `${actor.name} is rolling the skill ${name}` : `${actor.name} is rolling a skill`;
 	const speaker = ChatMessage.getSpeaker({ actor: actor });
 	const rollMode = game.settings.get("core", "rollMode");
 	MetalSaviorsChatMessage.create({
 		user: game.user.id,
 		speaker: speaker,
 		rollMode: rollMode,
-		roll: null,
 		type: CONST.CHAT_MESSAGE_TYPES.ROLL,
 		flavor: flavor,
 		content: content,
@@ -178,7 +176,6 @@ export async function rollAttributeCheck(actor = null, { name = null, value = 0 
 		user: game.user.id,
 		speaker: speaker,
 		rollMode: rollMode,
-		roll: null,
 		type: CONST.CHAT_MESSAGE_TYPES.ROLL,
 		flavor: flavor,
 		content: content,
