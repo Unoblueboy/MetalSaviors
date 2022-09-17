@@ -12,13 +12,12 @@ export class MetalSaviorsVehicleSheet extends ActorSheet {
 
 	getData() {
 		const context = super.getData();
-		const actorData = this.actor.data.toObject(false);
 
 		context.vehicleWeights = [{ name: "Light" }, { name: "Medium" }, { name: "Heavy" }];
 		context.vehicleDesignations = [{ name: "Air" }, { name: "Land" }, { name: "Water" }];
 		context.vehicleCombatReadiness = [{ name: "Combat" }, { name: "Non-Combat" }];
-		context.data = actorData.data;
-		context.flags = actorData.flags;
+		context.system = Object.assign({}, this.actor.system);
+		context.flags = Object.assign({}, this.actor.flags);
 
 		this._prepareItems(context);
 		this._prepareVehicleData(context);

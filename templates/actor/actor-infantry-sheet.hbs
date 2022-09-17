@@ -12,8 +12,8 @@
             <div class="flex-1">
                 <div><input class="flex-1"
                            type="number"
-                           name="data.healthPerSquadMember"
-                           value="{{data.healthPerSquadMember}}"
+                           name="system.healthPerSquadMember"
+                           value="{{system.healthPerSquadMember}}"
                            data-dtype="Number" /></div>
             </div>
         </div>
@@ -22,8 +22,8 @@
             <div class="flex-1">
                 <div><input class="flex-1"
                            type="checkbox"
-                           name="data.isCivilian"
-                           {{#checked data.isCivilian}}{{/checked}} /></div>
+                           name="system.isCivilian"
+                           {{#checked system.isCivilian}}{{/checked}} /></div>
             </div>
         </div>
     </div>
@@ -47,14 +47,14 @@
                         <div class="flexrow">
                             <div><input class="flex-1"
                                        type="number"
-                                       name="data.health.value"
-                                       value="{{data.health.value}}"
+                                       name="system.health.value"
+                                       value="{{system.health.value}}"
                                        data-dtype="Number" /></div>
                             <div class="flex-0">/</div>
                             <div><input class="flex-1"
                                        type="number"
-                                       name="data.health.max"
-                                       value="{{data.health.max}}"
+                                       name="system.health.max"
+                                       value="{{system.health.max}}"
                                        data-dtype="Number" /></div>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                         <div class="flex-1">
                             <div><input class="flex-1"
                                        type="number"
-                                       value="{{data.squadMembers}}"
+                                       value="{{system.squadMembers}}"
                                        data-dtype="Number"
                                        disabled="true" /></div>
                         </div>
@@ -73,8 +73,8 @@
                         <div class="flex-1">
                             <div><input class="flex-1"
                                        type="number"
-                                       name="data.spacesMoved.value"
-                                       value="{{data.spacesMoved.value}}"
+                                       name="system.spacesMoved.value"
+                                       value="{{system.spacesMoved.value}}"
                                        data-dtype="Number" /></div>
                         </div>
                     </div>
@@ -84,8 +84,8 @@
                         <div class="flex-1">
                             <div><input class="flex-1"
                                        type="number"
-                                       name="data.cr"
-                                       value="{{data.cr}}"
+                                       name="system.cr"
+                                       value="{{system.cr}}"
                                        data-dtype="Number" />
                             </div>
                         </div>
@@ -94,7 +94,7 @@
                         <div>Actions/Round</div>
                         {{#if combatTraining}}
                             <div><input type="text"
-                                       value="{{combatTraining.data.actionsPerRound}}"
+                                       value="{{combatTraining.system.actionsPerRound}}"
                                        data-dtype="Number"
                                        disabled="true"> </div>
                         {{else}}
@@ -110,13 +110,13 @@
                         <div class="squad-type">Squad Type</div>
                         <div class="squad-type-select">
                             <select class="fill-parent"
-                                    name="data.squadType">
-                                {{selectOptions squadTypes selected=data.squadType nameAttr="name" labelAttr="name"}}
+                                    name="system.squadType">
+                                {{selectOptions squadTypes selected=system.squadType nameAttr="name" labelAttr="name"}}
                             </select>
                         </div>
                         <div class="squad-description">
                             {{#each squadTypes as |squadType index|}}
-                                {{#if (eq squadType.name ../data.squadType)}}
+                                {{#if (eq squadType.name ../system.squadType)}}
                                     <div class="fill-parent">{{squadType.description}}</div>
                                 {{/if}}
                             {{/each}}
@@ -126,7 +126,7 @@
             </div>
             <div class="fill-parent">
                 <h3>Notes</h3>
-                {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+                {{editor system.description target="system.description" button=true owner=owner editable=editable}}
             </div>
         </div>
     </div>

@@ -12,9 +12,7 @@ export class MetalSaviorsDroneSheet extends ActorSheet {
 
 	getData() {
 		const context = super.getData();
-		const actorData = this.actor.data.toObject(false);
-		context.data = actorData.data;
-		context.flags = actorData.flags;
+		context.system = Object.assign({}, this.actor.system);
 
 		this._prepareItems(context);
 

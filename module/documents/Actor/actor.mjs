@@ -193,10 +193,10 @@ export class MetalSaviorsActor extends Actor {
 	/**
 	 * Prepare NPC type specific data.
 	 */
-	_prepareInfantryData(actorData) {
-		if (actorData.type !== "infantry") return;
+	_prepareInfantryData(actorSystem) {
+		if (this.type !== "infantry") return;
 
-		actorData.squadMembers = Math.ceil(actorData.health.value / actorData.healthPerSquadMember);
+		actorSystem.squadMembers = Math.ceil(actorSystem.health.value / actorSystem.healthPerSquadMember);
 	}
 
 	/**

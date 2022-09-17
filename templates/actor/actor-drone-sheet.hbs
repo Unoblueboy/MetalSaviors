@@ -24,30 +24,30 @@
                     <div>Health</div>
                     <div class="flexrow">
                         <input class="flex-1"
-                               name="data.health.value"
+                               name="system.health.value"
                                type="text"
-                               value="{{data.health.value}}"
+                               value="{{system.health.value}}"
                                placeholder="Name" />
                         <div class="flex-0">/</div>
                         <input class="flex-1"
-                               name="data.health.max"
+                               name="system.health.max"
                                type="text"
-                               value="{{data.health.max}}"
+                               value="{{system.health.max}}"
                                placeholder="Name" />
                     </div>
                 </div>
                 <div class="flexcol flex-1">
                     <div>MSR</div>
-                    <div><input name="data.msr"
+                    <div><input name="system.msr"
                                type="text"
-                               value="{{data.msr}}"
+                               value="{{system.msr}}"
                                placeholder="MSR" /></div>
                 </div>
                 <div class="flexcol flex-1">
                     <div>Operation Range</div>
-                    <div><input name="data.range"
+                    <div><input name="system.range"
                                type="text"
-                               value="{{data.range}}"
+                               value="{{system.range}}"
                                placeholder="Range" /></div>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                 <div class="column1">
                     <div class="fill-parent">
                         <h3>Effect</h3>
-                        {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+                        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
                     </div>
                 </div>
                 <div class="column2">

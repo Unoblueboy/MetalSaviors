@@ -13,8 +13,8 @@ export class MetalSaviorsInfantrySheet extends ActorSheet {
 	getData() {
 		const context = super.getData();
 
-		const actorData = this.actor.data.toObject(false);
-		context.data = actorData.data;
+		const actorSystem = Object.assign({}, this.actor.system);
+		context.system = actorSystem;
 
 		context.squadTypes = [
 			{
