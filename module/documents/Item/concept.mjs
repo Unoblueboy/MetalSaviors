@@ -13,7 +13,7 @@ export class MetalSaviorsConcept extends Item {
 		// If present, return the actor's roll data.
 		if (!this.actor) return null;
 		const rollData = this.actor.getRollData();
-		rollData.item = foundry.utils.deepClone(this.data.data);
+		rollData.item = Object.assign({}, this.system);
 
 		return rollData;
 	}
@@ -24,7 +24,7 @@ export class MetalSaviorsConcept extends Item {
 	 * @private
 	 */
 	async roll(event) {
-		const value = this.data.data.value;
+		const value = this.system.value;
 
 		const skillValue = 10 * value;
 		const attributeValue = value;

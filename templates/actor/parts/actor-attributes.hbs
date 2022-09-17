@@ -18,7 +18,7 @@
                      data-atb-key="{{key}}"><input type="text"
                            {{#if attribute.bane}}class="cav-bane"
                            {{/if}}
-                           name="data.{{../attributeSection}}.{{key}}.value"
+                           name="system.{{../attributeSection}}.{{key}}.value"
                            value="{{attribute.value}}"
                            data-dtype="Number"
                            disabled="true" /></div>
@@ -28,7 +28,7 @@
                             <div>Base Value</div>
                             <div><input type="text"
                                        title="Base Value"
-                                       name="data.{{../attributeSection}}.{{key}}.baseValue"
+                                       name="system.{{../attributeSection}}.{{key}}.baseValue"
                                        value="{{attribute.baseValue}}"
                                        data-dtype="Number" /></div>
                         </div>
@@ -36,7 +36,7 @@
                             <div>Other Bonuses</div>
                             <div><input type="text"
                                        title="Other Bonuses"
-                                       name="data.{{../attributeSection}}.{{key}}.otherBonuses"
+                                       name="system.{{../attributeSection}}.{{key}}.otherBonuses"
                                        value="{{attribute.otherBonuses}}"
                                        data-dtype="Number" /></div>
                         </div>

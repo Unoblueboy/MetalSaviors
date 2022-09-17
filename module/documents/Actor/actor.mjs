@@ -19,7 +19,9 @@ export class MetalSaviorsActor extends Actor {
 	static EnforceItemUniqueness(actor, sheet, data) {
 		if (data.type !== "Item") return;
 
-		const item = game.items.get(data.id);
+		console.log(actor, sheet, Object.assign({}, data));
+
+		const item = game.items.filter((x) => x.uuid == data.uuid)[0];
 
 		if (!item) return;
 
@@ -29,7 +31,6 @@ export class MetalSaviorsActor extends Actor {
 
 		// When a new item is added
 		if (sameNameTypeItems.length === 0) {
-			item.update({ "system.lvlAcquired": actor.system.level.value });
 			return;
 		}
 
@@ -37,6 +38,7 @@ export class MetalSaviorsActor extends Actor {
 			console.log(
 				`Expected there to be at most 1 ${item.type} with same name but ${sameNameTypeItems.length} found`
 			);
+			return false;
 		}
 
 		const origItem = sameNameTypeItems[0];
@@ -67,7 +69,7 @@ export class MetalSaviorsActor extends Actor {
 	static EnforceStrictItemUniqueness(actor, sheet, data) {
 		if (data.type !== "Item") return;
 
-		const item = game.items.get(data.id);
+		const item = game.items.filter((x) => x.uuid == data.uuid)[0];
 
 		if (!item) return;
 

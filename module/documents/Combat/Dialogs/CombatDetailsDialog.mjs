@@ -77,7 +77,7 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 				roll.toMessage({
 					speaker: speaker,
 					rollMode: rollMode,
-					flavor: `${combatant.actor.data.name} is refocusing`,
+					flavor: `${combatant.actor.name} is refocusing`,
 				});
 				return new CombatAction({
 					type: actionType,

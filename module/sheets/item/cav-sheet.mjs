@@ -24,10 +24,8 @@ export class MetalSaviorsCavSheet extends ItemSheet {
 		// Retrieve base data structure.
 		const context = super.getData();
 
-		// // Use a safe clone of the item data for further operations.
-		// const itemData = context.item.data;
-
-		context.system = foundry.utils.deepClone(this.item.system);
+		// Use a safe clone of the item data for further operations.
+		context.system = Object.assign({}, this.item.system);
 
 		return context;
 	}
@@ -113,14 +111,14 @@ export class MetalSaviorsCavSheet extends ItemSheet {
 			}
 
 			this.item.update({
-				[`data.traits.${newName}`]: traitDescription,
+				[`system.traits.${newName}`]: traitDescription,
 			});
 		});
 		html.find(".delete-cav-trait").click((ev) => {
 			const curTarget = $(ev.target).parents(".delete-cav-trait");
 			const traitName = curTarget.siblings(".cav-trait-name").children("input").val();
 			this.item.update({
-				[`data.traits.-=${traitName}`]: null,
+				[`system.traits.-=${traitName}`]: null,
 			});
 		});
 	}

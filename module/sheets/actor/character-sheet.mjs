@@ -233,7 +233,9 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		html.find(".exit-submit").mouseleave((event) => {
 			const form = $(event.target).closest("form");
 			if (form) {
-				form.submit();
+				// TODO: This seems to use old .data fields, check how data is now submitted
+				// form.submit();
+				this.submit();
 			}
 		});
 
@@ -272,7 +274,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 			return;
 		}
 
-		this._onSubmit(event);
+		this.submit(event);
 	}
 
 	/**

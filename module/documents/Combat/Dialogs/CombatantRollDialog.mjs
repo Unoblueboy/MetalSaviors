@@ -48,10 +48,10 @@ export class MetalSaviorsCombatantRollDialog extends Dialog {
 		context.combatSpeedOptions = this.combatant.getCombatSpeedOptions();
 		context.hasCav = this.combatant.hasCav;
 		if (this.combatant.hasDerivedInitiativeBonuses()) {
-			const data = this.combatant.actor.data.data;
+			const system = this.combatant.actor.system;
 			context.includeModifiers = true;
-			context.pilotInitativeModifier = data.derivedAttributes.initiativeModifier.value;
-			context.cavInitativeModifier = data.derivedAttributes.cavInitiativeModifier.value;
+			context.pilotInitativeModifier = system.derivedAttributes.initiativeModifier.value;
+			context.cavInitativeModifier = system.derivedAttributes.cavInitiativeModifier.value;
 		}
 		return context;
 	}
@@ -152,10 +152,10 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 				hasCav: c.hasCav,
 			};
 			if (c.hasDerivedInitiativeBonuses()) {
-				const data = c.actor.data.data;
+				const system = c.actor.system;
 				mappedData.includeModifiers = true;
-				mappedData.pilotInitativeModifier = data.derivedAttributes.initiativeModifier.value;
-				mappedData.cavInitativeModifier = data.derivedAttributes.cavInitiativeModifier.value;
+				mappedData.pilotInitativeModifier = system.derivedAttributes.initiativeModifier.value;
+				mappedData.cavInitativeModifier = system.derivedAttributes.cavInitiativeModifier.value;
 			}
 			return mappedData;
 		});

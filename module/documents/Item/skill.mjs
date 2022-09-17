@@ -29,6 +29,14 @@ export class MetalSaviorsSkill extends Item {
 		this.system.cavValue = cavValue;
 	}
 
+	_preCreate(data, options, userId) {
+		super._preCreate(data, options, userId);
+		if (this.type !== "learnedSkill") return;
+		if (!this.actor) return null;
+
+		this.updateSource({ "system.lvlAcquired": this.actor.system.level.value });
+	}
+
 	/**
 	 * Prepare a data object which is passed to any Roll formulas which are created related to this Item
 	 * @private

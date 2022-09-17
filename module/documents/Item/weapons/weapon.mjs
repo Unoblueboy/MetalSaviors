@@ -59,11 +59,11 @@ export class MetalSaviorsWeapon extends Item {
 	}
 
 	getAttackRollData(name) {
-		return this.data.data.rolls[name] || {};
+		return this.system.rolls[name] || {};
 	}
 
 	getAllAttackRollData() {
-		return this.data.data.rolls;
+		return this.system.rolls;
 	}
 
 	async getWeaponData() {
@@ -79,7 +79,7 @@ export class MetalSaviorsWeapon extends Item {
 
 	async roll(event) {
 		const getOptions = event.shiftKey;
-		const itemData = this.data.data;
+		const itemSystem = this.system;
 		let data;
 
 		switch (this.weaponType) {
@@ -88,15 +88,15 @@ export class MetalSaviorsWeapon extends Item {
 					weaponName: this.name,
 					attackerName: this.getOwnerName(),
 					includeToHit: false,
-					weaponDamageRoll: itemData.rolls.Normal.damageRoll,
+					weaponDamageRoll: itemSystem.rolls.Normal.damageRoll,
 				};
 				break;
 			default:
 				data = {
 					weaponName: this.name,
 					attackerName: this.getOwnerName(),
-					weaponToHitBonus: itemData.rolls.Normal.toHitBonus,
-					weaponDamageRoll: itemData.rolls.Normal.damageRoll,
+					weaponToHitBonus: itemSystem.rolls.Normal.toHitBonus,
+					weaponDamageRoll: itemSystem.rolls.Normal.damageRoll,
 				};
 				break;
 		}
