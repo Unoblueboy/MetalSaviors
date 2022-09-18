@@ -19,7 +19,7 @@ export class MetalSaviorsActor extends Actor {
 	static EnforceItemUniqueness(actor, sheet, data) {
 		if (data.type !== "Item") return;
 
-		const item = game.items.filter((x) => x.uuid == data.uuid)[0];
+		const item = game.items.find((x) => x.uuid == data.uuid);
 
 		if (!item) return;
 
@@ -67,7 +67,7 @@ export class MetalSaviorsActor extends Actor {
 	static EnforceStrictItemUniqueness(actor, sheet, data) {
 		if (data.type !== "Item") return;
 
-		const item = game.items.filter((x) => x.uuid == data.uuid)[0];
+		const item = game.items.find((x) => x.uuid == data.uuid);
 
 		if (!item) return;
 
@@ -234,11 +234,11 @@ export class MetalSaviorsActor extends Actor {
 	}
 
 	getActionsPerRound() {
-		const combatTraining = this.items.filter((x) => x.type === "combatTraining");
-		if (combatTraining.length === 0) {
+		const combatTraining = this.items.find((x) => x.type === "combatTraining");
+		if (!combatTraining) {
 			return METALSAVIORS.combat.defaultActionsPerRound;
 		}
-		return combatTraining[0].system.actionsPerRound || METALSAVIORS.combat.defaultActionsPerRound;
+		return combatTraining.system.actionsPerRound || METALSAVIORS.combat.defaultActionsPerRound;
 	}
 
 	getInitiativeRoll({ inCav = false } = {}) {

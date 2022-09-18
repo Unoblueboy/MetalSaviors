@@ -12,7 +12,7 @@ class Enum {
 	}
 
 	static parseValue(value) {
-		return Object.values(this).filter((x) => x.value === value)[0] ?? null;
+		return Object.values(this).find((x) => x.value === value) ?? null;
 	}
 }
 
