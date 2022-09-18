@@ -12,7 +12,7 @@ export class MetalSaviorsPikeSheet extends ActorSheet {
 
 	getData() {
 		const context = super.getData();
-		context.system = Object.assign({}, this.actor.system);
+		context.system = foundry.utils.deepClone(this.actor.system);
 
 		this._prepareItems(context);
 		this._preparePikeData(context);

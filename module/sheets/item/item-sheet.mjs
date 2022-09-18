@@ -27,7 +27,7 @@ export class MetalSaviorsItemSheet extends ItemSheet {
 
 		// Alternatively, you could use the following return statement to do a
 		// unique item sheet by type, like `weapon-sheet.hbs`.
-		return `${path}/item-${this.item.data.type}-sheet.hbs`;
+		return `${path}/item-${this.item.type}-sheet.hbs`;
 	}
 
 	/* -------------------------------------------- */
@@ -37,9 +37,6 @@ export class MetalSaviorsItemSheet extends ItemSheet {
 		// Retrieve base data structure.
 		const context = super.getData();
 
-		// Use a safe clone of the item data for further operations.
-		const itemData = JSON.parse(JSON.stringify(context.item.data));
-
 		// Retrieve the roll data for TinyMCE editors.
 		context.rollData = {};
 		let actor = this.object?.parent ?? null;
@@ -48,8 +45,8 @@ export class MetalSaviorsItemSheet extends ItemSheet {
 		}
 
 		// Add the actor's data to context.data for easier access, as well as flags.
-		context.data = itemData.data;
-		context.flags = itemData.flags;
+		context.system = foundry.utils.deepClone(this.item.system);
+		context.flags = foundry.utils.deepClone(this.item.flags);
 
 		// Add some rendering options to the context
 		this.renderOptions = this.renderOptions ?? {

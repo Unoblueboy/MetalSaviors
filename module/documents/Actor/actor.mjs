@@ -19,8 +19,6 @@ export class MetalSaviorsActor extends Actor {
 	static EnforceItemUniqueness(actor, sheet, data) {
 		if (data.type !== "Item") return;
 
-		console.log(actor, sheet, Object.assign({}, data));
-
 		const item = game.items.filter((x) => x.uuid == data.uuid)[0];
 
 		if (!item) return;

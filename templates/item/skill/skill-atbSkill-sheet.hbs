@@ -37,10 +37,10 @@
                 </tr>
                 {{#each system.attributeBonuses as |data name|}}
                     <tr>
-                        <td>{{system.label}}</td>
+                        <td>{{data.label}}</td>
                         <td><input type="text"
                                    name="system.attributeBonuses.{{name}}"
-                                   value="{{system.value}}"
+                                   value="{{data.value}}"
                                    data-dtype="Number" /></td>
                     </tr>
                 {{/each}}
@@ -55,10 +55,10 @@
                 </tr>
                 {{#each system.derivedAttributeBonuses as |data name|}}
                     <tr>
-                        <td>{{system.label}}</td>
+                        <td>{{data.label}}</td>
                         <td><input type="text"
                                    name="system.derivedAttributeBonuses.{{name}}"
-                                   value="{{system.value}}"
+                                   value="{{data.value}}"
                                    data-dtype="Number" /></td>
                     </tr>
                 {{/each}}
@@ -94,7 +94,7 @@
             </table>
         </div>
         <div class="tab">
-            {{editor content=system.description target="system.description" rollData=rollData button=true owner=owner editable=editable}}
+            {{editor system.description target="system.description" rollData=rollData button=true owner=owner editable=editable}}
         </div>
     </div>
 </form>

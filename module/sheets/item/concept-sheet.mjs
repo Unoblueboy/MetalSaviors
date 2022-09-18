@@ -17,9 +17,7 @@ export class MetalSaviorsConceptSheet extends ItemSheet {
 
 	getData() {
 		const context = super.getData();
-
-		const itemData = this.item.data.toObject(false);
-		context.data = itemData.data;
+		context.system = foundry.utils.deepClone(this.item.system);
 
 		return context;
 	}

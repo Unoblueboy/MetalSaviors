@@ -25,7 +25,7 @@ export class MetalSaviorsCavSheet extends ItemSheet {
 		const context = super.getData();
 
 		// Use a safe clone of the item data for further operations.
-		context.system = Object.assign({}, this.item.system);
+		context.system = foundry.utils.deepClone(this.item.system);
 
 		return context;
 	}

@@ -13,7 +13,7 @@ export class MetalSaviorsInfantrySheet extends ActorSheet {
 	getData() {
 		const context = super.getData();
 
-		const actorSystem = Object.assign({}, this.actor.system);
+		const actorSystem = foundry.utils.deepClone(this.actor.system);
 		context.system = actorSystem;
 
 		context.squadTypes = [

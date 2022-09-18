@@ -16,8 +16,8 @@ export class MetalSaviorsVehicleSheet extends ActorSheet {
 		context.vehicleWeights = [{ name: "Light" }, { name: "Medium" }, { name: "Heavy" }];
 		context.vehicleDesignations = [{ name: "Air" }, { name: "Land" }, { name: "Water" }];
 		context.vehicleCombatReadiness = [{ name: "Combat" }, { name: "Non-Combat" }];
-		context.system = Object.assign({}, this.actor.system);
-		context.flags = Object.assign({}, this.actor.flags);
+		context.system = foundry.utils.deepClone(this.actor.system);
+		context.flags = foundry.utils.deepClone(this.actor.flags);
 
 		this._prepareItems(context);
 		this._prepareVehicleData(context);
