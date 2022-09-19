@@ -41,12 +41,6 @@
 			"type": "Item"
 		},
 		{
-			"name": "cavs",
-			"label": "CAVs",
-			"path": "packs/cavs.db",
-			"type": "Item"
-		},
-		{
 			"name": "drones",
 			"label": "Drones",
 			"path": "packs/drones.db",

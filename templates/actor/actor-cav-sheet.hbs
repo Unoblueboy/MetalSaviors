@@ -4,7 +4,7 @@
         <div class="header-fields">
             <h1 class="charname"><input name="name"
                        type="text"
-                       value="{{item.name}}"
+                       value="{{actor.name}}"
                        placeholder="Name" /></h1>
         </div>
     </header>
@@ -301,31 +301,23 @@
                     </table>
                 </div>
                 <div>
-                    <h3>Traits</h3>
+                    <h3>Modules</h3>
                     <table>
                         <tr>
-                            <th>Trait</th>
+                            <th>Module</th>
                             <th>Description</th>
                             <th></th>
                         </tr>
-                        {{#each system.traits as |description name|}}
+                        {{#each modules as |module id|}}
                             <tr>
-                                <td class="cav-trait-name"
-                                    data-prev-name="{{name}}"><input type="text"
-                                           value="{{name}}"
+                                <td class="cav-trait-name"><input type="text"
+                                           value="{{module.name}}"
                                            data-dtype="String" /></td>
                                 <td><textarea type="textbox"
-                                              name="system.traits.{{name}}"
-                                              data-dtype="String" />{{description}}</textarea>
-                                <td class="delete-cav-trait"><a><i class="fas fa-trash"></i></a></td>
+                                              disabled="true"
+                                              data-dtype="String" />{{module.system.description}}</textarea>
                             </tr>
                         {{/each}}
-                        <tr>
-                            <td class="add-cav-trait-name"><input type="text"
-                                       data-dtype="String" /></td>
-                            <td class="add-cav-trait-value"><textarea></textarea></td>
-                            <td class="add-cav-trait"><a><i class="fas fa-plus"></i></a></td>
-                        </tr>
                     </table>
                 </div>
                 <div class="tab">

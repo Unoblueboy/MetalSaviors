@@ -16,6 +16,15 @@ export const CharacterType = {
  * @extends {Actor}
  */
 export class MetalSaviorsActor extends Actor {
+	constructor(data, context) {
+		if (data.items) {
+			// Remove all Cav Items
+			const allowedItems = data.items.filter((item) => item.type != "cav");
+			data.items = allowedItems;
+		}
+		super(data, context);
+	}
+
 	static EnforceItemUniqueness(actor, sheet, data) {
 		if (data.type !== "Item") return;
 
@@ -101,25 +110,6 @@ export class MetalSaviorsActor extends Actor {
 		return false;
 	}
 
-	_initialize() {
-		super._initialize();
-
-		if (!this.isOwner) return;
-		if (this.type !== "character") return;
-		if (this.getCharacterType()) return;
-
-		this.setCharacterType("character");
-		this.setCurWeapon(null);
-	}
-
-	async setCharacterType(charType) {
-		await this.setFlag("metalsaviors", "characterType", charType);
-	}
-
-	getCharacterType() {
-		return this.getFlag("metalsaviors", "characterType");
-	}
-
 	async setCurWeapon(curWeapon) {
 		await this.setFlag("metalsaviors", "curWeapon", curWeapon ? curWeapon.id : "");
 
@@ -133,106 +123,6 @@ export class MetalSaviorsActor extends Actor {
 		return this.items.get(weaponId);
 	}
 
-	/** @override */
-	prepareData() {
-		super.prepareData();
-	}
-
-	/**
-	 * @override
-	 */
-	prepareDerivedData() {
-		if (this.type === "blank") {
-			return;
-		}
-		const actorSystem = this.system;
-		const actorItems = this.items;
-		const flags = this.flags.metalsaviors || {};
-
-		// Make separate methods for each Actor type (character, npc, etc.) to keep
-		// things organized.
-		this._prepareCharacterData(actorSystem, actorItems);
-		this._prepareInfantryData(actorSystem);
-	}
-
-	/**
-	 * Prepare Character type specific data
-	 */
-	_prepareCharacterData(actorSystem, actorItems) {
-		if (this.type !== "character") return;
-
-		attributeCalculator(actorSystem, actorItems);
-		if (this.getCharacterType() !== "minorCharacter") {
-			derivedAttributeCalculator(actorSystem);
-		} else {
-			for (const [name, dAttribute] of Object.entries(actorSystem.derivedAttributes)) {
-				if (name == "damageModifier") {
-					dAttribute.baseValue = "0";
-					dAttribute.value = "0";
-					dAttribute.otherBonuses = null;
-					continue;
-				}
-				dAttribute.baseValue = 0;
-				dAttribute.value = 0;
-				dAttribute.otherBonuses = 0;
-			}
-		}
-
-		actorSystem.nsr.value = (actorSystem.nsr.baseValue || 0) + (actorSystem.nsr.otherBonuses || 0);
-
-		// Learned skills values need to be recalculated to take into account the derived attribute
-		this._calculateLearnedSkillsValue();
-	}
-
-	_calculateLearnedSkillsValue() {
-		for (const item of this.items.filter((x) => x.type === "learnedSkill")) {
-			item.prepareDerivedLearnedSkillData();
-		}
-	}
-
-	/**
-	 * Prepare NPC type specific data.
-	 */
-	_prepareInfantryData(actorSystem) {
-		if (this.type !== "infantry") return;
-
-		actorSystem.squadMembers = Math.ceil(actorSystem.health.value / actorSystem.healthPerSquadMember);
-	}
-
-	/**
-	 * Override getRollData() that's supplied to rolls.
-	 */
-	getRollData() {
-		// Deep Copy data so it doesn't get imported into the character
-		const data = foundry.utils.deepClone(super.getRollData());
-
-		// Prepare character roll data.
-		this._getCharacterRollData(data);
-
-		return data;
-	}
-
-	/**
-	 * Prepare character roll data.
-	 */
-	_getCharacterRollData(data) {
-		if (this.system.type !== "character") return;
-
-		if (data.derivedSkills) {
-			delete data.skills;
-			data.skills = {};
-			for (let [k, v] of Object.entries(data.derivedSkills)) {
-				let newKey = generateSkillKey(k); // .replace(" ", "_")
-				data.skills[newKey] = foundry.utils.deepClone(v);
-			}
-		}
-
-		// Add level for easier access, or fall back to 0.
-		if (data.attributes.level) {
-			data.lvl = data.attributes.level.value ?? 0;
-		}
-	}
-
 	getActionsPerRound() {
 		const combatTraining = this.items.find((x) => x.type === "combatTraining");
 		if (!combatTraining) {
@@ -241,44 +131,11 @@ export class MetalSaviorsActor extends Actor {
 		return combatTraining.system.actionsPerRound || METALSAVIORS.combat.defaultActionsPerRound;
 	}
 
-	getInitiativeRoll({ inCav = false } = {}) {
-		switch (this.type) {
-			case "character":
-				if (!inCav) {
-					return "d20 + @derivedAttributes.initiativeModifier.value";
-				}
-				return "d20 + @derivedAttributes.cavInitiativeModifier.value";
-			default:
-				return "d20";
-		}
+	getInitiativeRoll(options = {}) {
+		return "d20";
 	}
 
 	getCavs() {
-		return this.itemTypes.cav;
-	}
-
-	async rollAttribute(event) {
-		const element = event.currentTarget;
-		const dataset = element.dataset;
-
-		const key = dataset.key;
-		const label = game.i18n.localize(CONFIG.METALSAVIORS.attributes[key]);
-		const cavId = dataset?.cavId;
-		const value = cavId ? this.system.cavAttributes[cavId][key].origValue : this.system.attributes[key].value;
-		const cavBane = cavId && this.system.cavAttributes[cavId][key].bane;
-
-		let skillValue = cavBane ? value - 15 : value;
-		let attributeValue = cavBane ? value - 2 : value;
-
-		const getOptions = event.shiftKey;
-		let rollAsSkill = event.ctrlKey;
-
-		rollAttributeOrSkill(this, {
-			name: label,
-			skillValue,
-			attributeValue,
-			getOptions,
-			rollAsSkill,
-		});
+		return this.itemTypes.cav ?? [];
 	}
 }
