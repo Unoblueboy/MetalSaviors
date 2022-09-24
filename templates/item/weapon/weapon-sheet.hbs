@@ -7,14 +7,6 @@
                        value="{{item.name}}"
                        placeholder="Name" /></h1>
         </div>
-        {{#if weaponOwner}}
-            <div class="header-fields">
-                <label>Owner</label>
-                <select class="owner-select">
-                    {{selectOptions possibleOwners selected=weaponOwner.id labelAttr = "name"}}
-                </select>
-            </div>
-        {{/if}}
     </header>
     <hr />
     <div>
@@ -22,16 +14,16 @@
             {{selectOptions weaponTypes selected=system.type}}
         </select>
     </div>
-    {{#if (eq type "melee")}}
+    {{#if (eq system.type "melee")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/melee-weapon-sheet.hbs"}}
-    {{else if (eq type "ranged")}}
+    {{else if (eq system.type "ranged")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/ranged-weapon-sheet.hbs"}}
-    {{else if (eq type "missile")}}
+    {{else if (eq system.type "missile")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/missile-weapon-sheet.hbs"}}
-    {{else if (eq type "supportWeapon")}}
+    {{else if (eq system.type "supportWeapon")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/ranged-weapon-sheet.hbs"}}
     {{/if}}
-    {{#if (ne type "missile")}}
+    {{#if (ne system.type "missile")}}
         <div>
             <h3>Tags</h3>
             <table>

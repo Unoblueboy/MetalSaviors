@@ -26,6 +26,8 @@ import { MetalSaviorsBlankSheet } from "./sheets/actor/blank-sheet.mjs";
 import { MetalSaviorsConceptSheet } from "./sheets/item/concept-sheet.mjs";
 import { MetalSaviorsToken } from "./documents/Scenes/Token/Token.mjs";
 import { GridOverlayLayer } from "./documents/Scenes/Layers/GridOverlayLayer.mjs";
+import { MetalSaviorsActorProxy } from "./documents/Actor/actorProxy.mjs";
+import { MetalSaviorsCharacter } from "./documents/Actor/character.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -45,7 +47,7 @@ Hooks.once("init", async function () {
 	CONFIG.METALSAVIORS = METALSAVIORS;
 
 	// Define custom Document classes
-	CONFIG.Actor.documentClass = MetalSaviorsActor;
+	CONFIG.Actor.documentClass = MetalSaviorsActorProxy;
 	CONFIG.Item.documentClass = MetalSaviorsItemProxy;
 	CONFIG.Combat.documentClass = MetalSaviorsCombat;
 	CONFIG.Combatant.documentClass = MetalSaviorsCombatant;
@@ -202,15 +204,15 @@ Handlebars.registerHelper("toLowerCase", function (str) {
 });
 
 Handlebars.registerHelper("len", function (json) {
-	return Object.keys(json).length;
+	return Object.keys(json ?? {}).length;
 });
 
 Handlebars.registerHelper("and", function (cond1, cond2) {
-	return cond1 && cond2;
+	return !!cond1 && !!cond2;
 });
 
 Handlebars.registerHelper("or", function (cond1, cond2) {
-	return cond1 || cond2;
+	return !!cond1 || !!cond2;
 });
 
 Handlebars.registerHelper("not", function (cond) {
@@ -247,6 +249,8 @@ Hooks.once("ready", async function () {
 		MetalSaviorsActor.EnforceStrictItemUniqueness(actor, sheet, data)
 	);
 	Hooks.on("dropActorSheetData", (actor, sheet, data) => MetalSaviorsActor.EnforceItemUniqueness(actor, sheet, data));
+
+	Hooks.on("dropActorSheetData", (actor, sheet, data) => MetalSaviorsCharacter.AddCavActor(actor, sheet, data));
 });
 
 /* -------------------------------------------- */

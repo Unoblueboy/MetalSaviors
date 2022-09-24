@@ -13,24 +13,21 @@
                 {{/if}}>
                 <th>{{localize (lookup ../CONFIG.combatSpeeds key)}}</th>
                 <td><input type="text"
-                           data-item-path="system.speed.combatSpeeds.{{key}}.hitBonus"
+                           name="system.speed.combatSpeeds.{{key}}.hitBonus"
                            value="{{combatSpeedData.hitBonus}}"
-                           data-dtype="Number"
-                           disabled="true" />
+                           data-dtype="Number" />
                 </td>
                 <td><input type="text"
-                           data-item-path="system.speed.combatSpeeds.{{key}}.momentum"
+                           name="system.speed.combatSpeeds.{{key}}.momentum"
                            value="{{combatSpeedData.momentum~}} 
                                    &nbsp;{{#if (and (eq ../curMovementSpeed key) ../excessMomentum)~}} + {{../excessMomentum~}}
                                    {{/if}}"
-                           data-dtype="Number"
-                           disabled="true" />
+                           data-dtype="Number" />
                 </td>
                 <td><input type="text"
-                           data-item-path="system.speed.combatSpeeds.{{key}}.spacesMoved"
+                           name="system.speed.combatSpeeds.{{key}}.spacesMoved"
                            value="{{combatSpeedData.spacesMoved}}"
-                           data-dtype="Number"
-                           disabled="true" />
+                           data-dtype="Number" />
                 </td>
             </tr>
         {{/each}}

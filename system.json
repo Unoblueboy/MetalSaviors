@@ -53,14 +53,7 @@
 			"type": "Item"
 		}
 	],
-	"dependencies": [
-		{
-			"name": "vtta-tokenizer"
-		},
-		{
-			"name": "token-frames"
-		}
-	],
+	"dependencies": [],
 	"languages": [
 		{
 			"lang": "en",

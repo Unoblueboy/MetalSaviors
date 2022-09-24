@@ -1,0 +1,35 @@
+{
+	"env": {
+		"browser": true,
+		"es2021": true,
+		"jquery": true
+	},
+	"extends": "eslint:recommended",
+	"overrides": [],
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"globals": {
+		"foundry": "readonly",
+		"game": "readonly",
+		"CONFIG": "readonly",
+		"ActorSheet": "readonly",
+		"ui": "readonly",
+		"mergeObject": "readonly",
+		"canvas": "readonly",
+		"PIXI": "readonly",
+		"HexagonalGrid": "readonly",
+		"SquareGrid": "readonly",
+		"fromUuidSync": "readonly",
+		"Item": "readonly",
+		"Roll": "readonly",
+		"ChatMessage": "readonly",
+		"Macro": "readonly",
+		"Handlebars": "readonly",
+		"Hooks": "readonly",
+		"Items": "readonly",
+		"Actors": "readonly"
+	},
+	"rules": {}
+}

@@ -277,8 +277,6 @@ function getCornerHexagons(useColumns, gridWidth, gridHeight, ring, polygonGener
 		const y1 = (gridHeight * ring) / 2;
 		const y2 = gridHeight * ring;
 
-		console.log(x1, x2, y1, y2);
-
 		polygon1 = polygonGenerator(x1, y1);
 		polygon2 = polygonGenerator(x1, -y1);
 		polygon3 = polygonGenerator(x2, -y2);

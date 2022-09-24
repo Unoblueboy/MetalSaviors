@@ -17,7 +17,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 				{
 					navSelector: ".sheet-tabs",
 					contentSelector: "form",
-					initial: "pilot",
+					initial: "summary",
 				},
 			],
 			submitOnChange: false,
@@ -53,11 +53,9 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		};
 		context.renderOptions = this.renderOptions;
 
-		// Prepare character data and items.
-		if (this.actor.type == "character") {
-			this._prepareItems(context);
-			this._prepareCharacterData(context);
-		}
+		this._prepareItems(context);
+		this._prepareCharacterData(context);
+		this._prepareCavData(context);
 
 		// Add roll data for TinyMCE editors.
 		context.rollData = context.actor.getRollData();
@@ -190,6 +188,14 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		context.concepts = concepts;
 	}
 
+	_prepareCavData(context) {
+		context.cavs = this.actor.getCavs().map((cav) => ({
+			id: cav.id,
+			name: cav.name,
+			model: cav.system.model,
+		}));
+	}
+
 	/* -------------------------------------------- */
 
 	/** @override */
@@ -198,9 +204,15 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 
 		// Render the item sheet for viewing/editing prior to the editable check.
 		html.find(".item-edit").click((ev) => {
-			const li = $(ev.currentTarget).parents(".item");
-			const item = this.actor.items.get(li.data("itemId"));
+			const parent = $(ev.currentTarget).parents(".item");
+			const item = this.actor.items.get(parent.data("itemId"));
 			item.sheet.render(true);
+		});
+
+		html.find(".cav-show").click((ev) => {
+			const parent = $(ev.currentTarget).parents(".cav");
+			const cav = game.actors.get(parent.data("cavId"));
+			cav.sheet.render(true);
 		});
 
 		// -------------------------------------------------------------
@@ -217,15 +229,6 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 
 		// Add Inventory Item
 		html.find(".item-create").click(this._onItemCreate.bind(this));
-
-		html.find(".cav-data").change((ev) => {
-			const itemPath = ev.target.dataset.itemPath;
-			const updateValue = ev.target.value;
-			const itemContainer = $(ev.target).parents(".item");
-
-			const item = this.actor.items.get(itemContainer.data("itemId"));
-			item.update({ [`${itemPath}`]: updateValue });
-		});
 
 		// Rollable abilities.
 		html.find(".rollable").click(this._onRoll.bind(this));

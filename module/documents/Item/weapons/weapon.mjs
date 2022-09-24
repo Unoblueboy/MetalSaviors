@@ -10,54 +10,6 @@ export class MetalSaviorsWeapon extends Item {
 		return this.weaponType === "ranged" ? this.system.range : 0;
 	}
 
-	_onCreate(data, options, userId) {
-		super._onCreate(data, options, userId);
-
-		if (!this.actor) {
-			return;
-		}
-
-		if (!["character", "drone", "vehicle"].includes(this.actor.type)) {
-			return;
-		}
-
-		switch (this.actor.type) {
-			case "character":
-				this.setFlag("metalsaviors", "owner", { type: "pilot", id: this.actor.id });
-				break;
-
-			default:
-				this.setFlag("metalsaviors", "owner", { type: this.actor.type, id: this.actor.id });
-				break;
-		}
-	}
-
-	getOwner() {
-		return this.getFlag("metalsaviors", "owner");
-	}
-
-	getOwnerName() {
-		if (!this.actor) {
-			return null;
-		}
-
-		const ownerData = this.getFlag("metalsaviors", "owner");
-		if (!["pilot", "drone", "vehicle"].includes(ownerData?.type)) {
-			return this.actor.name;
-		}
-
-		const cav = this.actor.items.get(ownerData.id);
-		return cav?.name;
-	}
-
-	setOwner(ownerId) {
-		if (!this.actor) {
-			return;
-		}
-
-		this.setFlag("metalsaviors", "owner", { type: ownerId === this.actor.id ? "pilot" : "cav", id: ownerId });
-	}
-
 	getAttackRollData(name) {
 		return this.system.rolls[name] || {};
 	}
@@ -86,7 +38,7 @@ export class MetalSaviorsWeapon extends Item {
 			case "missile":
 				data = {
 					weaponName: this.name,
-					attackerName: this.getOwnerName(),
+					attackerName: this.actor?.name,
 					includeToHit: false,
 					weaponDamageRoll: itemSystem.rolls.Normal.damageRoll,
 				};
@@ -94,7 +46,7 @@ export class MetalSaviorsWeapon extends Item {
 			default:
 				data = {
 					weaponName: this.name,
-					attackerName: this.getOwnerName(),
+					attackerName: this.actor?.name,
 					weaponToHitBonus: itemSystem.rolls.Normal.toHitBonus,
 					weaponDamageRoll: itemSystem.rolls.Normal.damageRoll,
 				};

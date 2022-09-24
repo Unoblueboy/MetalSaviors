@@ -24,9 +24,8 @@ export class MetalSaviorsSkill extends Item {
 		if (this.type !== "learnedSkill") return;
 
 		const actor = this.actor ?? {};
-		const { value, cavValue } = CalculateSkillValue(this, actor);
+		const value = CalculateSkillValue(this, actor);
 		this.system.value = value;
-		this.system.cavValue = cavValue;
 	}
 
 	_preCreate(data, options, userId) {

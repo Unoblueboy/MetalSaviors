@@ -4,6 +4,18 @@ import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
 import { MetalSaviorsActor } from "./actor.mjs";
 
 export class MetalSaviorsCharacter extends MetalSaviorsActor {
+	static AddCavActor(actor, sheet, data) {
+		console.log("AddCavActor", actor, sheet, data);
+		if (actor.type !== "character") return;
+		if (data.type !== "Actor") return;
+
+		const cav = fromUuidSync(data.uuid);
+		console.log(cav);
+		if (cav.type !== "cav") return;
+
+		cav.setPilot(actor);
+	}
+
 	_preCreate(data, options, user) {
 		super._preCreate(data, options, user);
 
@@ -26,6 +38,47 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 
 	getCharacterType() {
 		return this.getFlag("metalsaviors", "characterType");
+	}
+
+	async addCav(cavActor) {
+		if (cavActor.type !== "cav") return;
+
+		const cavId = cavActor.id;
+		if (!this.system.cavs) {
+			await this.update({ "system.cavs": [] });
+		}
+		const cavIds = [...this.system.cavs];
+
+		if (cavIds.includes(cavId)) return;
+
+		const newCavIds = cavIds.concat(cavId);
+		await this.update({ "system.cavs": newCavIds });
+	}
+
+	async deleteCav(cavActor) {
+		if (cavActor.type !== "cav") return;
+
+		const cavId = cavActor.id;
+		if (!this.system.cavs) {
+			await this.update({ "system.cavs": [] });
+		}
+
+		const cavIds = [...this.system.cavs];
+		if (!cavIds.includes(cavId)) return;
+
+		const filteredCavIds = cavIds.filter((x) => x !== cavId);
+		await this.update({ "system.cavs": filteredCavIds });
+	}
+
+	getCavs() {
+		if (!this.system.cavs) {
+			this.update({ "system.cavs": [] });
+			return [];
+		}
+
+		const cavIds = [...this.system.cavs];
+		const cavs = cavIds.map((id) => game.actors.get(id));
+		return cavs;
 	}
 
 	async setSourceCurWeapon(curWeapon) {

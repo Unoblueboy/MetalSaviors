@@ -237,7 +237,7 @@
 			},
 			"requiredLicense": null,
 			"cavUnitPiloting": {},
-			"traits": {}
+			"model": ""
 		}
 	},
 	"Item": {

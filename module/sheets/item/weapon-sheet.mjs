@@ -97,7 +97,6 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 					name: cav.name,
 				};
 			}
-			context.weaponOwner = this.item.getOwner();
 		}
 
 		return context;
@@ -179,12 +178,6 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 			this.item.update({
 				[`system.rolls.-=${name}`]: null,
 			});
-		});
-
-		html.find(".owner-select").change((ev) => {
-			const curTarget = $(ev.target);
-			const value = curTarget.val();
-			this.item.setOwner(value);
 		});
 	}
 

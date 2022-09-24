@@ -13,17 +13,13 @@
                  title="{{actor.name}}" />
         </div>
         <div class="attributes">
-            <div class="tab"
-                 data-group="primary"
-                 data-tab="pilot">
-                {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs" 
+            {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs" 
                     attributes=system.attributes
                     attributeSection="attributes"
                     attributeLabels = attributeLabels
                     popup=editable
                     characterType=flags.metalsaviors.characterType}}
-            </div>
-            {{#each system.cavAttributes as |cavAttributes id|}}
+            {{!-- {{#each system.cavAttributes as |cavAttributes id|}}
                 <div class="tab"
                      data-group="primary"
                      data-tab="cav_{{id}}"
@@ -36,7 +32,7 @@
                         popup=false
                         characterType=../flags.metalsaviors.characterType}}
                 </div>
-            {{/each}}
+            {{/each}} --}}
         </div>
     </div>
     <div class="main-body">
@@ -94,46 +90,26 @@
         <div class="sheet-tabs"
              data-group="primary">
             <div class="sheet-tab">
-                <a data-tab="pilot">Pilot</a>
+                <a data-tab="summary">Summary</a>
             </div>
-            {{#each cavs as |cav|}}
-                <div class="sheet-tab item-controls-container item"
-                     data-item-id="{{cav._id}}">
-                    <div><a data-tab="cav_{{cav._id}}">{{cav.name}}</a></div>
-                    <div class="item-controls">
-                        <a class="item-edit"
-                           title="Edit Item"><i class="fas fa-edit"></i></a>
-                        <a class="item-control item-delete"
-                           title="Delete Item"><i class="fas fa-trash"></i></a>
-                    </div>
-                </div>
-            {{/each}}
+            <div class="sheet-tab">
+                <a data-tab="notes">Notes</a>
+            </div>
         </div>
         <div class="sheet-body">
             <div class="tab"
                  data-group="primary"
-                 data-tab="pilot">
+                 data-tab="summary">
                 {{> "systems/metalsaviors/templates/actor/parts/actor-pilot.hbs" 
                     weapons=weapons.pilot
                     editable=editable
                     characterType=flags.metalsaviors.characterType}}
             </div>
-            {{#each cavs as |cav|}}
-                <div class="tab item"
-                     data-group="primary"
-                     data-tab="cav_{{cav._id}}"
-                     data-item-id="{{cav._id}}">
-                    {{> "systems/metalsaviors/templates/actor/parts/actor-cav.hbs" 
-                        learnedSkills=../skills.learnedSkills
-                        weapons=(lookup ../weapons.cav cav._id)
-                        editable=../editable
-                        curMovementSpeed=../curMovementSpeed
-                        excessMomentum=../excessMomentum
-                        CONFIG=../CONFIG
-                        characterType=../flags.metalsaviors.characterType
-                        flags=../flags}}
-                </div>
-            {{/each}}
+            <div class="tab"
+                 data-group="primary"
+                 data-tab="notes">
+                <p>Notes</p>
+            </div>
         </div>
     </div>
 </form>

@@ -10,7 +10,7 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 					initial: "pilot",
 				},
 			],
-			submitOnChange: false,
+			submitOnChange: true,
 		});
 	}
 
@@ -19,15 +19,35 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 		return `systems/metalsaviors/templates/actor/actor-${this.actor.type}-sheet.hbs`;
 	}
 
+	get cav() {
+		return this.actor;
+	}
+
 	/** @override */
 	getData() {
 		// Retrieve base data structure.
 		const context = super.getData();
 
 		// Use a safe clone of the item data for further operations.
-		context.system = foundry.utils.deepClone(this.actor.system);
+		context.system = foundry.utils.deepClone(this.cav.system);
+
+		this.preparePilotData(context);
 
 		return context;
+	}
+
+	preparePilotData(context) {
+		const pilot = this.cav.pilot;
+		context.hasPilot = !!pilot;
+
+		if (!pilot) return;
+
+		context.attributeLabels = {};
+		for (let [k] of Object.entries(context.system.attributes)) {
+			context.attributeLabels[k] = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
+		}
+
+		context.pilot = { name: pilot.name };
 	}
 
 	/** @override */
@@ -41,15 +61,13 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 			if (newName === prevName) {
 				return;
 			}
-			const bonus = this.actor.system.cavUnitPiloting[prevName];
-			this.actor.update({
+			const bonus = this.cav.system.cavUnitPiloting[prevName];
+			this.cav.update({
 				[`system.cavUnitPiloting.${newName}`]: bonus,
 				[`system.cavUnitPiloting.-=${prevName}`]: null,
 			});
 		});
 		html.find(".add-cav-unit-skill").click((ev) => {
-			console.log("add-cav-unit-skill");
-
 			const curTarget = $(ev.target).parents(".add-cav-unit-skill");
 			const newName = $(curTarget).siblings(".add-cav-unit-skill-name").children("input").first().val();
 			const newValue = $(curTarget).siblings(".add-cav-unit-skill-value").children("input").first().val();
@@ -58,7 +76,7 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 				return;
 			}
 
-			const cavUnitPilotingSkills = Object.keys(this.actor.system.cavUnitPiloting);
+			const cavUnitPilotingSkills = Object.keys(this.cav.system.cavUnitPiloting);
 			if (cavUnitPilotingSkills.includes(newName)) {
 				return;
 			}
@@ -68,59 +86,15 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 				return;
 			}
 
-			this.actor.update({
+			this.cav.update({
 				[`system.cavUnitPiloting.${newName}`]: bonus,
 			});
 		});
 		html.find(".delete-cav-unit-skill").click((ev) => {
 			const curTarget = $(ev.target).parents(".delete-cav-unit-skill");
 			const cavSkillName = curTarget.siblings(".cav-skill-name").children("input").val();
-			this.actor.update({
+			this.cav.update({
 				[`system.cavUnitPiloting.-=${cavSkillName}`]: null,
-			});
-		});
-
-		html.find(".cav-trait-name input").change((ev) => {
-			const newName = ev.target.value;
-			const prevName = $(ev.target).parents(".cav-trait-name").data("prevName");
-
-			if (newName === prevName) {
-				return;
-			}
-			const bonus = this.actor.system.traits[prevName];
-			this.actor.update({
-				[`system.traits.${newName}`]: bonus,
-				[`system.traits.-=${prevName}`]: null,
-			});
-		});
-		html.find(".add-cav-trait").click((ev) => {
-			const curTarget = $(ev.target).parents(".add-cav-trait");
-			const newName = $(curTarget).siblings(".add-cav-trait-name").children("input").first().val();
-			const newValue = $(curTarget).siblings(".add-cav-trait-value").children("textarea").first().val();
-
-			if (!newName || !newValue) {
-				return;
-			}
-
-			const traits = Object.keys(this.actor.system.traits);
-			if (traits.includes(newName)) {
-				return;
-			}
-
-			const traitDescription = newValue;
-			if (!traitDescription) {
-				return;
-			}
-
-			this.actor.update({
-				[`system.traits.${newName}`]: traitDescription,
-			});
-		});
-		html.find(".delete-cav-trait").click((ev) => {
-			const curTarget = $(ev.target).parents(".delete-cav-trait");
-			const traitName = curTarget.siblings(".cav-trait-name").children("input").val();
-			this.actor.update({
-				[`system.traits.-=${traitName}`]: null,
 			});
 		});
 	}
