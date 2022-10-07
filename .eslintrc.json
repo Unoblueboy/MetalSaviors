@@ -23,6 +23,7 @@
 		"SquareGrid": "readonly",
 		"fromUuidSync": "readonly",
 		"Item": "readonly",
+		"Actor": "readonly",
 		"Roll": "readonly",
 		"ChatMessage": "readonly",
 		"Macro": "readonly",

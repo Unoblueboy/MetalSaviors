@@ -51,7 +51,7 @@ export class MetalSaviorsActor extends Actor {
 		const origItem = sameNameTypeItems[0];
 		const origItemData = origItem.system;
 		switch (item.type) {
-			case "learnedSkill":
+			case "learnedSkill": {
 				const newNumAcquisitions = origItemData.numAcquisitions + 1;
 				ui.notifications.info(
 					`The skill ${origItem.name} has been updated, it now has ${newNumAcquisitions} acquisition`
@@ -60,6 +60,7 @@ export class MetalSaviorsActor extends Actor {
 					"system.numAcquisitions": newNumAcquisitions,
 				});
 				break;
+			}
 			case "weaponProficiency":
 				ui.notifications.info(`The actor ${this.name} already has the Weapon Proficiency ${origItem.name}`);
 				break;
@@ -133,9 +134,5 @@ export class MetalSaviorsActor extends Actor {
 
 	getInitiativeRoll(options = {}) {
 		return "d20";
-	}
-
-	getCavs() {
-		return this.itemTypes.cav ?? [];
 	}
 }

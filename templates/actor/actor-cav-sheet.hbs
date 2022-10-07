@@ -161,45 +161,71 @@
                 </td>
             </tr>
         </table>
-        <div class="attributes">
-            {{!-- {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs" 
+        {{#if hasPilot}}
+            <div class="attributes">
+                {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"
                     attributes=system.attributes
                     attributeSection="attributes"
                     attributeLabels = attributeLabels
-                    popup=editable
-                    characterType=flags.metalsaviors.characterType}} --}}
-            {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"
-                    attributes=system.attributes
-                    attributeSection=("attributes")
-                    attributeLabels = attributeLabels
                     popup=false
                     characterType=""}}
-        </div>
+            </div>
+        {{/if}}
     </div>
     <div class="main-body">
         <header>
             <div class="main-body-header">
                 <div class="sheet-body-group">
-                    <div class="flexcol flex-3">
-                        <div>Cav Name</div>
-                        <div><input class="update-actor"
-                                   name="name"
-                                   type="text"
-                                   value="{{actor.name}}"
-                                   placeholder="Name" /></div>
-                    </div>
-                    <div class="flexcol flex-3">
-                        <div>Model</div>
-                        <div><input class="update-actor"
-                                   name="system.model"
-                                   type="text"
-                                   value="{{system.model}}"
-                                   placeholder="Model" /></div>
-                    </div>
                     {{#if hasPilot}}
+                        <div class="flexcol flex-3">
+                            <div>Cav Name</div>
+                            <div><input name="name"
+                                       type="text"
+                                       value="{{actor.name}}"
+                                       placeholder="Name" /></div>
+                        </div>
+                        <div class="flexcol flex-3">
+                            <div>Model</div>
+                            <div><input name="system.model"
+                                       type="text"
+                                       value="{{system.model}}"
+                                       placeholder="Model" /></div>
+                        </div>
                         <div class="flexcol flex-2">
                             <div>Current Owner: {{pilot.name}}</div>
                             <button class="reset-cav-ownership">Reset Ownership</button>
+                        </div>
+                    {{else}}
+                        {{#if flags.metalsaviors.isBaseModel}}
+                            <div class="flexcol flex-6">
+                                <div>Model</div>
+                                <div><input class="base-model-name"
+                                           name="name"
+                                           type="text"
+                                           value="{{actor.name}}"
+                                           placeholder="Name" /></div>
+                            </div>
+                        {{else}}
+                            <div class="flexcol flex-3">
+                                <div>Cav Name</div>
+                                <div><input name="name"
+                                           type="text"
+                                           value="{{actor.name}}"
+                                           placeholder="Name" /></div>
+                            </div>
+                            <div class="flexcol flex-3">
+                                <div>Model</div>
+                                <div><input name="system.model"
+                                           type="text"
+                                           value="{{system.model}}"
+                                           placeholder="Name" /></div>
+                            </div>
+                        {{/if}}
+                        <div class="flexcol flex-1">
+                            <div>Is Base Model</div>
+                            <div><input type="checkbox"
+                                       name="flags.metalsaviors.isBaseModel"
+                                       {{#checked flags.metalsaviors.isBaseModel}}{{/checked}} /></div>
                         </div>
                     {{/if}}
                 </div>

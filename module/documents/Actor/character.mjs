@@ -13,7 +13,28 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 		console.log(cav);
 		if (cav.type !== "cav") return;
 
-		cav.setPilot(actor);
+		this.AddDropInCav(cav, actor);
+	}
+
+	static async AddDropInCav(cav, actor) {
+		if (!cav.isBaseModel) {
+			cav.setPilot(actor);
+			return;
+		}
+
+		const newCav = await cav.clone(
+			{
+				name: `${cav.name} (Copy)`,
+				flags: {
+					metalsaviors: {
+						isBaseModel: false,
+					},
+				},
+			},
+			{ save: true }
+		);
+		newCav.setPilot(actor);
+		return;
 	}
 
 	_preCreate(data, options, user) {
@@ -41,27 +62,22 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 	}
 
 	async addCav(cavActor) {
-		if (cavActor.type !== "cav") return;
+		if (cavActor.type !== "cav") throw new Error("Tried to add a non-cav actor as a cav.");
 
 		const cavId = cavActor.id;
-		if (!this.system.cavs) {
-			await this.update({ "system.cavs": [] });
-		}
 		const cavIds = [...this.system.cavs];
 
-		if (cavIds.includes(cavId)) return;
+		if (cavIds.includes(cavId)) return false;
 
 		const newCavIds = cavIds.concat(cavId);
 		await this.update({ "system.cavs": newCavIds });
+		return true;
 	}
 
 	async deleteCav(cavActor) {
 		if (cavActor.type !== "cav") return;
 
 		const cavId = cavActor.id;
-		if (!this.system.cavs) {
-			await this.update({ "system.cavs": [] });
-		}
 
 		const cavIds = [...this.system.cavs];
 		if (!cavIds.includes(cavId)) return;
@@ -71,11 +87,6 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 	}
 
 	getCavs() {
-		if (!this.system.cavs) {
-			this.update({ "system.cavs": [] });
-			return [];
-		}
-
 		const cavIds = [...this.system.cavs];
 		const cavs = cavIds.map((id) => game.actors.get(id));
 		return cavs;

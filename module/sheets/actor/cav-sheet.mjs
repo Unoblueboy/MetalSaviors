@@ -1,3 +1,5 @@
+import { MetalSaviorsCav } from "../../documents/Actor/cav.mjs";
+
 export class MetalSaviorsCavSheet extends ActorSheet {
 	/** @override */
 	static get defaultOptions() {
@@ -19,6 +21,11 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 		return `systems/metalsaviors/templates/actor/actor-${this.actor.type}-sheet.hbs`;
 	}
 
+	/**
+	 * Returns cav
+	 *
+	 * @returns {MetalSaviorsCav} cav
+	 */
 	get cav() {
 		return this.actor;
 	}
@@ -30,6 +37,7 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 
 		// Use a safe clone of the item data for further operations.
 		context.system = foundry.utils.deepClone(this.cav.system);
+		context.flags = foundry.utils.deepClone(this.cav.flags);
 
 		this.preparePilotData(context);
 
@@ -97,5 +105,28 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 				[`system.cavUnitPiloting.-=${cavSkillName}`]: null,
 			});
 		});
+
+		html.find("button.reset-cav-ownership").click(() => {
+			this.cav.deletePilot();
+		});
+
+		html.find(".base-model-name").change((ev) => {
+			const name = ev.target.value;
+			console.log(name);
+			this.cav.update({
+				"system.model": name,
+			});
+		});
+	}
+
+	async _onSubmit(event, options) {
+		const formdata = await super._onSubmit(event, options);
+		console.log("Cav onSubmit", this._getSubmitData(null), formdata);
+
+		if (this.cav.hasPilot) {
+			if (this.cav.pilot.sheet.rendered) {
+				this.cav.pilot.sheet.render();
+			}
+		}
 	}
 }

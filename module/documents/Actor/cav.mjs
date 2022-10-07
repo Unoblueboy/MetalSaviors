@@ -6,16 +6,26 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 		return pilotId ? game.actors.get(pilotId) : null;
 	}
 
+	get isBaseModel() {
+		return this.getFlag("metalsaviors", "isBaseModel");
+	}
+
+	get hasPilot() {
+		return !!this.pilot;
+	}
+
 	async setPilot(actor) {
 		if (actor.type !== "character") return;
 		const pilotId = actor.id;
 
+		console.log("Set Pliot", pilotId);
+
 		const existingPilot = this.pilot;
 
 		if (!existingPilot) {
-			ui.notifications.info(`The CAV ${this.name} has been assigned to Character ${actor.name}`);
 			actor.addCav(this);
 			await this.setFlag("metalsaviors", "pilotId", pilotId);
+			ui.notifications.info(`The CAV ${this.name} has been assigned to Character ${actor.name}`);
 			return;
 		}
 
@@ -25,19 +35,31 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 		}
 
 		// Final Case, Cav switching Actor
+		await existingPilot.deleteCav(this);
+		await actor.addCav(this);
+		await this.setFlag("metalsaviors", "pilotId", pilotId);
+
 		ui.notifications.info(
 			`The CAV ${this.name} was already assigned to Character ${existingPilot.name} ` +
 				`now assigning to Character ${actor.name}`
 		);
-
-		await existingPilot.deleteCav(this);
-		await actor.addCav(this);
-		await this.setFlag("metalsaviors", "pilotId", pilotId);
 	}
 
 	async deletePilot() {
-		await this.setFlag("metalsaviors", "pilotId", null);
 		if (this.pilot) this.pilot.deleteCav(this);
+		await this.setFlag("metalsaviors", "pilotId", null);
+	}
+
+	_preCreate(data, options, user) {
+		super._preCreate(data, options, user);
+
+		console.log("Cav _preCreate", data);
+
+		if (this.isBaseModel === undefined || this.isBaseModel === null) {
+			this.updateSource({
+				"flags.metalsaviors.isBaseModel": true,
+			});
+		}
 	}
 
 	_preDelete(options, user) {

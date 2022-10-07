@@ -1,8 +1,5 @@
 import { CharacterType as CharacterTypes } from "../../documents/Actor/actor.mjs";
-import { MetalSaviorsCombatant } from "../../documents/Combat/Combatant.mjs";
-import { onManageActiveEffect, prepareActiveEffectCategories } from "../../helpers/effects.mjs";
-
-import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
+import { prepareActiveEffectCategories } from "../../helpers/effects.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -79,7 +76,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 	_prepareCharacterData(context) {
 		// Handle ability scores.
 		context.attributeLabels = {};
-		for (let [k, v] of Object.entries(context.system.attributes)) {
+		for (let [k] of Object.entries(context.system.attributes)) {
 			context.attributeLabels[k] = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
 		}
 
@@ -151,7 +148,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 				case "cav":
 					cavs.push(i);
 					break;
-				case "weapon":
+				case "weapon": {
 					let weaponList;
 
 					const item = this.actor.items.get(i._id);
@@ -171,6 +168,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 					weaponList.push(i);
 
 					break;
+				}
 				case "concept":
 					concepts[i._id] = i;
 					break;

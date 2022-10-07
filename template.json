@@ -76,7 +76,8 @@
 				"cavInitiativeModifier": {
 					"otherBonuses": 0
 				}
-			}
+			},
+			"cavs": []
 		},
 		"infantry": {
 			"squadType": "Anti-Vehicle",
