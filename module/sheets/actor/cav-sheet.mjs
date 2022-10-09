@@ -106,7 +106,8 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 			});
 		});
 
-		html.find("button.reset-cav-ownership").click(() => {
+		html.find("button.reset-cav-ownership").click((ev) => {
+			if (ev.pointerType === "") return;
 			this.cav.deletePilot();
 		});
 
@@ -119,14 +120,15 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 		});
 	}
 
-	async _onSubmit(event, options) {
+	async _onSubmit(event, options = {}) {
 		const formdata = await super._onSubmit(event, options);
-		console.log("Cav onSubmit", this._getSubmitData(null), formdata);
 
-		if (this.cav.hasPilot) {
+		if (formdata && this.cav.hasPilot) {
 			if (this.cav.pilot.sheet.rendered) {
 				this.cav.pilot.sheet.render();
 			}
 		}
+
+		return formdata;
 	}
 }

@@ -30,7 +30,11 @@
 		"Handlebars": "readonly",
 		"Hooks": "readonly",
 		"Items": "readonly",
-		"Actors": "readonly"
+		"Actors": "readonly",
+		"duplicate": "readonly",
+		"DEFAULT_TOKEN": "readonly",
+		"ItemSheet": "readonly",
+		"Combatant": "readonly"
 	},
 	"rules": {}
 }

@@ -46,6 +46,9 @@ Hooks.once("init", async function () {
 	// Add custom constants for configuration.
 	CONFIG.METALSAVIORS = METALSAVIORS;
 
+	// Set Debug = true
+	CONFIG.debug.documents = true;
+
 	// Define custom Document classes
 	CONFIG.Actor.documentClass = MetalSaviorsActorProxy;
 	CONFIG.Item.documentClass = MetalSaviorsItemProxy;
@@ -103,10 +106,6 @@ Hooks.once("init", async function () {
 		types: ["learnedSkill", "atbSkill", "combatTraining", "weaponProficiency", "pilotLicense"],
 		makeDefault: true,
 	});
-	// Items.registerSheet("metalsaviors", MetalSaviorsCavSheet, {
-	// 	types: ["cav"],
-	// 	makeDefault: true,
-	// });
 	Items.registerSheet("metalsaviors", MetalSaviorsWeaponSheet, {
 		types: ["weapon"],
 		makeDefault: true,
@@ -131,7 +130,7 @@ Hooks.once("init", async function () {
 			step: 1,
 		},
 		default: 10,
-		onChange: (value) => {
+		onChange: () => {
 			if (!game.scenes.active) return;
 			game.scenes.active.tokens.forEach((x) => x.object.refresh());
 		},
@@ -149,7 +148,7 @@ Hooks.once("init", async function () {
 			max: 100,
 		},
 		default: 50,
-		onChange: (value) => {
+		onChange: () => {
 			if (!game.scenes.active) return;
 			game.scenes.active.tokens.forEach((x) => x.object.refresh());
 		},
@@ -167,7 +166,7 @@ Hooks.once("init", async function () {
 			max: 100,
 		},
 		default: 50,
-		onChange: (value) => {
+		onChange: () => {
 			if (!game.scenes.active) return;
 			game.scenes.active.tokens.forEach((x) => x.object.refresh());
 		},

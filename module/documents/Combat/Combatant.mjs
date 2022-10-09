@@ -12,6 +12,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		4: game.i18n.localize(CONFIG.METALSAVIORS.combatSpeeds["sprint"]),
 	};
 
+	// TODO: Change this to use _preCreate
 	_onCreate(data, options, userID) {
 		super._onCreate(data, options, userID);
 		if (this.isOwner) {

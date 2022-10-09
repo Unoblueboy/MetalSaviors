@@ -45,6 +45,9 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 
 		this.setSourceCharacterType("character");
 		this.setSourceCurWeapon(null);
+		this.updateSource({
+			"flags.metalsaviors.cavs": [],
+		});
 	}
 
 	async setSourceCharacterType(charType) {
@@ -65,12 +68,12 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 		if (cavActor.type !== "cav") throw new Error("Tried to add a non-cav actor as a cav.");
 
 		const cavId = cavActor.id;
-		const cavIds = [...this.system.cavs];
+		const cavIds = this._getCavIds();
 
 		if (cavIds.includes(cavId)) return false;
 
 		const newCavIds = cavIds.concat(cavId);
-		await this.update({ "system.cavs": newCavIds });
+		await this.setFlag("metalsaviors", "cavs", newCavIds);
 		return true;
 	}
 
@@ -79,17 +82,27 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 
 		const cavId = cavActor.id;
 
-		const cavIds = [...this.system.cavs];
+		const cavIds = this._getCavIds();
 		if (!cavIds.includes(cavId)) return;
 
 		const filteredCavIds = cavIds.filter((x) => x !== cavId);
-		await this.update({ "system.cavs": filteredCavIds });
+		await this.setFlag("metalsaviors", "cavs", filteredCavIds);
 	}
 
 	getCavs() {
-		const cavIds = [...this.system.cavs];
+		const cavIds = this._getCavIds();
 		const cavs = cavIds.map((id) => game.actors.get(id));
 		return cavs;
+	}
+
+	_getCavIds() {
+		const cavs = this.getFlag("metalsaviors", "cavs");
+		if (!cavs) {
+			this.setFlag("metalsaviors", "cavs", []);
+			return [];
+		}
+
+		return [...cavs];
 	}
 
 	async setSourceCurWeapon(curWeapon) {
