@@ -12,16 +12,20 @@ export class MetalSaviorsCombatant extends Combatant {
 		4: game.i18n.localize(CONFIG.METALSAVIORS.combatSpeeds["sprint"]),
 	};
 
-	// TODO: Change this to use _preCreate
-	_onCreate(data, options, userID) {
-		super._onCreate(data, options, userID);
-		if (this.isOwner) {
-			this.setFlag("metalsaviors", "remainingActions", this.actor.getActionsPerRound());
-			this.setFlag("metalsaviors", "turnDone", false);
-			this.setFlag("metalsaviors", "curMovementSpeed", 0);
-			this.setFlag("metalsaviors", "cumExcessInitIncrease", 0);
-			this.setFlag("metalsaviors", "extraMovementMomentum", 0);
-		}
+	_preCreate(data, options, user) {
+		super._preCreate(data, options, user);
+
+		this.updateSource({
+			flags: {
+				metalsaviors: {
+					remainingActions: this.actor.getActionsPerRound(),
+					turnDone: false,
+					curMovementSpeed: 0,
+					cumExcessInitIncrease: 0,
+					extraMovementMomentum: 0,
+				},
+			},
+		});
 	}
 
 	getMaxSpeed() {
@@ -83,8 +87,8 @@ export class MetalSaviorsCombatant extends Combatant {
 	}
 
 	updateActor() {
-		if (this.actor && this.actor?.sheet?.rendered) {
-			this.actor.render();
+		if (this.actor) {
+			this.actor.render(false);
 		}
 	}
 
@@ -145,7 +149,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		var dSpeed = combatAction.dSpeed;
 		var dExtraMomentum = combatAction.dExtraMomentum;
 
-		if (this.getFlag("metalsaviors", "remainingActions") < actionCost) {
+		if (this.getRemainingActions() < actionCost) {
 			ui.notifications.warn(
 				`Combatant [${this.name}] does not have the remaining combat actions ` +
 					`this round to perform the "${actionType}" action`
