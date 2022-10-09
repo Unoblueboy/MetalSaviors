@@ -8,34 +8,16 @@
                    step="1" />
         </div>
         {{#if includeModifiers}}
-            <div class="form-group pilot-initative-modifier-div"
+            <div class="form-group initative-modifier-div"
                  style="display:flex;">
-                <label>Pilot Initiative Modifier</label>
+                <label>Initiative Modifier</label>
                 <input type="number"
-                       value="{{pilotInitativeModifier}}"
+                       value="{{initativeModifier}}"
                        disabled="true" />
-            </div>
-            <div class="form-group cav-initative-modifier-div"
-                 style="display:none;">
-                <label>CAV Initiative Modifier</label>
-                <input type="number"
-                       value="{{cavInitativeModifier}}"
-                       disabled="true" />
-            </div>
-        {{/if}}
-        {{#if hasCav}}
-            <div class="form-group">
-                <label>In CAV</label>
-                <input type="checkbox"
-                       name="inCav"
-                       class="in-cav-checkbox" />
             </div>
         {{/if}}
         {{#if (gt (len combatSpeedOptions) 0)}}
-            <div class="form-group combat-speed-div"
-                 {{#if hasCav}}
-                 style="visibility:hidden;"
-                 {{/if}}>
+            <div class="form-group combat-speed-div">
                 <label>Combat Speed</label>
                 <select type="checkbox"
                         name="combatSpeed">

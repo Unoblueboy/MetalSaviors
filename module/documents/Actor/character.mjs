@@ -23,8 +23,13 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 		const defaultNewCavName = `${cav.name} (Copy)`;
 
 		const newCavName = await Dialog.prompt({
-			content: `<input type='text' class='cav-name' value='${defaultNewCavName}'></input>`,
-			callback: (html) => html.find("input.cav-name").val(),
+			content: `<div class="form-group">
+            <label>CAV Name</label>
+            <input type="text"
+                   name="name"
+                   value="${defaultNewCavName}">
+        </div>`,
+			callback: (html) => html.find("input[name='name']").val(),
 		});
 
 		const newCav = await cav.clone(
@@ -222,11 +227,12 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 		}
 	}
 
-	getInitiativeRoll({ inCav = false } = {}) {
-		if (!inCav) {
-			return "d20 + @derivedAttributes.initiativeModifier.value";
-		}
-		return "d20 + @derivedAttributes.cavInitiativeModifier.value";
+	getInitiativeRoll() {
+		return "d20 + @derivedAttributes.initiativeModifier.value";
+	}
+
+	getInitiativeBonus() {
+		return this.system.derivedAttributes.initiativeModifier.value;
 	}
 
 	async rollAttribute(event) {

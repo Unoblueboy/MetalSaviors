@@ -118,6 +118,32 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 		}
 	}
 
+	getRollData() {
+		const data = foundry.utils.deepClone(super.getRollData());
+
+		if (this.hasPilot) {
+			data.pilot = this.pilot.getRollData();
+		}
+
+		return data;
+	}
+
+	getInitiativeRoll() {
+		if (!this.hasPilot) {
+			return "d20";
+		}
+
+		return "d20 + @pilot.derivedAttributes.cavInitiativeModifier.value";
+	}
+
+	getInitiativeBonus() {
+		if (!this.hasPilot) {
+			return super.getInitiativeBonus();
+		}
+
+		return this.pilot.system.derivedAttributes.cavInitiativeModifier.value;
+	}
+
 	_getCavLearnedSkillValue(canPilot, skill) {
 		let value = skill.system.value;
 

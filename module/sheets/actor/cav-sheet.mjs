@@ -40,6 +40,7 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 		context.flags = foundry.utils.deepClone(this.cav.flags);
 
 		this.preparePilotData(context);
+		this._prepareCavData(context);
 		this._prepareItems(context);
 
 		return context;
@@ -57,6 +58,15 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 		}
 
 		context.pilot = { name: pilot.name };
+	}
+
+	_prepareCavData(context) {
+		const token = this.actor.getActiveTokens(true, true)[0];
+		if (!token) return;
+
+		// The following are only included for tokens
+		context.curMovementSpeed = token.combatant?.getCurMovementSpeedKey();
+		context.excessMomentum = token.combatant?.getExtraMovementMomentum();
 	}
 
 	_prepareItems(context) {

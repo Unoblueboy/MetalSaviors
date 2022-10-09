@@ -34,7 +34,10 @@
 		"duplicate": "readonly",
 		"DEFAULT_TOKEN": "readonly",
 		"ItemSheet": "readonly",
-		"Combatant": "readonly"
+		"Combatant": "readonly",
+		"Dialog": "readonly",
+		"CONST": "readonly",
+		"renderTemplate": "readonly"
 	},
 	"rules": {}
 }

@@ -87,13 +87,6 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		}
 
 		context.characterTypes = CharacterTypes;
-
-		const token = this.actor.getActiveTokens(true, true)[0];
-		if (!token) return;
-
-		// The following are only included for tokens
-		context.curMovementSpeed = token.combatant?.getCurMovementSpeedKey();
-		context.excessMomentum = token.combatant?.getExtraMovementMomentum();
 	}
 
 	/**

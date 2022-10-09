@@ -31,7 +31,7 @@ export class MetalSaviorsCombatantRollDialog extends Dialog {
 			new MetalSaviorsCombatantRollDialog(
 				{
 					normalCallback: (html) => resolve(this._processInitiativeOptions(html[0].querySelector("form"))),
-					cancelCallback: (html) => resolve({ cancelled: true }),
+					cancelCallback: () => resolve({ cancelled: true }),
 					combatant: combatant,
 				},
 				null
@@ -46,42 +46,12 @@ export class MetalSaviorsCombatantRollDialog extends Dialog {
 	getData() {
 		const context = super.getData();
 		context.combatSpeedOptions = this.combatant.getCombatSpeedOptions();
-		context.hasCav = this.combatant.hasCav;
 		if (this.combatant.hasDerivedInitiativeBonuses()) {
-			const system = this.combatant.actor.system;
+			const actor = this.combatant.actor;
 			context.includeModifiers = true;
-			context.pilotInitativeModifier = system.derivedAttributes.initiativeModifier.value;
-			context.cavInitativeModifier = system.derivedAttributes.cavInitiativeModifier.value;
+			context.initativeModifier = actor.getInitiativeBonus();
 		}
 		return context;
-	}
-
-	activateListeners(html) {
-		super.activateListeners(html);
-		const combatSpeedDiv = html.find(".combat-speed-div").get(0);
-		const pilotInitativeModifierDiv = html.find(".pilot-initative-modifier-div").get(0);
-		const cavInitativeModifierDiv = html.find(".cav-initative-modifier-div").get(0);
-
-		html.find(".in-cav-checkbox").change((ev) => {
-			const inCav = ev.target.checked;
-			if (inCav) {
-				combatSpeedDiv.style.visibility = "visible";
-				if (pilotInitativeModifierDiv) {
-					pilotInitativeModifierDiv.style.display = "none";
-				}
-				if (cavInitativeModifierDiv) {
-					cavInitativeModifierDiv.style.display = "flex";
-				}
-			} else {
-				combatSpeedDiv.style.visibility = "hidden";
-				if (pilotInitativeModifierDiv) {
-					pilotInitativeModifierDiv.style.display = "flex";
-				}
-				if (cavInitativeModifierDiv) {
-					cavInitativeModifierDiv.style.display = "none";
-				}
-			}
-		});
 	}
 }
 
@@ -119,7 +89,7 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 				{
 					normalCallback: (html) =>
 						resolve(this._processInitiativeOptions(html[0].querySelector("form"), combatants)),
-					cancelCallback: (html) => resolve({ cancelled: true }),
+					cancelCallback: () => resolve({ cancelled: true }),
 					combatants: combatants,
 				},
 				null
@@ -149,62 +119,21 @@ export class MetalSaviorsCombatantMultiRollDialog extends Dialog {
 				id: c.id,
 				name: c.name,
 				combatSpeedOptions: c.getCombatSpeedOptions(),
-				hasCav: c.hasCav,
 			};
 			if (c.hasDerivedInitiativeBonuses()) {
-				const system = c.actor.system;
+				const actor = c.actor;
 				mappedData.includeModifiers = true;
-				mappedData.pilotInitativeModifier = system.derivedAttributes.initiativeModifier.value;
-				mappedData.cavInitativeModifier = system.derivedAttributes.cavInitiativeModifier.value;
+				mappedData.initativeModifier = actor.getInitiativeBonus();
 			}
 			return mappedData;
 		});
 		return context;
 	}
-
-	activateListeners(html) {
-		super.activateListeners(html);
-
-		html.find(".in-cav-checkbox").change((ev) => {
-			const element = ev.target;
-			const inCav = element.checked;
-			const combatSpeedCell = $(element).closest("td").siblings(".combat-speed-td").find("select").get(0);
-			const pilotInitativeModifierInput = $(element)
-				.closest("td")
-				.siblings(".base-initative-modifiers-td")
-				.find(".pilot-initative-modifier")
-				.get(0);
-			const cavInitativeModifierInput = $(element)
-				.closest("td")
-				.siblings(".base-initative-modifiers-td")
-				.find(".cav-initative-modifier")
-				.get(0);
-			if (inCav) {
-				combatSpeedCell.style.visibility = "visible";
-				if (pilotInitativeModifierInput) {
-					pilotInitativeModifierInput.style.display = "none";
-				}
-				if (cavInitativeModifierInput) {
-					cavInitativeModifierInput.style.display = "block";
-				}
-			} else {
-				combatSpeedCell.style.visibility = "hidden";
-				if (pilotInitativeModifierInput) {
-					pilotInitativeModifierInput.style.display = "block";
-				}
-				if (cavInitativeModifierInput) {
-					cavInitativeModifierInput.style.display = "none";
-				}
-			}
-		});
-	}
 }
 
 function processCombatantFormData(form) {
-	const inCav = form.inCav?.checked ?? false;
 	const data = {
 		bonus: parseInt(form.bonus.value || 0),
-		inCav: inCav,
 	};
 	const combatSpeed = form.combatSpeed?.value;
 	if (combatSpeed) {

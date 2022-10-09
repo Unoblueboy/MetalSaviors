@@ -1,11 +1,11 @@
 import { MetalSaviorsAttributeRollDialog as MetalSaviorsAttributeOrSkillDialog } from "../documents/Actor/Dialogs/attributeOrSkillDialog.mjs";
 import { MetalSaviorsChatMessage } from "../documents/ChatMessage/chatMessage.mjs";
 
-export async function rollInitiative(combatant, { inCav = false, bonus = 0, makeSound = true, messageData = {} }) {
+export async function rollInitiative(combatant, { bonus = 0, makeSound = true, messageData = {} }) {
 	const actor = combatant.actor;
 	const rollData = actor.getRollData();
 
-	let rollString = actor.getInitiativeRoll({ inCav: inCav });
+	let rollString = actor.getInitiativeRoll();
 
 	if (bonus !== 0) {
 		rollString += ` + ${bonus}`;
@@ -64,7 +64,7 @@ export async function rollAttack(
 			damageRollString += `+${otherDamageBonuses}`;
 		}
 
-		var damageRoll = await new Roll(damageRollString).evaluate({ async: true });
+		damageRoll = await new Roll(damageRollString).evaluate({ async: true });
 
 		var isCrit = includeToHit && toHitRoll.terms[0].results[0].result === 20;
 		if (isCrit) {

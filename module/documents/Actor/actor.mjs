@@ -1,9 +1,4 @@
-import { attributeCalculator, derivedAttributeCalculator } from "../helpers/Calculators.mjs";
-
-import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
-
 import { METALSAVIORS } from "../../helpers/config.mjs";
-import { rollAttributeOrSkill } from "../../helpers/roll.mjs";
 
 export const CharacterType = {
 	character: "Player Character",
@@ -132,7 +127,11 @@ export class MetalSaviorsActor extends Actor {
 		return combatTraining.system.actionsPerRound || METALSAVIORS.combat.defaultActionsPerRound;
 	}
 
-	getInitiativeRoll(options = {}) {
+	getInitiativeRoll() {
 		return "d20";
+	}
+
+	getInitiativeBonus() {
+		return 0;
 	}
 }

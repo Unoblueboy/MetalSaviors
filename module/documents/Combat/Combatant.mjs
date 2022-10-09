@@ -26,7 +26,7 @@ export class MetalSaviorsCombatant extends Combatant {
 
 	getMaxSpeed() {
 		switch (this.actor?.type) {
-			case "character":
+			case "cav":
 			case "vehicle":
 				return CombatSpeedHelper.getMovementSpeedIntFromKey("sprint");
 			case "pike":
@@ -36,12 +36,8 @@ export class MetalSaviorsCombatant extends Combatant {
 		}
 	}
 
-	get hasCav() {
-		return this.actor && this.actor.itemTypes["cav"].length > 0;
-	}
-
 	getCombatSpeedOptions() {
-		const entries = Object.entries(this.CombatSpeeds).filter(([index, value]) => index <= this.getMaxSpeed());
+		const entries = Object.entries(this.CombatSpeeds).filter(([index]) => index <= this.getMaxSpeed());
 		return Object.fromEntries(entries);
 	}
 
@@ -64,11 +60,26 @@ export class MetalSaviorsCombatant extends Combatant {
 	}
 
 	hasDerivedInitiativeBonuses() {
-		return (
-			this.actor &&
+		if (!this.actor) {
+			return false;
+		}
+
+		if (!["character", "cav"].includes(this.actor.type)) {
+			return false;
+		}
+
+		if (
 			this.actor.type == "character" &&
-			["character", "majorCharacter"].includes(this.actor.getCharacterType())
-		);
+			!["character", "majorCharacter"].includes(this.actor.getCharacterType())
+		) {
+			return false;
+		}
+
+		if (this.actor.type == "cav" && !this.actor.hasPilot) {
+			return false;
+		}
+
+		return true;
 	}
 
 	updateActor() {
