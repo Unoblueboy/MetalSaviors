@@ -5,12 +5,10 @@ import { MetalSaviorsActor } from "./actor.mjs";
 
 export class MetalSaviorsCharacter extends MetalSaviorsActor {
 	static AddCavActor(actor, sheet, data) {
-		console.log("AddCavActor", actor, sheet, data);
 		if (actor.type !== "character") return;
 		if (data.type !== "Actor") return;
 
 		const cav = fromUuidSync(data.uuid);
-		console.log(cav);
 		if (cav.type !== "cav") return;
 
 		this.AddDropInCav(cav, actor);
@@ -22,13 +20,24 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 			return;
 		}
 
+		const defaultNewCavName = `${cav.name} (Copy)`;
+
+		const newCavName = await Dialog.prompt({
+			content: `<input type='text' class='cav-name' value='${defaultNewCavName}'></input>`,
+			callback: (html) => html.find("input.cav-name").val(),
+		});
+
 		const newCav = await cav.clone(
 			{
-				name: `${cav.name} (Copy)`,
+				name: newCavName,
 				flags: {
 					metalsaviors: {
 						isBaseModel: false,
 					},
+				},
+				prototypeToken: {
+					name: newCavName,
+					actorLink: true,
 				},
 			},
 			{ save: true }
@@ -48,6 +57,32 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 		this.updateSource({
 			"flags.metalsaviors.cavs": [],
 		});
+	}
+
+	_onUpdate(data, options, userId) {
+		super._onUpdate(data, options, userId);
+		this._updateCavs();
+		this._renderCavSheets();
+	}
+
+	_onUpdateEmbeddedDocuments(embeddedName, ...args) {
+		super._onUpdateEmbeddedDocuments(embeddedName, ...args);
+		this._updateCavs();
+		this._renderCavSheets();
+	}
+
+	_updateCavs() {
+		const cavs = this.getCavs();
+		for (const cav of cavs) {
+			cav.prepareDerivedData();
+		}
+	}
+
+	_renderCavSheets() {
+		const cavs = this.getCavs();
+		for (const cav of cavs) {
+			cav.sheet.render(false);
+		}
 	}
 
 	async setSourceCharacterType(charType) {

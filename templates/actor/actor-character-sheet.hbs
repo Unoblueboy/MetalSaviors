@@ -19,20 +19,6 @@
                     attributeLabels = attributeLabels
                     popup=editable
                     characterType=flags.metalsaviors.characterType}}
-            {{!-- {{#each system.cavAttributes as |cavAttributes id|}}
-                <div class="tab"
-                     data-group="primary"
-                     data-tab="cav_{{id}}"
-                     data-item-id="{{id}}">
-                    {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"
-                        attributes=cavAttributes
-                        attributeSection=(concat "cavAttributes." id)
-                        attributeLabels = ../attributeLabels
-                        cavId = id
-                        popup=false
-                        characterType=../flags.metalsaviors.characterType}}
-                </div>
-            {{/each}} --}}
         </div>
     </div>
     <div class="main-body">
@@ -101,7 +87,6 @@
                  data-group="primary"
                  data-tab="summary">
                 {{> "systems/metalsaviors/templates/actor/parts/actor-pilot.hbs" 
-                    weapons=weapons.pilot
                     editable=editable
                     characterType=flags.metalsaviors.characterType}}
             </div>

@@ -18,8 +18,6 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 		if (actor.type !== "character") return;
 		const pilotId = actor.id;
 
-		console.log("Set Pliot", pilotId);
-
 		const existingPilot = this.pilot;
 
 		if (!existingPilot) {
@@ -53,7 +51,7 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 	_preCreate(data, options, user) {
 		super._preCreate(data, options, user);
 
-		console.log("Cav _preCreate", data);
+		console.log("Cav _preCreate", data, this);
 
 		if (this.isBaseModel === undefined || this.isBaseModel === null) {
 			this.updateSource({
@@ -97,13 +95,12 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 			])
 		);
 
-		// TODO: Consider CAV Unit Piloting
 		const cavLearnedSkills = Object.fromEntries(
 			pilotLearnedSkills.map((skill) => [
 				skill.id,
 				{
 					name: skill.name,
-					value: canPilot ? skill.system.value : skill.system.value - 15,
+					value: this._getCavLearnedSkillValue(canPilot, skill),
 				},
 			])
 		);
@@ -111,5 +108,26 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 		this.system.attributes = cavAttributes;
 		this.system.learnedSkills = cavLearnedSkills;
 		this.system.canPilot = canPilot;
+	}
+
+	_onUpdate(data, options, userId) {
+		super._onUpdate(data, options, userId);
+
+		if (this.hasPilot) {
+			this.pilot.sheet.render(false);
+		}
+	}
+
+	_getCavLearnedSkillValue(canPilot, skill) {
+		let value = skill.system.value;
+
+		const cavBonus = this.system.cavUnitPiloting[skill.system.name] ?? 0;
+		value += cavBonus;
+
+		if (!canPilot) {
+			value -= 15;
+		}
+
+		return value;
 	}
 }

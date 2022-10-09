@@ -40,6 +40,7 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 		context.flags = foundry.utils.deepClone(this.cav.flags);
 
 		this.preparePilotData(context);
+		this._prepareItems(context);
 
 		return context;
 	}
@@ -56,6 +57,37 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 		}
 
 		context.pilot = { name: pilot.name };
+	}
+
+	_prepareItems(context) {
+		{
+			// Initialize containers.
+			const gear = [];
+			const weapons = [];
+			const modules = [];
+
+			// Iterate through items, allocating to containers
+			for (let i of context.items) {
+				i.img = i.img || DEFAULT_TOKEN;
+				// Append to gear.
+				switch (i.type) {
+					case "item":
+						gear.push(i);
+						break;
+					case "weapon":
+						weapons.push(i);
+						break;
+					case "module":
+						modules.push(i);
+						break;
+				}
+			}
+
+			// Assign and return
+			context.gear = gear;
+			context.weapons = weapons;
+			context.modules = modules;
+		}
 	}
 
 	/** @override */
@@ -113,22 +145,52 @@ export class MetalSaviorsCavSheet extends ActorSheet {
 
 		html.find(".base-model-name").change((ev) => {
 			const name = ev.target.value;
-			console.log(name);
 			this.cav.update({
 				"system.model": name,
 			});
 		});
+
+		// Rollable abilities.
+		html.find(".rollable").click(this._onRoll.bind(this));
 	}
 
-	async _onSubmit(event, options = {}) {
-		const formdata = await super._onSubmit(event, options);
+	_onRoll(event) {
+		event.preventDefault();
+		const element = event.currentTarget;
+		const dataset = element.dataset;
 
-		if (formdata && this.cav.hasPilot) {
-			if (this.cav.pilot.sheet.rendered) {
-				this.cav.pilot.sheet.render();
+		console.log("CavSheet rolling", dataset);
+		// Handle item rolls.
+		if (dataset.rollType) {
+			if (dataset.rollType == "item") {
+				const itemId = element.closest(".item").dataset.itemId;
+				const item = this.cav.items.get(itemId);
+				if (item) return item.roll(event);
+			}
+
+			if (dataset.rollType == "pilot-item") {
+				if (!this.cav.hasPilot) return;
+				const itemId = element.closest(".item").dataset.itemId;
+				const item = this.cav.pilot.items.get(itemId);
+				if (item) return item.roll(event);
+			}
+
+			if (dataset.rollType == "atb") {
+				this.actor.rollAttribute(event);
+				return;
 			}
 		}
 
-		return formdata;
+		// Handle rolls that supply the formula directly.
+		if (dataset.roll) {
+			let label = dataset.label ? `[roll] ${dataset.label}` : "";
+			let roll = new Roll(dataset.roll, this.actor.getRollData());
+			roll.toMessage({
+				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+				flavor: label,
+				rollMode: game.settings.get("core", "rollMode"),
+			});
+			return roll;
+		}
 	}
 }

@@ -251,7 +251,8 @@
 			"pilotLicense",
 			"cav",
 			"weapon",
-			"concept"
+			"concept",
+			"module"
 		],
 		"templates": {
 			"base": {
@@ -395,6 +396,9 @@
 		"concept": {
 			"templates": ["base"],
 			"value": 5
+		},
+		"module": {
+			"templates": ["base"]
 		}
 	}
 }

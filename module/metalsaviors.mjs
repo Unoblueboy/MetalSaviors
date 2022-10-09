@@ -9,12 +9,12 @@ import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
 import { MetalSaviorsCharacterSheet } from "./sheets/actor/character-sheet.mjs";
 import { MetalSaviorsItemSheet } from "./sheets/item/item-sheet.mjs";
 import { MetalSaviorsSkillSheet } from "./sheets/item/skill-sheet.mjs";
-// import { MetalSaviorsCavSheet } from "./sheets/item/cav-sheet.mjs";
 import { MetalSaviorsInfantrySheet } from "./sheets/actor/infantry-sheet.mjs";
 import { MetalSaviorsVehicleSheet } from "./sheets/actor/vehicle-sheet.mjs";
 import { MetalSaviorsPikeSheet } from "./sheets/actor/pike-sheet.mjs";
 import { MetalSaviorsWeaponSheet } from "./sheets/item/weapon-sheet.mjs";
 import { MetalSaviorsCavSheet } from "./sheets/actor/cav-sheet.mjs";
+import { MetalSaviorsModuleSheet } from "./sheets/item/module-sheet.mjs";
 // Import ui classes.
 import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs";
 // Import helper/utility classes and constants.
@@ -112,6 +112,10 @@ Hooks.once("init", async function () {
 	});
 	Items.registerSheet("metalsaviors", MetalSaviorsConceptSheet, {
 		types: ["concept"],
+		makeDefault: true,
+	});
+	Items.registerSheet("metalsaviors", MetalSaviorsModuleSheet, {
+		types: ["module"],
 		makeDefault: true,
 	});
 

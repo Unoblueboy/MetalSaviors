@@ -64,7 +64,10 @@ export class MetalSaviorsSkill extends Item {
 
 		if (!this.actor) return;
 
-		let value = cavId ? this.system.cavValue[cavId] : this.system.value;
+		const cav = game.actors.get(cavId);
+		const roller = cav ? cav : this.actor;
+
+		let value = this._getRolledSkillValue(roller);
 
 		let data = {
 			name: this.name,
@@ -81,6 +84,14 @@ export class MetalSaviorsSkill extends Item {
 			}
 		}
 
-		await rollSkill(this.actor, data);
+		await rollSkill(roller, data);
+	}
+
+	_getRolledSkillValue(roller) {
+		if (roller.type === "cav") {
+			return roller.system.learnedSkills[this.id].value;
+		}
+
+		return this.system.value;
 	}
 }

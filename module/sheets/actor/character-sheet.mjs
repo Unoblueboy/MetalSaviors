@@ -63,6 +63,8 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		// Pass in config for localisation
 		context.CONFIG = CONFIG.METALSAVIORS;
 
+		console.log("getData", context);
+
 		return context;
 	}
 
@@ -113,10 +115,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		const pilotLicenses = {};
 		const cavs = [];
 		let combatTraining = null;
-		const weapons = {
-			pilot: [],
-			cav: Object.fromEntries(this.actor.getCavs().map((cav) => [cav.id, []])),
-		};
+		const weapons = [];
 		const concepts = {};
 
 		// Iterate through items, allocating to containers
@@ -148,27 +147,9 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 				case "cav":
 					cavs.push(i);
 					break;
-				case "weapon": {
-					let weaponList;
-
-					const item = this.actor.items.get(i._id);
-					const owner = item.getFlag("metalsaviors", "owner");
-
-					if (!owner) {
-						break;
-					}
-
-					if (owner.type === "cav" && !Object.keys(weapons.cav).includes(owner.id)) {
-						item.delete();
-						break;
-					}
-
-					weaponList = owner.type === "cav" ? weapons.cav[owner.id] : weapons[owner.type];
-
-					weaponList.push(i);
-
+				case "weapon":
+					weapons.push(i);
 					break;
-				}
 				case "concept":
 					concepts[i._id] = i;
 					break;

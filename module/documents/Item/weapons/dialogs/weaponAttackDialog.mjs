@@ -56,7 +56,7 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 		rollData[""] = { label: "Other" };
 		context.rollData = rollData;
 		context.weaponName = this.weapon.name;
-		context.attackerName = this.weapon.getOwnerName();
+		context.attackerName = this.weapon.isOwned ? this.weapon.actor.name : game.user.name;
 
 		context.includeToHit = this.includeToHit;
 		context.includeDamage = this.includeDamage;

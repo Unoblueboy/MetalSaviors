@@ -128,6 +128,10 @@ form.blank .editor {
 	height: calc(100% - 100px);
 }
 
+form.module .editor {
+	height: calc(100% - 115px);
+}
+
 tr.table-break {
 	min-width: 4px;
 	border-top: thin solid;
