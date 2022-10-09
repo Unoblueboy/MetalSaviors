@@ -44,6 +44,9 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 					name: newCavName,
 					actorLink: true,
 				},
+				ownership: {
+					[game.user.id]: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
+				},
 			},
 			{ save: true }
 		);
