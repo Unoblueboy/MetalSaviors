@@ -1,8 +1,10 @@
+import { MetalSaviorsAbstractItem } from "./abstractItem.mjs";
+
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class MetalSaviorsItem extends Item {
+export class MetalSaviorsItem extends MetalSaviorsAbstractItem {
 	/**
 	 * Augment the basic Item data model with additional dynamic data.
 	 */

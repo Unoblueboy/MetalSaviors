@@ -113,6 +113,14 @@ export class MetalSaviorsActor extends Actor {
 		return false;
 	}
 
+	_preCreate(data, options, user) {
+		super._preCreate(data, options, user);
+
+		this.updateSource({
+			"ownership.default": game.settings.get("metalsaviors", "defaultActorPermission"),
+		});
+	}
+
 	async setCurWeapon(curWeapon) {
 		await this.setFlag("metalsaviors", "curWeapon", curWeapon ? curWeapon.id : "");
 

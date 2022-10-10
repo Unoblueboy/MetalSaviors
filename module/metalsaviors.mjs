@@ -177,6 +177,38 @@ Hooks.once("init", async function () {
 			game.scenes.active.tokens.forEach((x) => x.object.refresh());
 		},
 	});
+	game.settings.register("metalsaviors", "defaultActorPermission", {
+		name: "Default Actor Permissions",
+		hint:
+			"The default permission for all players when an actor is first created, this determines how much a  " +
+			"player can edit, and what they can see.",
+		scope: "world",
+		config: true,
+		type: Number,
+		choices: {
+			[CONST.DOCUMENT_PERMISSION_LEVELS.NONE]: "None",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED]: "Limited",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER]: "Observer",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.OWNER]: "Owner",
+		},
+		default: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+	});
+	game.settings.register("metalsaviors", "defaultItemPermission", {
+		name: "Default Item Permissions",
+		hint:
+			"The default permission for all players when an item is first created, this determines how much a  " +
+			"player can edit, and what they can see.",
+		scope: "world",
+		config: true,
+		type: Number,
+		choices: {
+			[CONST.DOCUMENT_PERMISSION_LEVELS.NONE]: "None",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED]: "Limited",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER]: "Observer",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.OWNER]: "Owner",
+		},
+		default: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+	});
 
 	// Preload Handlebars templates.
 	return preloadHandlebarsTemplates();

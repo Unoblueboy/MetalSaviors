@@ -1,12 +1,13 @@
 import { rollSkill } from "../../helpers/roll.mjs";
 import { CalculateSkillValue } from "../helpers/Calculators.mjs";
 import { MetalSaviorsSkillRollDialog } from "./Dialogs/skillRollDialog.mjs";
+import { MetalSaviorsAbstractItem } from "./abstractItem.mjs";
 
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class MetalSaviorsSkill extends Item {
+export class MetalSaviorsSkill extends MetalSaviorsAbstractItem {
 	/**
 	 * Augment the basic Item data model with additional dynamic data.
 	 */

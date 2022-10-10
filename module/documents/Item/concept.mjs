@@ -1,10 +1,11 @@
-import { rollAttributeOrSkill, rollSkill } from "../../helpers/roll.mjs";
+import { rollAttributeOrSkill } from "../../helpers/roll.mjs";
+import { MetalSaviorsAbstractItem } from "./abstractItem.mjs";
 
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class MetalSaviorsConcept extends Item {
+export class MetalSaviorsConcept extends MetalSaviorsAbstractItem {
 	/**
 	 * Prepare a data object which is passed to any Roll formulas which are created related to this Item
 	 * @private
