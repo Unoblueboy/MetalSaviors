@@ -69,17 +69,19 @@
                 {{/if}}
             </div>
         {{else if (eq actionDetails.selectedActionType.value actionTypes.Unspecified.value)}}
-            <div class="form-group">
-                <label>New Speed</label>
-                <select name="newSpeed">
-                    {{selectOptions actionDetails.speedDetails.combatSpeedOptions selected=actionDetails.speedDetails.currentSpeed.value}}
-                </select>
-            </div>
+            {{#if isMechanical}}
+                <div class="form-group">
+                    <label>New Speed</label>
+                    <select name="newSpeed">
+                        {{selectOptions actionDetails.speedDetails.combatSpeedOptions selected=actionDetails.speedDetails.currentSpeed.value}}
+                    </select>
+                </div>
+            {{/if}}
             <div class="form-group">
                 <label>New Initiative</label>
                 <input type="text"
                        name="newInitiative"
-                       value="{{combatant.system.initiative}}" />
+                       value="{{combatant.initiative}}" />
             </div>
             <div class="form-group">
                 <label>Action Cost</label>

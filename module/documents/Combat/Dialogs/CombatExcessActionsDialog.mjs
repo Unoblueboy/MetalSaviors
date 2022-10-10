@@ -93,13 +93,18 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 				id: combatant.id,
 				name: combatant.name,
 				remainingActions: combatant.getRemainingActions(),
-				remainingInitIncrease: combatant.getFinesse() - combatant.getCumExcessInitIncrease(),
+				remainingInitIncrease: combatant.getMaxInitIncrease() - combatant.getCumExcessInitIncrease(),
+				isMechanical: combatant.isMechanical,
 			});
 		}
 
 		context.combatants = combatants;
 
 		return context;
+	}
+
+	getRemainingInitIncrease(combatant) {
+		return combatant.getMaxInitIncrease() - combatant.getCumExcessInitIncrease();
 	}
 
 	submit(button) {
@@ -118,7 +123,7 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 
 		for (const combatant of combatants) {
 			let dInit = form[`${combatant.id}_dInit`].value;
-			let dExtraMomentum = form[`${combatant.id}_dExtraMomentum`].value;
+			let dExtraMomentum = form[`${combatant.id}_dExtraMomentum`]?.value ?? 0;
 
 			if (!Number.isNumeric(dInit) || !Number.isNumeric(dExtraMomentum)) {
 				ui.notifications.warn("All inputs must be numbers");
@@ -133,7 +138,7 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 				return [false, []];
 			}
 
-			if (combatant.getCumExcessInitIncrease() + dInit > combatant.getFinesse()) {
+			if (combatant.getCumExcessInitIncrease() + dInit > combatant.getMaxInitIncrease()) {
 				ui.notifications.warn(
 					"The cumulative initiative increase throughout combat cannot exceed your finesse"
 				);

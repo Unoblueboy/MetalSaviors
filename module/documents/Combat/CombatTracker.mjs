@@ -1,4 +1,3 @@
-import { MetalSaviorsCombatant } from "./Combatant.mjs";
 import { MetalSaviorsCombatDetailsDialog } from "./Dialogs/CombatDetailsDialog.mjs";
 
 export class MetalSaviorsCombatTracker extends CombatTracker {
@@ -41,6 +40,7 @@ export class MetalSaviorsCombatTracker extends CombatTracker {
 			return;
 		}
 		const details = await MetalSaviorsCombatDetailsDialog.getActionDetails(combatant);
+		if (details.cancelled) return;
 		await combatant.performAction(details);
 	}
 

@@ -31,7 +31,7 @@ export class MetalSaviorsAttributeRollDialog extends Dialog {
 			new MetalSaviorsAttributeRollDialog(
 				{
 					normalCallback: (html) => resolve(this._processOptions(html[0].querySelector("form"))),
-					cancelCallback: (html) => resolve({ cancelled: true }),
+					cancelCallback: () => resolve({ cancelled: true }),
 					attributeData: attributeData,
 				},
 				null

@@ -5,7 +5,6 @@ import { AttackAugment } from "../../../types/Combat/AttackAugment.js";
 import { ActionType, AttackAugmentType } from "../../../types/Combat/Enums.js";
 
 export class MetalSaviorsCombatDetailsDialog extends Dialog {
-	// TODO: Consider whether combatant in or out of CAV.
 	constructor(data, options) {
 		super(options);
 		this.data = {
@@ -20,7 +19,13 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 			close: data.cancelCallback,
 		};
 
-		this.selectedActionType = Action.getAllActions()[0].type;
+		this.validActions = data.combatant.isMechanical
+			? Action.getAllActions().filter((action) => action.cavAction)
+			: Action.getAllActions().filter((action) => action.pilotAction);
+		const validActionsTypes = this.validActions.map((x) => x.type);
+		this.validActionTypes = ActionType.filter((k, v) => validActionsTypes.includes(v));
+
+		this.selectedActionType = this.validActions[0].type;
 		this.selectedAttackAugmentType = AttackAugment.getAllAttackAugments()[0].type;
 		this.combatant = data.combatant;
 	}
@@ -28,6 +33,8 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			template: "systems/metalsaviors/templates/combat/combat-action-dialog.hbs",
+			height: 250,
+			resizable: true,
 		});
 	}
 
@@ -41,7 +48,7 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 				{
 					normalCallback: (html) =>
 						resolve(this._processActionDetails(html[0].querySelector("form"), combatant)),
-					cancelCallback: (html) => resolve({ cancelled: true }),
+					cancelCallback: () => resolve({ cancelled: true }),
 					combatant: combatant,
 				},
 				null
@@ -59,7 +66,7 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					actionCost: 1,
 					dSpeed: parseInt(form.dSpeed.value),
 				});
-			case ActionType.Attack:
+			case ActionType.Attack: {
 				const augmentActionCost = Number.isNumeric(form.augmentActionCost.value)
 					? parseInt(form.augmentActionCost.value)
 					: 1;
@@ -68,7 +75,8 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					type: actionType,
 					actionCost: actionCost,
 				});
-			case ActionType.Refocus:
+			}
+			case ActionType.Refocus: {
 				// TODO: Make the roll output prettier
 				const roll = new Roll("1d6");
 				const speaker = ChatMessage.getSpeaker({ actor: combatant.actor });
@@ -84,10 +92,11 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					actionCost: 1,
 					dInit: result.total,
 				});
-			case ActionType.Unspecified:
+			}
+			case ActionType.Unspecified: {
 				const curSpeed = combatant.getCurMovementSpeed();
 				const newSpeed = Number.isNumeric(form.newSpeed.value) ? parseInt(form.newSpeed.value) : curSpeed;
-				const curInitiative = combatant.data.initiative;
+				const curInitiative = combatant.initiative;
 				const newInitiative = Number.isNumeric(form.newInitiative.value)
 					? parseInt(form.newInitiative.value)
 					: curInitiative;
@@ -98,6 +107,7 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 					dSpeed: newSpeed - curSpeed,
 					dInit: newInitiative - curInitiative,
 				});
+			}
 			default:
 				return new CombatAction({
 					type: actionType,
@@ -109,8 +119,9 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 	getData(options) {
 		const context = {};
 
-		context.actions = Action.getAllActions();
-		context.actionTypes = ActionType.getAllEnumEntries();
+		context.isMechanical = this.combatant.isMechanical;
+		context.actions = this.validActions;
+		context.actionTypes = this.validActionTypes;
 		context.actionDetails = {
 			selectedActionType: this.selectedActionType,
 			speedDetails: this._getSpeedDetails(),

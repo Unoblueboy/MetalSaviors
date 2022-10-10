@@ -64,8 +64,6 @@ export class MetalSaviorsCharacterSheet extends MetalSaviorsActorSheet {
 		// Pass in config for localisation
 		context.CONFIG = CONFIG.METALSAVIORS;
 
-		console.log("getData", context);
-
 		return context;
 	}
 

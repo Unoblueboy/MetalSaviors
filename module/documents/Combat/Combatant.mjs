@@ -28,6 +28,10 @@ export class MetalSaviorsCombatant extends Combatant {
 		});
 	}
 
+	get isMechanical() {
+		return ["cav", "vehicle", "pike"].includes(this.actor.type);
+	}
+
 	getMaxSpeed() {
 		switch (this.actor?.type) {
 			case "cav":
@@ -121,9 +125,24 @@ export class MetalSaviorsCombatant extends Combatant {
 		return newExtraMomentum;
 	}
 
-	getFinesse() {
+	getMaxInitIncrease() {
 		try {
-			return this.actor.system.attributes.fin.value;
+			// Use Finesse Stat for player/ major characters
+			switch (this.actor.type) {
+				case "character":
+					if (this.actor.getCharacterType() !== "minorCharacter") {
+						return this.actor.system.attributes.fin.value;
+					} else {
+						return Math.min(this.actor.itemTypes.concept.map((x) => parseInt(x.system.value)));
+					}
+				case "cav":
+					if (!this.actor.hasPilot) return Infinity;
+					return this.actor.pilot.system.attributes.fin.value;
+				default:
+					return Infinity;
+			}
+
+			// TODO: Figure out what to do for non characters and minor characters
 		} catch {
 			return 0;
 		}
@@ -160,7 +179,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		const asyncTasks = [];
 
 		if (dInit !== 0) {
-			const curInitiative = this.system.initiative;
+			const curInitiative = this.initiative;
 			asyncTasks.push(this.update({ initiative: curInitiative + dInit }));
 		}
 
@@ -177,7 +196,7 @@ export class MetalSaviorsCombatant extends Combatant {
 			asyncTasks.push(this.changeExtraMovementMomentum(dExtraMomentum));
 		}
 
-		if (actionType.value === ActionType.SpendExcessActions) {
+		if (actionType === ActionType.SpendExcessActions) {
 			await this.changeCumExcessInitIncrease(dInit);
 		}
 
@@ -204,7 +223,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		const asyncTasks = [];
 
 		if (dInit !== 0) {
-			const curInitiative = this.system.initiative;
+			const curInitiative = this.initiative;
 			asyncTasks.push(this.update({ initiative: curInitiative - dInit }));
 		}
 

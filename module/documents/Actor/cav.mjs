@@ -1,4 +1,5 @@
 import { MetalSaviorsActor } from "./actor.mjs";
+import { METALSAVIORS } from "../../helpers/config.mjs";
 
 export class MetalSaviorsCav extends MetalSaviorsActor {
 	get pilot() {
@@ -50,8 +51,6 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 
 	_preCreate(data, options, user) {
 		super._preCreate(data, options, user);
-
-		console.log("Cav _preCreate", data, this);
 
 		if (this.isBaseModel === undefined || this.isBaseModel === null) {
 			this.updateSource({
@@ -155,5 +154,11 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 		}
 
 		return value;
+	}
+
+	getActionsPerRound() {
+		if (!this.hasPilot) return METALSAVIORS.combat.defaultActionsPerRound;
+
+		return this.pilot.getActionsPerRound();
 	}
 }

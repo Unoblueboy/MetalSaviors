@@ -11,6 +11,10 @@ class Enum {
 		return Object.fromEntries(Object.entries(this));
 	}
 
+	static filter(func) {
+		return Object.fromEntries(Object.entries(this).filter(([key, value]) => func(key, value)));
+	}
+
 	static parseValue(value) {
 		return Object.values(this).find((x) => x.value === value) ?? null;
 	}
