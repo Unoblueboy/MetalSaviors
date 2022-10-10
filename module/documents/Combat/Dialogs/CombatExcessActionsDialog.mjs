@@ -15,7 +15,17 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 			close: data.cancelCallback,
 		};
 		this.combatants = data.combatants;
-		game.socket.on("system.metalsaviors", (arg) => this._socketEventHandler(arg));
+	}
+
+	static openDialogs = [];
+
+	static closeAllDialogs() {
+		const openDialogs = MetalSaviorsCombatExcessActionsDialog.openDialogs;
+		for (const dialog of openDialogs) {
+			dialog.close();
+		}
+
+		this.openDialogs = [];
 	}
 
 	get title() {
@@ -29,14 +39,6 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 	setCancelCallback(cancelCallback) {
 		this.data.buttons.cancel.callback = cancelCallback;
 		this.data.close = cancelCallback;
-	}
-
-	async _socketEventHandler(data) {
-		const { location = "", action = "", payload = {} } = data;
-
-		if (location === "CombatExcessActionsDialog" && action === "newRound") {
-			this.close();
-		}
 	}
 
 	static get defaultOptions() {
@@ -68,23 +70,19 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 		);
 		dialog.render(true);
 
-		return [
-			() => dialog.close(),
-			new Promise((resolve) => {
-				dialog.setNormalCallback((html) => {
-					const [valid, result] = this._processExcessActionsDetails(
-						html[0].querySelector("form"),
-						combatants
-					);
-					if (valid) resolve(result);
-					return valid;
-				});
-				dialog.setCancelCallback((html) => {
-					resolve(defaultResult);
-					return true;
-				});
-			}),
-		];
+		this.openDialogs.push(dialog);
+
+		return new Promise((resolve) => {
+			dialog.setNormalCallback((html) => {
+				const [valid, result] = this._processExcessActionsDetails(html[0].querySelector("form"), combatants);
+				if (valid) resolve(result);
+				return valid;
+			});
+			dialog.setCancelCallback(() => {
+				resolve(defaultResult);
+				return true;
+			});
+		});
 	}
 
 	getData() {

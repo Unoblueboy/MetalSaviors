@@ -193,14 +193,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		if (game.user.isGM) {
 			this.combat._pushHistory(data);
 		} else {
-			game.socket.emit("system.metalsaviors", {
-				class: "Combat",
-				action: "pushHistory",
-				payload: {
-					targetId: this.combat.id,
-					data: data,
-				},
-			});
+			globalThis.socket.executeAsGM("Combat.pushHistory", this.combat.id, data);
 		}
 
 		await Promise.all(asyncTasks);

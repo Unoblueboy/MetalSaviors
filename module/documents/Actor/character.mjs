@@ -32,7 +32,9 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 			callback: (html) => html.find("input[name='name']").val(),
 		});
 
-		const newCav = await cav.clone(
+		const newCavId = await globalThis.socket.executeAsGM(
+			"Actor.Copy",
+			cav.id,
 			{
 				name: newCavName,
 				flags: {
@@ -47,9 +49,11 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 				ownership: {
 					[game.user.id]: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
 				},
+				folder: actor.folder,
 			},
 			{ save: true }
 		);
+		const newCav = game.actors.get(newCavId);
 		newCav.setPilot(actor);
 		return;
 	}

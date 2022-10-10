@@ -37,7 +37,8 @@
 		"Combatant": "readonly",
 		"Dialog": "readonly",
 		"CONST": "readonly",
-		"renderTemplate": "readonly"
+		"renderTemplate": "readonly",
+		"Combat": "readonly"
 	},
 	"rules": {}
 }

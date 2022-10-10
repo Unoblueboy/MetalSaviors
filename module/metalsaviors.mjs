@@ -17,6 +17,7 @@ import { MetalSaviorsCavSheet } from "./sheets/actor/cav-sheet.mjs";
 import { MetalSaviorsModuleSheet } from "./sheets/item/module-sheet.mjs";
 // Import ui classes.
 import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs";
+import { MetalSaviorsCombatExcessActionsDialog } from "./documents/Combat/Dialogs/CombatExcessActionsDialog.mjs";
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { METALSAVIORS } from "./helpers/config.mjs";
@@ -40,6 +41,7 @@ Hooks.once("init", async function () {
 		MetalSaviorsActor,
 		MetalSaviorsItem,
 		MetalSaviorsCav,
+		MetalSaviorsCombatExcessActionsDialog,
 		rollItemMacro,
 	};
 
@@ -241,6 +243,25 @@ Handlebars.registerHelper("all", function (...args) {
 });
 
 /* -------------------------------------------- */
+/*  Socket Ready Hook                                  */
+/* -------------------------------------------- */
+
+Hooks.once("socketlib.ready", () => {
+	globalThis.socket = globalThis.socketlib.registerSystem("metalsaviors");
+
+	globalThis.socket.register("Actor.Copy", MetalSaviorsActor.copy);
+	globalThis.socket.register("Combat.pushHistory", MetalSaviorsCombat.pushHistory);
+	globalThis.socket.register("Combat.nextTurn", MetalSaviorsCombat.nextTurn);
+	globalThis.socket.register("Combat.previousTurn", MetalSaviorsCombat.previousTurn);
+	globalThis.socket.register("Combat.endPlayerRound", MetalSaviorsCombat.endPlayerRound);
+	globalThis.socket.register("Combat.spendExcessActions", MetalSaviorsCombat.spendExcessActions);
+	globalThis.socket.register(
+		"CombatExcessActionsDialog.closeAllDialogs",
+		MetalSaviorsCombatExcessActionsDialog.closeAllDialogs
+	);
+});
+
+/* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
 
@@ -254,7 +275,27 @@ Hooks.once("ready", async function () {
 	Hooks.on("dropActorSheetData", (actor, sheet, data) => MetalSaviorsActor.EnforceItemUniqueness(actor, sheet, data));
 
 	Hooks.on("dropActorSheetData", (actor, sheet, data) => MetalSaviorsCharacter.AddCavActor(actor, sheet, data));
+
+	checkModuleRequirements();
 });
+
+function checkModuleRequirements() {
+	const requiredModules = [...game.system.relationships.requires];
+	for (const requiredModule of requiredModules) {
+		const installedModule = game.modules.get(requiredModule.id);
+		if (!installedModule) {
+			ui.notifications.error(`The module ${requiredModule.id} is not installed. This is required for the system
+            Metal Saviors to work, please install and restart this world.`);
+			continue;
+		}
+
+		if (!installedModule.active) {
+			ui.notifications.warn(`The module ${requiredModule.title} is not enabled. This is required for the system
+            Metal Saviors to work, please enable.`);
+			continue;
+		}
+	}
+}
 
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */

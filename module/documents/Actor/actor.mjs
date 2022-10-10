@@ -19,67 +19,12 @@ export class MetalSaviorsActor extends Actor {
 			data.items = allowedItems;
 		}
 		super(data, context);
-		game.socket.on("system.metalsaviors", (arg, ...callback) => this._socketEventHandler(arg, ...callback));
 	}
 
-	async _socketEventHandler(data, ...callback) {
-		const { location = "", action = "", payload = {} } = data;
-
-		if (location !== "Actor") return;
-		if (payload.targetId !== this.id) return;
-		console.log("Handling Actor Socket Event", data);
-
-		switch (action) {
-			case "clone": {
-				console.log(isExecutingGm());
-				if (!isExecutingGm()) return;
-				const actorId = payload.actorId;
-				const actor = game.actors.get(actorId);
-				const newActor = actor.clone(payload.createData, payload.options);
-				console.log(newActor, callback);
-				return newActor.id;
-			}
-			default:
-				break;
-		}
-	}
-
-	async copy(createData, context) {
-		if (!isExecutingGm()) {
-			const id1 = await new Promise((resolve) => {
-				game.socket.emit(
-					"system.metalsaviors",
-					{
-						location: "Actor",
-						action: "clone",
-						payload: {
-							targetId: this.id,
-							actorId: this.id,
-							createData: createData,
-							context: context,
-						},
-					},
-					(response) => {
-						resolve(response);
-					}
-				);
-			});
-			console.log("id1", id1);
-			// const id = await SocketInterface.dispatch("system.metalsaviors", {
-			// 	location: "Actor",
-			// 	action: "clone",
-			// 	payload: {
-			// 		targetId: this.id,
-			// 		actorId: this.id,
-			// 		createData: createData,
-			// 		context: context,
-			// 	},
-			// });
-			// console.log("id", id);
-			// return id;
-		}
-
-		return await this.clone(createData, context);
+	static async copy(actorId, createData, context) {
+		const actor = game.actors.get(actorId);
+		const actorClone = await actor.clone(createData, context);
+		return actorClone.id;
 	}
 
 	static EnforceItemUniqueness(actor, sheet, data) {
