@@ -1,8 +1,10 @@
+import { MetalSaviorsAbstractItemSheet } from "./abstract-item-sheet.mjs";
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class MetalSaviorsCavSheet extends ItemSheet {
+export class MetalSaviorsCavSheet extends MetalSaviorsAbstractItemSheet {
 	/** @override */
 	get template() {
 		const path = "systems/metalsaviors/templates/item/cav";

@@ -1,6 +1,8 @@
+// eslint-disable-next-line no-unused-vars
 import { MetalSaviorsCav } from "../../documents/Actor/cav.mjs";
+import { MetalSaviorsActorSheet } from "./actor-sheet.mjs";
 
-export class MetalSaviorsCavSheet extends ActorSheet {
+export class MetalSaviorsCavSheet extends MetalSaviorsActorSheet {
 	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {

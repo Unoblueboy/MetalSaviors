@@ -1,4 +1,6 @@
-export class MetalSaviorsWeaponSheet extends ItemSheet {
+import { MetalSaviorsAbstractItemSheet } from "./abstract-item-sheet.mjs";
+
+export class MetalSaviorsWeaponSheet extends MetalSaviorsAbstractItemSheet {
 	constructor(object = {}, options = {}) {
 		super(object, options);
 

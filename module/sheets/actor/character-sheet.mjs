@@ -1,11 +1,12 @@
 import { CharacterType as CharacterTypes } from "../../documents/Actor/actor.mjs";
 import { prepareActiveEffectCategories } from "../../helpers/effects.mjs";
+import { MetalSaviorsActorSheet } from "./actor-sheet.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class MetalSaviorsCharacterSheet extends ActorSheet {
+export class MetalSaviorsCharacterSheet extends MetalSaviorsActorSheet {
 	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {

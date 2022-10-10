@@ -1,8 +1,10 @@
+import { MetalSaviorsAbstractItemSheet } from "./abstract-item-sheet.mjs";
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class MetalSaviorsItemSheet extends ItemSheet {
+export class MetalSaviorsItemSheet extends MetalSaviorsAbstractItemSheet {
 	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
@@ -67,7 +69,7 @@ export class MetalSaviorsItemSheet extends ItemSheet {
 		if (!this.isEditable) return;
 
 		// Edit Button
-		html.find(".edit-button").click((ev) => {
+		html.find(".edit-button").click(() => {
 			this.renderOptions.isEditing = !this.renderOptions.isEditing;
 			this.render(true);
 		});

@@ -1,4 +1,6 @@
-export class MetalSaviorsVehicleSheet extends ActorSheet {
+import { MetalSaviorsActorSheet } from "./actor-sheet.mjs";
+
+export class MetalSaviorsVehicleSheet extends MetalSaviorsActorSheet {
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
 			classes: ["metalsaviors", "sheet", "actor"],
