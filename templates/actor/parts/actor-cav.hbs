@@ -106,7 +106,6 @@
                 <h3>Skills</h3>
             </div>
             <div class="skills">
-                {{log this}}
                 {{#if (and system.learnedSkills (gt (len system.learnedSkills) 0))}}
                     <table class="skills-table">
                         {{#each system.learnedSkills as |skill id|}}
