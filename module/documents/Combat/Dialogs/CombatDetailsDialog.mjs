@@ -94,19 +94,24 @@ export class MetalSaviorsCombatDetailsDialog extends Dialog {
 				});
 			}
 			case ActionType.Unspecified: {
-				const curSpeed = combatant.getCurMovementSpeed();
-				const newSpeed = Number.isNumeric(form.newSpeed.value) ? parseInt(form.newSpeed.value) : curSpeed;
 				const curInitiative = combatant.initiative;
 				const newInitiative = Number.isNumeric(form.newInitiative.value)
 					? parseInt(form.newInitiative.value)
 					: curInitiative;
 
-				return new CombatAction({
+				const data = {
 					type: actionType,
 					actionCost: Number.isNumeric(form.actionCost.value) ? parseInt(form.actionCost.value) : 0,
-					dSpeed: newSpeed - curSpeed,
 					dInit: newInitiative - curInitiative,
-				});
+				};
+
+				if (combatant.isMechanical) {
+					const curSpeed = combatant.getCurMovementSpeed();
+					const newSpeed = Number.isNumeric(form.newSpeed.value) ? parseInt(form.newSpeed.value) : curSpeed;
+					data["dSpeed"] = newSpeed - curSpeed;
+				}
+
+				return new CombatAction(data);
 			}
 			default:
 				return new CombatAction({

@@ -146,7 +146,7 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 	_getCavLearnedSkillValue(canPilot, skill) {
 		let value = skill.system.value;
 
-		const cavBonus = this.system.cavUnitPiloting[skill.system.name] ?? 0;
+		const cavBonus = this.system.cavUnitPiloting[skill.name] ?? 0;
 		value += cavBonus;
 
 		if (!canPilot) {
