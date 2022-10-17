@@ -58,12 +58,7 @@ export class MetalSaviorsDroneSheet extends MetalSaviorsActorSheet {
 		if (!this.isEditable) return;
 
 		// Delete Inventory Item
-		html.find(".item-delete").click((ev) => {
-			const li = $(ev.currentTarget).closest(".item");
-			const item = this.actor.items.get(li.data("itemId"));
-			item.delete();
-			li.slideUp(200, () => this.render(false));
-		});
+		html.find(".item-delete").click(this._onItemDelete.bind(this));
 
 		html.find(".rollable").click(this._onRoll.bind(this));
 
@@ -77,6 +72,20 @@ export class MetalSaviorsDroneSheet extends MetalSaviorsActorSheet {
 				this.actor.setCurWeapon(weapon);
 			}
 		});
+	}
+
+	async _onItemDelete(event) {
+		const li = $(event.currentTarget).closest(".item");
+		const item = this.actor.items.get(li.data("itemId"));
+		const response = await Dialog.confirm({
+			title: "Delete Item",
+			content: `<p>Do you want to delete the ${item.type} <b>${item.name}</b>?</p>`,
+		});
+
+		if (response) {
+			item.delete();
+		}
+		li.slideUp(200, () => this.render(false));
 	}
 
 	_onRoll(event) {

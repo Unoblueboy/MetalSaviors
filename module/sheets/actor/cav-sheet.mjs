@@ -106,6 +106,16 @@ export class MetalSaviorsCavSheet extends MetalSaviorsActorSheet {
 	activateListeners(html) {
 		super.activateListeners(html);
 
+		html.find(".item-edit").click((ev) => {
+			const parent = $(ev.currentTarget).parents(".item");
+			const item = this.actor.items.get(parent.data("itemId"));
+			item.sheet.render(true);
+		});
+
+		if (!this.isEditable) return;
+
+		html.find(".item-delete").click(this._onItemDelete.bind(this));
+
 		html.find(".cav-skill-name input").change((ev) => {
 			const newName = ev.target.value;
 			const prevName = $(ev.target).parents(".cav-skill-name").data("prevName");
@@ -142,13 +152,7 @@ export class MetalSaviorsCavSheet extends MetalSaviorsActorSheet {
 				[`system.cavUnitPiloting.${newName}`]: bonus,
 			});
 		});
-		html.find(".delete-cav-unit-skill").click((ev) => {
-			const curTarget = $(ev.target).parents(".delete-cav-unit-skill");
-			const cavSkillName = curTarget.siblings(".cav-skill-name").children("input").val();
-			this.cav.update({
-				[`system.cavUnitPiloting.-=${cavSkillName}`]: null,
-			});
-		});
+		html.find(".delete-cav-unit-skill").click(this._onCavUnitPilotingDelete.bind(this));
 
 		html.find("button.reset-cav-ownership").click((ev) => {
 			if (ev.pointerType === "") return;
@@ -162,8 +166,51 @@ export class MetalSaviorsCavSheet extends MetalSaviorsActorSheet {
 			});
 		});
 
+		html.find(".accordion-link").click((ev) => {
+			const accordion = $(ev.target).parents(".accordion");
+
+			var panel = accordion.next();
+			if (panel.css("display") === "block") {
+				panel.hide();
+			} else {
+				panel.show();
+			}
+		});
+
 		// Rollable abilities.
 		html.find(".rollable").click(this._onRoll.bind(this));
+	}
+
+	async _onItemDelete(event) {
+		const ele = $(event.currentTarget).closest(".item");
+		const item = this.actor.items.get(ele.data("itemId"));
+		const response = await Dialog.confirm({
+			title: "Delete Item",
+			content: `<p>Do you want to delete the ${item.type} <b>${item.name}</b>?</p>`,
+		});
+
+		if (response) {
+			item.delete();
+			ele.slideUp(200, () => this.render(false));
+		}
+	}
+
+	async _onCavUnitPilotingDelete(event) {
+		const curTarget = $(event.target).parents(".delete-cav-unit-skill");
+		const cavSkillName = curTarget.siblings(".cav-skill-name").children("input").val();
+
+		// const ele = $(event.currentTarget).closest(".item");
+		// const item = this.actor.items.get(ele.data("itemId"));
+		const response = await Dialog.confirm({
+			title: "Delete Item",
+			content: `<p>Do you want to delete the Cav Unit Piloting Skill <b>${cavSkillName}</b>?</p>`,
+		});
+
+		if (response) {
+			this.cav.update({
+				[`system.cavUnitPiloting.-=${cavSkillName}`]: null,
+			});
+		}
 	}
 
 	_onRoll(event) {

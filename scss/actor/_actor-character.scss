@@ -25,6 +25,27 @@ div.window-app.metalsaviors.sheet.actor {
 	min-height: 800px;
 }
 
+.accordion {
+	padding: 5px 20px;
+	width: 100%;
+	text-align: left;
+	border: none;
+	outline: none;
+	transition: 0.4s;
+	background-color: rgba($color: #444, $alpha: 0.7);
+	border-radius: 2px;
+	&:hover {
+		background-color: rgba($color: #888, $alpha: 0.7);
+	}
+}
+
+.panel {
+	padding: 0 18px;
+	background-color: rgba($color: #666, $alpha: 0.7);
+	display: none;
+	overflow: hidden;
+}
+
 .sidebar {
 	height: 100%; /* Full-height: remove this if you want "auto" height */
 	max-width: 160px; /* Set the width of the sidebar */

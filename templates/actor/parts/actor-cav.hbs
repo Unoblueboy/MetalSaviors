@@ -131,24 +131,25 @@
         {{/if}}
         <div>
             <h3>Modules</h3>
-            <table>
-                <tr>
-                    <th>Module</th>
-                    <th>Description</th>
-                    <th></th>
-                </tr>
-                {{#each modules as |module id|}}
-                    <tr>
-                        <td class="cav-trait-name"><input type="text"
-                                   value="{{module.name}}"
-                                   data-dtype="String"
-                                   disabled="true" /></td>
-                        <td><textarea type="textbox"
-                                      disabled="true"
-                                      data-dtype="String" />{{module.system.description}}</textarea>
-                    </tr>
-                {{/each}}
-            </table>
+            {{#each modules as |module id|}}
+                <div class="item "
+                     data-item-id="{{module._id}}">
+                    <div class="accordion div-cell-wrapper item-controls-container">
+                        <div class="name"><a class="accordion-link">{{module.name}}</a></div>
+                        {{#if ../editable}}
+                            <div class="item-controls">
+                                <a class="item-control item-edit"
+                                   title="Edit Item"><i class="fas fa-edit"></i></a>
+                                <a class="item-control item-delete"
+                                   title="Delete Item"><i class="fas fa-trash"></i></a>
+                            </div>
+                        {{/if}}
+                    </div>
+                    <div class="panel">
+                        {{{module.system.description}}}
+                    </div>
+                </div>
+            {{/each}}
         </div>
     </div>
 </div>

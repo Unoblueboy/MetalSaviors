@@ -155,6 +155,30 @@ div.window-app.metalsaviors.sheet.actor {
   min-height: 800px;
 }
 
+.accordion {
+  padding: 5px 20px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  -webkit-transition: 0.4s;
+  -o-transition: 0.4s;
+  transition: 0.4s;
+  background-color: rgba(68, 68, 68, 0.7);
+  border-radius: 2px;
+}
+
+.accordion:hover {
+  background-color: rgba(136, 136, 136, 0.7);
+}
+
+.panel {
+  padding: 0 18px;
+  background-color: rgba(102, 102, 102, 0.7);
+  display: none;
+  overflow: hidden;
+}
+
 .sidebar, .cav-sidebar {
   height: 100%;
   /* Full-height: remove this if you want "auto" height */
