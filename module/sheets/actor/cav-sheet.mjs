@@ -114,6 +114,8 @@ export class MetalSaviorsCavSheet extends MetalSaviorsActorSheet {
 
 		if (!this.isEditable) return;
 
+		html.find(".item-create").click(this._onItemCreate.bind(this));
+
 		html.find(".item-delete").click(this._onItemDelete.bind(this));
 
 		html.find(".cav-skill-name input").change((ev) => {
@@ -170,15 +172,33 @@ export class MetalSaviorsCavSheet extends MetalSaviorsActorSheet {
 			const accordion = $(ev.target).parents(".accordion");
 
 			var panel = accordion.next();
-			if (panel.css("display") === "block") {
-				panel.hide();
-			} else {
-				panel.show();
-			}
+			panel.slideToggle();
 		});
 
 		// Rollable abilities.
 		html.find(".rollable").click(this._onRoll.bind(this));
+	}
+
+	async _onItemCreate(event) {
+		event.preventDefault();
+		const header = event.currentTarget;
+		// Get the type of item to create.
+		const type = header.dataset.type;
+		// Grab any data associated with this control.
+		const data = duplicate(header.dataset);
+		// Initialize a default name.
+		const name = `New ${type.capitalize()}`;
+		// Prepare the item object.
+		const itemData = {
+			name: name,
+			type: type,
+			data: data,
+		};
+		// Remove the type from the dataset since it's in the itemData.type prop.
+		delete itemData.data["type"];
+
+		// Finally, create the item!
+		return await Item.create(itemData, { parent: this.actor });
 	}
 
 	async _onItemDelete(event) {
