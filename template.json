@@ -217,17 +217,17 @@
 						"spacesMoved": 2
 					},
 					"pace": {
-						"hitBonus": -2,
+						"hitBonus": -1,
 						"momentum": 1,
 						"spacesMoved": 4
 					},
 					"gallop": {
-						"hitBonus": -4,
+						"hitBonus": -2,
 						"momentum": 3,
 						"spacesMoved": 6
 					},
 					"sprint": {
-						"hitBonus": -8,
+						"hitBonus": -4,
 						"momentum": 5,
 						"spacesMoved": 8
 					}

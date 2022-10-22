@@ -85,22 +85,6 @@ export class MetalSaviorsWeaponSheet extends MetalSaviorsAbstractItemSheet {
 		context.fireRateTypes = this.fireRateTypes;
 		context.variantTypes = this.variantTypes;
 
-		if (this.item.actor) {
-			const actor = this.item.actor;
-			context.possibleOwners = {
-				[`${actor.id}`]: {
-					type: "pilot",
-					name: actor.name,
-				},
-			};
-			for (const cav of actor.getCavs()) {
-				context.possibleOwners[cav.id] = {
-					type: "cav",
-					name: cav.name,
-				};
-			}
-		}
-
 		return context;
 	}
 

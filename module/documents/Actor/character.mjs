@@ -32,6 +32,8 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 			callback: (html) => html.find("input[name='name']").val(),
 		});
 
+		const model = cav.system.model ?? cav.name;
+
 		const newCavId = await globalThis.socket.executeAsGM(
 			"Actor.Copy",
 			cav.id,
@@ -41,6 +43,9 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 					metalsaviors: {
 						isBaseModel: false,
 					},
+				},
+				system: {
+					model: model,
 				},
 				prototypeToken: {
 					name: newCavName,
