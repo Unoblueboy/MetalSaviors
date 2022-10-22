@@ -50,6 +50,12 @@
 			"type": "Actor"
 		},
 		{
+			"name": "cavs",
+			"label": "CAVs",
+			"path": "packs/cavs.db",
+			"type": "Actor"
+		},
+		{
 			"name": "weapons",
 			"label": "Weapons",
 			"path": "packs/weapons.db",
