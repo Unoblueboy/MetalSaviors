@@ -175,6 +175,17 @@ export class MetalSaviorsCavSheet extends MetalSaviorsActorSheet {
 			panel.slideToggle();
 		});
 
+		html.find(".cur-weapon-select").click(async (ev) => {
+			const li = $(ev.currentTarget).closest(".item");
+			const weaponId = li.data("itemId");
+			const weapon = this.actor.items.get(weaponId);
+			if (weapon === this.actor.getCurWeapon()) {
+				this.actor.setCurWeapon(null);
+			} else {
+				this.actor.setCurWeapon(weapon);
+			}
+		});
+
 		// Rollable abilities.
 		html.find(".rollable").click(this._onRoll.bind(this));
 	}
