@@ -1,11 +1,11 @@
 import { MetalSaviorsAttributeRollDialog as MetalSaviorsAttributeOrSkillDialog } from "../documents/Actor/Dialogs/attributeOrSkillDialog.mjs";
 import { MetalSaviorsChatMessage } from "../documents/ChatMessage/chatMessage.mjs";
 
-export async function rollInitiative(combatant, { inCav = false, bonus = 0, makeSound = true, messageData = {} }) {
+export async function rollInitiative(combatant, { bonus = 0, makeSound = true, messageData = {} }) {
 	const actor = combatant.actor;
 	const rollData = actor.getRollData();
 
-	let rollString = actor.getInitiativeRoll({ inCav: inCav });
+	let rollString = actor.getInitiativeRoll();
 
 	if (bonus !== 0) {
 		rollString += ` + ${bonus}`;
@@ -64,7 +64,7 @@ export async function rollAttack(
 			damageRollString += `+${otherDamageBonuses}`;
 		}
 
-		var damageRoll = await new Roll(damageRollString).evaluate({ async: true });
+		damageRoll = await new Roll(damageRollString).evaluate({ async: true });
 
 		var isCrit = includeToHit && toHitRoll.terms[0].results[0].result === 20;
 		if (isCrit) {
@@ -99,7 +99,7 @@ export async function rollAttack(
 	};
 	const content = await renderTemplate(template, templateData);
 
-	attackerName = attackerName || actor.data.name;
+	attackerName = attackerName || actor.name;
 	let flavor = `${attackerName} is making an attack`;
 	if (weaponName) {
 		flavor += ` with their ${weaponName}`;
@@ -113,7 +113,6 @@ export async function rollAttack(
 		user: game.user.id,
 		speaker: speaker,
 		rollMode: rollMode,
-		roll: null,
 		type: CONST.CHAT_MESSAGE_TYPES.ROLL,
 		flavor: flavor,
 		content: content,
@@ -139,14 +138,13 @@ export async function rollSkill(actor = null, { name = null, value = 0, difficul
 
 	const content = await renderTemplate(template, templateData);
 
-	const flavor = name ? `${actor.data.name} is rolling the skill ${name}` : `${actor.data.name} is rolling a skill`;
+	const flavor = name ? `${actor.name} is rolling the skill ${name}` : `${actor.name} is rolling a skill`;
 	const speaker = ChatMessage.getSpeaker({ actor: actor });
 	const rollMode = game.settings.get("core", "rollMode");
 	MetalSaviorsChatMessage.create({
 		user: game.user.id,
 		speaker: speaker,
 		rollMode: rollMode,
-		roll: null,
 		type: CONST.CHAT_MESSAGE_TYPES.ROLL,
 		flavor: flavor,
 		content: content,
@@ -178,7 +176,6 @@ export async function rollAttributeCheck(actor = null, { name = null, value = 0 
 		user: game.user.id,
 		speaker: speaker,
 		rollMode: rollMode,
-		roll: null,
 		type: CONST.CHAT_MESSAGE_TYPES.ROLL,
 		flavor: flavor,
 		content: content,

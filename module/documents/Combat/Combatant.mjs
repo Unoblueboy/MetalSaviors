@@ -12,20 +12,29 @@ export class MetalSaviorsCombatant extends Combatant {
 		4: game.i18n.localize(CONFIG.METALSAVIORS.combatSpeeds["sprint"]),
 	};
 
-	_onCreate(data, options, userID) {
-		super._onCreate(data, options, userID);
-		if (this.isOwner) {
-			this.setFlag("metalsaviors", "remainingActions", this.actor.getActionsPerRound());
-			this.setFlag("metalsaviors", "turnDone", false);
-			this.setFlag("metalsaviors", "curMovementSpeed", 0);
-			this.setFlag("metalsaviors", "cumExcessInitIncrease", 0);
-			this.setFlag("metalsaviors", "extraMovementMomentum", 0);
-		}
+	_preCreate(data, options, user) {
+		super._preCreate(data, options, user);
+
+		this.updateSource({
+			flags: {
+				metalsaviors: {
+					remainingActions: this.actor.getActionsPerRound(),
+					turnDone: false,
+					curMovementSpeed: 0,
+					cumExcessInitIncrease: 0,
+					extraMovementMomentum: 0,
+				},
+			},
+		});
+	}
+
+	get isMechanical() {
+		return ["cav", "vehicle", "pike"].includes(this.actor.type);
 	}
 
 	getMaxSpeed() {
 		switch (this.actor?.type) {
-			case "character":
+			case "cav":
 			case "vehicle":
 				return CombatSpeedHelper.getMovementSpeedIntFromKey("sprint");
 			case "pike":
@@ -35,12 +44,8 @@ export class MetalSaviorsCombatant extends Combatant {
 		}
 	}
 
-	get hasCav() {
-		return this.actor && this.actor.itemTypes["cav"].length > 0;
-	}
-
 	getCombatSpeedOptions() {
-		const entries = Object.entries(this.CombatSpeeds).filter(([index, value]) => index <= this.getMaxSpeed());
+		const entries = Object.entries(this.CombatSpeeds).filter(([index]) => index <= this.getMaxSpeed());
 		return Object.fromEntries(entries);
 	}
 
@@ -63,16 +68,31 @@ export class MetalSaviorsCombatant extends Combatant {
 	}
 
 	hasDerivedInitiativeBonuses() {
-		return (
-			this.actor &&
+		if (!this.actor) {
+			return false;
+		}
+
+		if (!["character", "cav"].includes(this.actor.type)) {
+			return false;
+		}
+
+		if (
 			this.actor.type == "character" &&
-			["character", "majorCharacter"].includes(this.actor.getCharacterType())
-		);
+			!["character", "majorCharacter"].includes(this.actor.getCharacterType())
+		) {
+			return false;
+		}
+
+		if (this.actor.type == "cav" && !this.actor.hasPilot) {
+			return false;
+		}
+
+		return true;
 	}
 
 	updateActor() {
-		if (this.actor && this.actor?.sheet?.rendered) {
-			this.actor.render();
+		if (this.actor) {
+			this.actor.render(false);
 		}
 	}
 
@@ -105,9 +125,24 @@ export class MetalSaviorsCombatant extends Combatant {
 		return newExtraMomentum;
 	}
 
-	getFinesse() {
+	getMaxInitIncrease() {
 		try {
-			return this.actor.data.data.attributes.fin.value;
+			// Use Finesse Stat for player/ major characters
+			switch (this.actor.type) {
+				case "character":
+					if (this.actor.getCharacterType() !== "minorCharacter") {
+						return this.actor.system.attributes.fin.value;
+					} else {
+						return Math.min(this.actor.itemTypes.concept.map((x) => parseInt(x.system.value)));
+					}
+				case "cav":
+					if (!this.actor.hasPilot) return Infinity;
+					return this.actor.pilot.system.attributes.fin.value;
+				default:
+					return Infinity;
+			}
+
+			// TODO: Figure out what to do for non characters and minor characters
 		} catch {
 			return 0;
 		}
@@ -133,7 +168,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		var dSpeed = combatAction.dSpeed;
 		var dExtraMomentum = combatAction.dExtraMomentum;
 
-		if (this.getFlag("metalsaviors", "remainingActions") < actionCost) {
+		if (this.getRemainingActions() < actionCost) {
 			ui.notifications.warn(
 				`Combatant [${this.name}] does not have the remaining combat actions ` +
 					`this round to perform the "${actionType}" action`
@@ -144,7 +179,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		const asyncTasks = [];
 
 		if (dInit !== 0) {
-			const curInitiative = this.data.initiative;
+			const curInitiative = this.initiative;
 			asyncTasks.push(this.update({ initiative: curInitiative + dInit }));
 		}
 
@@ -161,7 +196,7 @@ export class MetalSaviorsCombatant extends Combatant {
 			asyncTasks.push(this.changeExtraMovementMomentum(dExtraMomentum));
 		}
 
-		if (actionType.value === ActionType.SpendExcessActions) {
+		if (actionType === ActionType.SpendExcessActions) {
 			await this.changeCumExcessInitIncrease(dInit);
 		}
 
@@ -177,14 +212,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		if (game.user.isGM) {
 			this.combat._pushHistory(data);
 		} else {
-			game.socket.emit("system.metalsaviors", {
-				class: "Combat",
-				action: "pushHistory",
-				payload: {
-					targetId: this.combat.id,
-					data: data,
-				},
-			});
+			globalThis.socket.executeAsGM("Combat.pushHistory", this.combat.id, data);
 		}
 
 		await Promise.all(asyncTasks);
@@ -195,7 +223,7 @@ export class MetalSaviorsCombatant extends Combatant {
 		const asyncTasks = [];
 
 		if (dInit !== 0) {
-			const curInitiative = this.data.initiative;
+			const curInitiative = this.initiative;
 			asyncTasks.push(this.update({ initiative: curInitiative - dInit }));
 		}
 

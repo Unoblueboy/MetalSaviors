@@ -1,14 +1,12 @@
 import { CharacterType as CharacterTypes } from "../../documents/Actor/actor.mjs";
-import { MetalSaviorsCombatant } from "../../documents/Combat/Combatant.mjs";
-import { onManageActiveEffect, prepareActiveEffectCategories } from "../../helpers/effects.mjs";
-
-import { generateSkillKey } from "../../helpers/KeyGenerator.mjs";
+import { prepareActiveEffectCategories } from "../../helpers/effects.mjs";
+import { MetalSaviorsActorSheet } from "./actor-sheet.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class MetalSaviorsCharacterSheet extends ActorSheet {
+export class MetalSaviorsCharacterSheet extends MetalSaviorsActorSheet {
 	/** @override */
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
@@ -17,7 +15,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 				{
 					navSelector: ".sheet-tabs",
 					contentSelector: "form",
-					initial: "pilot",
+					initial: "summary",
 				},
 			],
 			submitOnChange: false,
@@ -26,7 +24,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 
 	/** @override */
 	get template() {
-		return `systems/metalsaviors/templates/actor/actor-${this.actor.data.type}-sheet.hbs`;
+		return `systems/metalsaviors/templates/actor/actor-${this.actor.type}-sheet.hbs`;
 	}
 
 	/* -------------------------------------------- */
@@ -40,11 +38,12 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		const context = super.getData();
 
 		// Use a safe clone of the actor data for further operations.
-		const actorData = this.actor.data.toObject(false);
+		const actorSystem = this.actor.system;
+		const actorFlags = this.actor.flags;
 
-		// Add the actor's data to context.data for easier access, as well as flags.
-		context.data = actorData.data;
-		context.flags = actorData.flags;
+		// Add the actor's data to context.system for easier access, as well as flags.
+		context.system = actorSystem;
+		context.flags = actorFlags;
 
 		// Add some rendering options to the context
 		this.renderOptions = this.renderOptions ?? {
@@ -52,11 +51,9 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		};
 		context.renderOptions = this.renderOptions;
 
-		// Prepare character data and items.
-		if (actorData.type == "character") {
-			this._prepareItems(context);
-			this._prepareCharacterData(context);
-		}
+		this._prepareItems(context);
+		this._prepareCharacterData(context);
+		this._prepareCavData(context);
 
 		// Add roll data for TinyMCE editors.
 		context.rollData = context.actor.getRollData();
@@ -80,22 +77,15 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 	_prepareCharacterData(context) {
 		// Handle ability scores.
 		context.attributeLabels = {};
-		for (let [k, v] of Object.entries(context.data.attributes)) {
+		for (let [k] of Object.entries(context.system.attributes)) {
 			context.attributeLabels[k] = game.i18n.localize(CONFIG.METALSAVIORS.attributes[k]) ?? k;
 		}
 
-		for (const [key, derivedAttribute] of Object.entries(context.data.derivedAttributes)) {
+		for (const [key, derivedAttribute] of Object.entries(context.system.derivedAttributes)) {
 			derivedAttribute.label = game.i18n.localize(CONFIG.METALSAVIORS.derivedAttributes[key]) ?? key;
 		}
 
 		context.characterTypes = CharacterTypes;
-
-		const token = this.actor.getActiveTokens(true, true)[0];
-		if (!token) return;
-
-		// The following are only included for tokens
-		context.curMovementSpeed = token.combatant?.getCurMovementSpeedKey();
-		context.excessMomentum = token.combatant?.getExtraMovementMomentum();
 	}
 
 	/**
@@ -117,10 +107,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		const pilotLicenses = {};
 		const cavs = [];
 		let combatTraining = null;
-		const weapons = {
-			pilot: [],
-			cav: Object.fromEntries(this.actor.getCavs().map((cav) => [cav.id, []])),
-		};
+		const weapons = [];
 		const concepts = {};
 
 		// Iterate through items, allocating to containers
@@ -153,24 +140,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 					cavs.push(i);
 					break;
 				case "weapon":
-					let weaponList;
-
-					const item = this.actor.data.items.get(i._id);
-					const owner = item.getFlag("metalsaviors", "owner");
-
-					if (!owner) {
-						break;
-					}
-
-					if (owner.type === "cav" && !Object.keys(weapons.cav).includes(owner.id)) {
-						item.delete();
-						break;
-					}
-
-					weaponList = owner.type === "cav" ? weapons.cav[owner.id] : weapons[owner.type];
-
-					weaponList.push(i);
-
+					weapons.push(i);
 					break;
 				case "concept":
 					concepts[i._id] = i;
@@ -189,6 +159,14 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		context.concepts = concepts;
 	}
 
+	_prepareCavData(context) {
+		context.cavs = this.actor.getCavs().map((cav) => ({
+			id: cav.id,
+			name: cav.name,
+			model: cav.system.model,
+		}));
+	}
+
 	/* -------------------------------------------- */
 
 	/** @override */
@@ -197,9 +175,15 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 
 		// Render the item sheet for viewing/editing prior to the editable check.
 		html.find(".item-edit").click((ev) => {
-			const li = $(ev.currentTarget).parents(".item");
-			const item = this.actor.items.get(li.data("itemId"));
+			const parent = $(ev.currentTarget).parents(".item");
+			const item = this.actor.items.get(parent.data("itemId"));
 			item.sheet.render(true);
+		});
+
+		html.find(".cav-show").click((ev) => {
+			const parent = $(ev.currentTarget).parents(".cav");
+			const cav = game.actors.get(parent.data("cavId"));
+			cav.sheet.render(true);
 		});
 
 		// -------------------------------------------------------------
@@ -207,24 +191,10 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		if (!this.isEditable) return;
 
 		// Delete Inventory Item
-		html.find(".item-delete").click((ev) => {
-			const li = $(ev.currentTarget).closest(".item");
-			const item = this.actor.items.get(li.data("itemId"));
-			item.delete();
-			li.slideUp(200, () => this.render(false));
-		});
+		html.find(".item-delete").click(this._onItemDelete.bind(this));
 
 		// Add Inventory Item
 		html.find(".item-create").click(this._onItemCreate.bind(this));
-
-		html.find(".cav-data").change((ev) => {
-			const itemPath = ev.target.dataset.itemPath;
-			const updateValue = ev.target.value;
-			const itemContainer = $(ev.target).parents(".item");
-
-			const item = this.actor.items.get(itemContainer.data("itemId"));
-			item.update({ [`${itemPath}`]: updateValue });
-		});
 
 		// Rollable abilities.
 		html.find(".rollable").click(this._onRoll.bind(this));
@@ -232,7 +202,7 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 		html.find(".exit-submit").mouseleave((event) => {
 			const form = $(event.target).closest("form");
 			if (form) {
-				form.submit();
+				this.submit();
 			}
 		});
 
@@ -271,7 +241,21 @@ export class MetalSaviorsCharacterSheet extends ActorSheet {
 			return;
 		}
 
-		this._onSubmit(event);
+		this.submit(event);
+	}
+
+	async _onItemDelete(event) {
+		const li = $(event.currentTarget).closest(".item");
+		const item = this.actor.items.get(li.data("itemId"));
+		const response = await Dialog.confirm({
+			title: "Delete Item",
+			content: `<p>Do you want to delete the ${item.type} <b>${item.name}</b>?</p>`,
+		});
+
+		if (response) {
+			item.delete();
+		}
+		li.slideUp(200, () => this.render(false));
 	}
 
 	/**

@@ -7,7 +7,8 @@ form.infantry,
 form.vehicle,
 form.pike,
 form.drone,
-form.blank {
+form.blank,
+form.cav {
 	@include flex-container($direction: row);
 }
 
@@ -15,9 +16,34 @@ select.character-type-select {
 	margin-bottom: 10px;
 }
 
+.cav-health-row {
+	@include flex-container($direction: row);
+}
+
 div.window-app.metalsaviors.sheet.actor {
 	min-width: 600px;
 	min-height: 800px;
+}
+
+.accordion {
+	padding: 5px 20px;
+	width: 100%;
+	text-align: left;
+	border: none;
+	outline: none;
+	transition: 0.4s;
+	background-color: rgba($color: #444, $alpha: 0.7);
+	border-radius: 2px;
+	&:hover {
+		background-color: rgba($color: #888, $alpha: 0.7);
+	}
+}
+
+.panel {
+	padding: 0 18px;
+	background-color: rgba($color: #666, $alpha: 0.7);
+	display: none;
+	overflow: hidden;
 }
 
 .sidebar {
@@ -29,6 +55,11 @@ div.window-app.metalsaviors.sheet.actor {
 	left: 0;
 	padding: 20px 20px 20px 20px;
 	@include flex-container;
+}
+
+.cav-sidebar {
+	@extend .sidebar;
+	max-width: 220px;
 }
 
 .main-body {
@@ -78,6 +109,11 @@ div.window-app.metalsaviors.sheet.actor {
 	@include flex-container;
 }
 
+.main-body-header {
+	@extend .sheet-body-header;
+	padding: 10px;
+}
+
 .sheet-body {
 	@include flex-container($direction: column);
 	height: 100%;
@@ -111,6 +147,10 @@ form.weapon .editor {
 
 form.blank .editor {
 	height: calc(100% - 100px);
+}
+
+form.module .editor {
+	height: calc(100% - 115px);
 }
 
 tr.table-break {
@@ -176,7 +216,7 @@ table tr.cur-weapon {
 
 .cav-health-section {
 	// border-right: 1px inset black;
-	padding: 0px 10px;
+	padding: 0px 3px;
 }
 
 .cav-health-section.first {

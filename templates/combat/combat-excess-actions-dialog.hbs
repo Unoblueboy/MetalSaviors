@@ -12,21 +12,34 @@
             {{#each this.combatants as |combatant|}}
                 <tr>
                     <td>{{combatant.name}}</td>
-                    <td><input type="text" value="{{combatant.remainingActions}}" disabled="true"></td>
-                    <td><input type="text" name="{{combatant.id}}_dInit" value="0"></td>
+                    <td><input type="text"
+                               value="{{combatant.remainingActions}}"
+                               disabled="true"></td>
+                    <td><input type="text"
+                               name="{{combatant.id}}_dInit"
+                               value="0"></td>
                     <td>/</td>
-                    <td><input type="text" value="{{combatant.remainingInitIncrease}}" disabled="true"></td>
-                    <td><input type="text" name="{{combatant.id}}_dExtraMomentum" value="0"></td>
+                    <td><input type="text"
+                               value="{{combatant.remainingInitIncrease}}"
+                               disabled="true"></td>
+                    <td>
+                        {{#if isMechanical}}<input type="text"
+                                   name="{{combatant.id}}_dExtraMomentum"
+                                   value="0">
+                        {{/if}}
+                    </td>
                 </tr>
             {{/each}}
         </table>
     </form>
 </div>
 <div class="dialog-buttons">
-    <button class="dialog-button {{cssClass}}" data-button="cancel">
+    <button class="dialog-button {{cssClass}}"
+            data-button="cancel">
         Cancel
     </button>
-    <button class="dialog-button {{cssClass}}" data-button="normal">
+    <button class="dialog-button {{cssClass}}"
+            data-button="normal">
         Spend Excess Actions
     </button>
 </div>

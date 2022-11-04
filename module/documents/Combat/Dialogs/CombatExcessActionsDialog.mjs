@@ -15,7 +15,17 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 			close: data.cancelCallback,
 		};
 		this.combatants = data.combatants;
-		game.socket.on("system.metalsaviors", (arg) => this._socketEventHandler(arg));
+	}
+
+	static openDialogs = [];
+
+	static closeAllDialogs() {
+		const openDialogs = MetalSaviorsCombatExcessActionsDialog.openDialogs;
+		for (const dialog of openDialogs) {
+			dialog.close();
+		}
+
+		this.openDialogs = [];
 	}
 
 	get title() {
@@ -29,14 +39,6 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 	setCancelCallback(cancelCallback) {
 		this.data.buttons.cancel.callback = cancelCallback;
 		this.data.close = cancelCallback;
-	}
-
-	async _socketEventHandler(data) {
-		const { location = "", action = "", payload = {} } = data;
-
-		if (location === "CombatExcessActionsDialog" && action === "newRound") {
-			this.close();
-		}
 	}
 
 	static get defaultOptions() {
@@ -68,23 +70,19 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 		);
 		dialog.render(true);
 
-		return [
-			() => dialog.close(),
-			new Promise((resolve) => {
-				dialog.setNormalCallback((html) => {
-					const [valid, result] = this._processExcessActionsDetails(
-						html[0].querySelector("form"),
-						combatants
-					);
-					if (valid) resolve(result);
-					return valid;
-				});
-				dialog.setCancelCallback((html) => {
-					resolve(defaultResult);
-					return true;
-				});
-			}),
-		];
+		this.openDialogs.push(dialog);
+
+		return new Promise((resolve) => {
+			dialog.setNormalCallback((html) => {
+				const [valid, result] = this._processExcessActionsDetails(html[0].querySelector("form"), combatants);
+				if (valid) resolve(result);
+				return valid;
+			});
+			dialog.setCancelCallback(() => {
+				resolve(defaultResult);
+				return true;
+			});
+		});
 	}
 
 	getData() {
@@ -95,13 +93,18 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 				id: combatant.id,
 				name: combatant.name,
 				remainingActions: combatant.getRemainingActions(),
-				remainingInitIncrease: combatant.getFinesse() - combatant.getCumExcessInitIncrease(),
+				remainingInitIncrease: combatant.getMaxInitIncrease() - combatant.getCumExcessInitIncrease(),
+				isMechanical: combatant.isMechanical,
 			});
 		}
 
 		context.combatants = combatants;
 
 		return context;
+	}
+
+	getRemainingInitIncrease(combatant) {
+		return combatant.getMaxInitIncrease() - combatant.getCumExcessInitIncrease();
 	}
 
 	submit(button) {
@@ -120,7 +123,7 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 
 		for (const combatant of combatants) {
 			let dInit = form[`${combatant.id}_dInit`].value;
-			let dExtraMomentum = form[`${combatant.id}_dExtraMomentum`].value;
+			let dExtraMomentum = form[`${combatant.id}_dExtraMomentum`]?.value ?? 0;
 
 			if (!Number.isNumeric(dInit) || !Number.isNumeric(dExtraMomentum)) {
 				ui.notifications.warn("All inputs must be numbers");
@@ -135,7 +138,7 @@ export class MetalSaviorsCombatExcessActionsDialog extends Dialog {
 				return [false, []];
 			}
 
-			if (combatant.getCumExcessInitIncrease() + dInit > combatant.getFinesse()) {
+			if (combatant.getCumExcessInitIncrease() + dInit > combatant.getMaxInitIncrease()) {
 				ui.notifications.warn(
 					"The cumulative initiative increase throughout combat cannot exceed your finesse"
 				);

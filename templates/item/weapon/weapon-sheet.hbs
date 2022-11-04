@@ -1,33 +1,29 @@
-<form class="{{cssClass}} {{item.type}}" autocomplete="off">
+<form class="{{cssClass}} {{item.type}}"
+      autocomplete="off">
     <header class="sheet-header">
         <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+            <h1 class="charname"><input name="name"
+                       type="text"
+                       value="{{item.name}}"
+                       placeholder="Name" /></h1>
         </div>
-        {{#if weaponOwner}}
-            <div class="header-fields">
-                <label>Owner</label>
-                <select class="owner-select">
-                    {{selectOptions possibleOwners selected=weaponOwner.id labelAttr = "name"}}
-                </select>
-            </div>
-        {{/if}}
     </header>
     <hr />
     <div>
-        <select name="data.type">
-            {{selectOptions weaponTypes selected=data.type}}
+        <select name="system.type">
+            {{selectOptions weaponTypes selected=system.type}}
         </select>
     </div>
-    {{#if (eq data.type "melee")}}
+    {{#if (eq system.type "melee")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/melee-weapon-sheet.hbs"}}
-    {{else if (eq data.type "ranged")}}
+    {{else if (eq system.type "ranged")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/ranged-weapon-sheet.hbs"}}
-    {{else if (eq data.type "missile")}}
+    {{else if (eq system.type "missile")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/missile-weapon-sheet.hbs"}}
-    {{else if (eq data.type "supportWeapon")}}
+    {{else if (eq system.type "supportWeapon")}}
         {{> "systems/metalsaviors/templates/item/weapon/parts/ranged-weapon-sheet.hbs"}}
     {{/if}}
-    {{#if (ne data.type "missile")}}
+    {{#if (ne system.type "missile")}}
         <div>
             <h3>Tags</h3>
             <table>
@@ -35,10 +31,11 @@
                     <th>Tag</th>
                     <th></th>
                 </tr>
-                {{#each data.tags as |value name|}}
+                {{#each system.tags as |value name|}}
                     <tr>
                         <td>{{name~}}&nbsp;{{value}}</td>
-                        <td class="delete-weapon-tag" data-tag-name="{{name}}"><a><i class="fas fa-trash"></i></a></td>
+                        <td class="delete-weapon-tag"
+                            data-tag-name="{{name}}"><a><i class="fas fa-trash"></i></a></td>
                     </tr>
                 {{/each}}
                 {{#with (lookup tagTypes selectedTagTypeKey) as |selectedTagInfo|}}
@@ -49,12 +46,17 @@
                                     {{selectOptions ../tagTypes selected=../selectedTagTypeKey labelAttr="name"}}
                                 </select>
                                 {{#if selectedTagInfo.hasCustomName}}
-                                    <input class="add-weapon-tag-name" type="text" placeholder="Name" />
+                                    <input class="add-weapon-tag-name"
+                                           type="text"
+                                           placeholder="Name" />
                                 {{/if}}
                                 {{#if selectedTagInfo.hasValue}}
-                                    <input class="add-weapon-tag-value" type="text" placeholder="Value" />
+                                    <input class="add-weapon-tag-value"
+                                           type="text"
+                                           placeholder="Value" />
                                 {{else}}
-                                    <input class="add-weapon-tag-value" type="hidden" />
+                                    <input class="add-weapon-tag-value"
+                                           type="hidden" />
                                 {{/if}}
                             </div>
                         </td>
@@ -65,6 +67,6 @@
         </div>
     {{/if}}
     <div class="fill-parent">
-        {{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
+        {{editor system.description target="system.description" rollData=rollData button=true owner=owner editable=editable}}
     </div>
 </form>

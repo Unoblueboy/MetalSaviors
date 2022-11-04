@@ -1,10 +1,11 @@
-import { rollAttributeOrSkill, rollSkill } from "../../helpers/roll.mjs";
+import { rollAttributeOrSkill } from "../../helpers/roll.mjs";
+import { MetalSaviorsAbstractItem } from "./abstractItem.mjs";
 
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class MetalSaviorsConcept extends Item {
+export class MetalSaviorsConcept extends MetalSaviorsAbstractItem {
 	/**
 	 * Prepare a data object which is passed to any Roll formulas which are created related to this Item
 	 * @private
@@ -13,7 +14,7 @@ export class MetalSaviorsConcept extends Item {
 		// If present, return the actor's roll data.
 		if (!this.actor) return null;
 		const rollData = this.actor.getRollData();
-		rollData.item = foundry.utils.deepClone(this.data.data);
+		rollData.item = foundry.utils.deepClone(this.system);
 
 		return rollData;
 	}
@@ -24,7 +25,7 @@ export class MetalSaviorsConcept extends Item {
 	 * @private
 	 */
 	async roll(event) {
-		const value = this.data.data.value;
+		const value = this.system.value;
 
 		const skillValue = 10 * value;
 		const attributeValue = value;

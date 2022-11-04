@@ -9,13 +9,15 @@ import { MetalSaviorsCombat } from "./documents/Combat/Combat.mjs";
 import { MetalSaviorsCharacterSheet } from "./sheets/actor/character-sheet.mjs";
 import { MetalSaviorsItemSheet } from "./sheets/item/item-sheet.mjs";
 import { MetalSaviorsSkillSheet } from "./sheets/item/skill-sheet.mjs";
-import { MetalSaviorsCavSheet } from "./sheets/item/cav-sheet.mjs";
 import { MetalSaviorsInfantrySheet } from "./sheets/actor/infantry-sheet.mjs";
 import { MetalSaviorsVehicleSheet } from "./sheets/actor/vehicle-sheet.mjs";
 import { MetalSaviorsPikeSheet } from "./sheets/actor/pike-sheet.mjs";
 import { MetalSaviorsWeaponSheet } from "./sheets/item/weapon-sheet.mjs";
+import { MetalSaviorsCavSheet } from "./sheets/actor/cav-sheet.mjs";
+import { MetalSaviorsModuleSheet } from "./sheets/item/module-sheet.mjs";
 // Import ui classes.
 import { MetalSaviorsCombatTracker } from "./documents/Combat/CombatTracker.mjs";
+import { MetalSaviorsCombatExcessActionsDialog } from "./documents/Combat/Dialogs/CombatExcessActionsDialog.mjs";
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { METALSAVIORS } from "./helpers/config.mjs";
@@ -25,6 +27,8 @@ import { MetalSaviorsBlankSheet } from "./sheets/actor/blank-sheet.mjs";
 import { MetalSaviorsConceptSheet } from "./sheets/item/concept-sheet.mjs";
 import { MetalSaviorsToken } from "./documents/Scenes/Token/Token.mjs";
 import { GridOverlayLayer } from "./documents/Scenes/Layers/GridOverlayLayer.mjs";
+import { MetalSaviorsActorProxy } from "./documents/Actor/actorProxy.mjs";
+import { MetalSaviorsCharacter } from "./documents/Actor/character.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -37,14 +41,18 @@ Hooks.once("init", async function () {
 		MetalSaviorsActor,
 		MetalSaviorsItem,
 		MetalSaviorsCav,
+		MetalSaviorsCombatExcessActionsDialog,
 		rollItemMacro,
 	};
 
 	// Add custom constants for configuration.
 	CONFIG.METALSAVIORS = METALSAVIORS;
 
+	// Set Debug = true
+	CONFIG.debug.documents = true;
+
 	// Define custom Document classes
-	CONFIG.Actor.documentClass = MetalSaviorsActor;
+	CONFIG.Actor.documentClass = MetalSaviorsActorProxy;
 	CONFIG.Item.documentClass = MetalSaviorsItemProxy;
 	CONFIG.Combat.documentClass = MetalSaviorsCombat;
 	CONFIG.Combatant.documentClass = MetalSaviorsCombatant;
@@ -52,7 +60,7 @@ Hooks.once("init", async function () {
 	CONFIG.Token.objectClass = MetalSaviorsToken;
 	CONFIG.ui.combat = MetalSaviorsCombatTracker;
 	CONFIG.time.roundTime = 10;
-	addGridOverlayLayer(CONFIG.Canvas.layers);
+	addGridOverlayLayer();
 
 	// Add new data-dtypes
 	window.Dice = (value) => {
@@ -87,6 +95,10 @@ Hooks.once("init", async function () {
 		types: ["blank"],
 		makeDefault: true,
 	});
+	Actors.registerSheet("metalsaviors", MetalSaviorsCavSheet, {
+		types: ["cav"],
+		makeDefault: true,
+	});
 
 	Items.unregisterSheet("core", ItemSheet);
 	Items.registerSheet("metalsaviors", MetalSaviorsItemSheet, {
@@ -96,16 +108,16 @@ Hooks.once("init", async function () {
 		types: ["learnedSkill", "atbSkill", "combatTraining", "weaponProficiency", "pilotLicense"],
 		makeDefault: true,
 	});
-	Items.registerSheet("metalsaviors", MetalSaviorsCavSheet, {
-		types: ["cav"],
-		makeDefault: true,
-	});
 	Items.registerSheet("metalsaviors", MetalSaviorsWeaponSheet, {
 		types: ["weapon"],
 		makeDefault: true,
 	});
 	Items.registerSheet("metalsaviors", MetalSaviorsConceptSheet, {
 		types: ["concept"],
+		makeDefault: true,
+	});
+	Items.registerSheet("metalsaviors", MetalSaviorsModuleSheet, {
+		types: ["module"],
 		makeDefault: true,
 	});
 
@@ -124,7 +136,7 @@ Hooks.once("init", async function () {
 			step: 1,
 		},
 		default: 10,
-		onChange: (value) => {
+		onChange: () => {
 			if (!game.scenes.active) return;
 			game.scenes.active.tokens.forEach((x) => x.object.refresh());
 		},
@@ -142,7 +154,7 @@ Hooks.once("init", async function () {
 			max: 100,
 		},
 		default: 50,
-		onChange: (value) => {
+		onChange: () => {
 			if (!game.scenes.active) return;
 			game.scenes.active.tokens.forEach((x) => x.object.refresh());
 		},
@@ -160,35 +172,52 @@ Hooks.once("init", async function () {
 			max: 100,
 		},
 		default: 50,
-		onChange: (value) => {
+		onChange: () => {
 			if (!game.scenes.active) return;
 			game.scenes.active.tokens.forEach((x) => x.object.refresh());
 		},
+	});
+	game.settings.register("metalsaviors", "defaultActorPermission", {
+		name: "Default Actor Permissions",
+		hint:
+			"The default permission for all players when an actor is first created, this determines how much a  " +
+			"player can edit, and what they can see.",
+		scope: "world",
+		config: true,
+		type: Number,
+		choices: {
+			[CONST.DOCUMENT_PERMISSION_LEVELS.NONE]: "None",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED]: "Limited",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER]: "Observer",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.OWNER]: "Owner",
+		},
+		default: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+	});
+	game.settings.register("metalsaviors", "defaultItemPermission", {
+		name: "Default Item Permissions",
+		hint:
+			"The default permission for all players when an item is first created, this determines how much a  " +
+			"player can edit, and what they can see.",
+		scope: "world",
+		config: true,
+		type: Number,
+		choices: {
+			[CONST.DOCUMENT_PERMISSION_LEVELS.NONE]: "None",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED]: "Limited",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER]: "Observer",
+			[CONST.DOCUMENT_PERMISSION_LEVELS.OWNER]: "Owner",
+		},
+		default: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
 	});
 
 	// Preload Handlebars templates.
 	return preloadHandlebarsTemplates();
 });
 
-function addGridOverlayLayer(layers) {
-	CONFIG.Canvas.layers = {
-		background: layers.background,
-		drawings: layers.drawings,
-		grid: layers.grid,
-		templates: layers.templates,
-		tokens: layers.tokens,
-		gridOverlay: {
-			layerClass: GridOverlayLayer,
-			group: "primary",
-		},
-		foreground: layers.foreground,
-		walls: layers.walls,
-		lighting: layers.lighting,
-		weather: layers.weather,
-		sight: layers.sight,
-		sounds: layers.sounds,
-		notes: layers.notes,
-		controls: layers.controls,
+function addGridOverlayLayer() {
+	CONFIG.Canvas.layers.gridOverlay = {
+		layerClass: GridOverlayLayer,
+		group: "interface",
 	};
 }
 
@@ -212,15 +241,15 @@ Handlebars.registerHelper("toLowerCase", function (str) {
 });
 
 Handlebars.registerHelper("len", function (json) {
-	return Object.keys(json).length;
+	return Object.keys(json ?? {}).length;
 });
 
 Handlebars.registerHelper("and", function (cond1, cond2) {
-	return cond1 && cond2;
+	return !!cond1 && !!cond2;
 });
 
 Handlebars.registerHelper("or", function (cond1, cond2) {
-	return cond1 || cond2;
+	return !!cond1 || !!cond2;
 });
 
 Handlebars.registerHelper("not", function (cond) {
@@ -246,6 +275,25 @@ Handlebars.registerHelper("all", function (...args) {
 });
 
 /* -------------------------------------------- */
+/*  Socket Ready Hook                                  */
+/* -------------------------------------------- */
+
+Hooks.once("socketlib.ready", () => {
+	globalThis.socket = globalThis.socketlib.registerSystem("metalsaviors");
+
+	globalThis.socket.register("Actor.Copy", MetalSaviorsActor.copy);
+	globalThis.socket.register("Combat.pushHistory", MetalSaviorsCombat.pushHistory);
+	globalThis.socket.register("Combat.nextTurn", MetalSaviorsCombat.nextTurn);
+	globalThis.socket.register("Combat.previousTurn", MetalSaviorsCombat.previousTurn);
+	globalThis.socket.register("Combat.endPlayerRound", MetalSaviorsCombat.endPlayerRound);
+	globalThis.socket.register("Combat.spendExcessActions", MetalSaviorsCombat.spendExcessActions);
+	globalThis.socket.register(
+		"CombatExcessActionsDialog.closeAllDialogs",
+		MetalSaviorsCombatExcessActionsDialog.closeAllDialogs
+	);
+});
+
+/* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
 
@@ -257,7 +305,29 @@ Hooks.once("ready", async function () {
 		MetalSaviorsActor.EnforceStrictItemUniqueness(actor, sheet, data)
 	);
 	Hooks.on("dropActorSheetData", (actor, sheet, data) => MetalSaviorsActor.EnforceItemUniqueness(actor, sheet, data));
+
+	Hooks.on("dropActorSheetData", (actor, sheet, data) => MetalSaviorsCharacter.AddCavActor(actor, sheet, data));
+
+	checkModuleRequirements();
 });
+
+function checkModuleRequirements() {
+	const requiredModules = [...game.system.relationships.requires];
+	for (const requiredModule of requiredModules) {
+		const installedModule = game.modules.get(requiredModule.id);
+		if (!installedModule) {
+			ui.notifications.error(`The module ${requiredModule.id} is not installed. This is required for the system
+            Metal Saviors to work, please install and restart this world.`);
+			continue;
+		}
+
+		if (!installedModule.active) {
+			ui.notifications.warn(`The module ${requiredModule.title} is not enabled. This is required for the system
+            Metal Saviors to work, please enable.`);
+			continue;
+		}
+	}
+}
 
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */

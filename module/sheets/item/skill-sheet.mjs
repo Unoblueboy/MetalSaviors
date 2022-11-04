@@ -1,12 +1,14 @@
+import { MetalSaviorsAbstractItemSheet } from "./abstract-item-sheet.mjs";
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class MetalSaviorsSkillSheet extends ItemSheet {
+export class MetalSaviorsSkillSheet extends MetalSaviorsAbstractItemSheet {
 	/** @override */
 	get template() {
 		const path = "systems/metalsaviors/templates/item/skill";
-		return `${path}/skill-${this.item.data.type}-sheet.hbs`;
+		return `${path}/skill-${this.item.type}-sheet.hbs`;
 	}
 
 	static get defaultOptions() {
@@ -23,9 +25,6 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
 		// Retrieve base data structure.
 		const context = super.getData();
 
-		// Use a safe clone of the item data for further operations.
-		const itemData = context.item.data;
-
 		// Retrieve the roll data for TinyMCE editors.
 		context.rollData = {};
 		let actor = this.object?.parent ?? null;
@@ -33,7 +32,7 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
 			context.rollData = actor.getRollData();
 		}
 
-		context.data = foundry.utils.deepClone(itemData.data);
+		context.system = foundry.utils.deepClone(this.item.system);
 
 		// Add localisation data for attributeSkills
 		this._prepareAtbSkills(context);
@@ -49,27 +48,20 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
 
 	_prepareAtbSkills(context) {
 		if (this.item.type !== "atbSkill") return;
-		for (const [attribute, bonus] of Object.entries(
-			context.data.attributeBonuses
-		)) {
-			context.data.attributeBonuses[attribute] = {
+		for (const [attribute, bonus] of Object.entries(context.system.attributeBonuses)) {
+			context.system.attributeBonuses[attribute] = {
 				value: bonus,
 			};
-			context.data.attributeBonuses[attribute].label =
-				game.i18n.localize(CONFIG.METALSAVIORS.attributes[attribute]) ??
-				attribute;
+			context.system.attributeBonuses[attribute].label =
+				game.i18n.localize(CONFIG.METALSAVIORS.attributes[attribute]) ?? attribute;
 		}
 
-		for (const [derivedAttribute, bonus] of Object.entries(
-			context.data.derivedAttributeBonuses
-		)) {
-			context.data.derivedAttributeBonuses[derivedAttribute] = {
+		for (const [derivedAttribute, bonus] of Object.entries(context.system.derivedAttributeBonuses)) {
+			context.system.derivedAttributeBonuses[derivedAttribute] = {
 				value: bonus,
 			};
-			context.data.derivedAttributeBonuses[derivedAttribute].label =
-				game.i18n.localize(
-					CONFIG.METALSAVIORS.derivedAttributes[derivedAttribute]
-				) ?? derivedAttribute;
+			context.system.derivedAttributeBonuses[derivedAttribute].label =
+				game.i18n.localize(CONFIG.METALSAVIORS.derivedAttributes[derivedAttribute]) ?? derivedAttribute;
 		}
 	}
 
@@ -87,7 +79,7 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
 			const dataset = ev.currentTarget.dataset;
 			const skillName = dataset.skillName;
 			this.item.update({
-				[`data.skillBonuses.-=${skillName}`]: "Yeeted",
+				[`system.skillBonuses.-=${skillName}`]: "Yeeted",
 			});
 		});
 
@@ -100,7 +92,7 @@ export class MetalSaviorsSkillSheet extends ItemSheet {
 				return;
 			}
 
-			this.item.update({ [`data.skillBonuses.${inpValue}`]: 0 });
+			this.item.update({ [`system.skillBonuses.${inpValue}`]: 0 });
 		});
 	}
 }

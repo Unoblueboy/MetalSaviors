@@ -12,13 +12,13 @@
     <div class="sheet-body">
         <div class="form-group">
             <label>Value</label>
-            <input name="data.value"
+            <input name="system.value"
                    type="text"
-                   value="{{data.value}}"
+                   value="{{system.value}}"
                    placeholder="Value" />
         </div>
         <div class="tab">
-            {{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
+            {{editor system.description target="system.description" rollData=rollData button=true owner=owner editable=editable}}
         </div>
     </div>
 </form>

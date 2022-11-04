@@ -18,7 +18,7 @@ export class FacingManager extends OverlayManager {
 		if (!tiles || !opacity) return this.overlay;
 
 		let magnitude = Math.max(tiles + 0.5, 0) * d.size;
-		if ([4, 5].includes(canvas.scene.data.gridType)) {
+		if ([4, 5].includes(canvas.scene.grid.type)) {
 			magnitude *= Math.sqrt(3) / 2;
 		}
 
@@ -53,14 +53,14 @@ export class FacingManager extends OverlayManager {
 
 		this.overlay.position.x = this.object.bounds.width / 2;
 		this.overlay.position.y = this.object.bounds.height / 2;
-		this.overlay.rotation = this.object.icon.rotation;
+		this.overlay.rotation = this.object.mesh.rotation;
 
 		return this.overlay;
 	}
 
 	containerIsActive() {
 		const isTargetted = Array.from(this.object.targeted).some((u) => u === game.user);
-		return this.object._hover || this.object._controlled || isTargetted;
+		return this.object.hover || this.object.controlled || isTargetted;
 	}
 }
 

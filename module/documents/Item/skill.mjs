@@ -1,12 +1,13 @@
 import { rollSkill } from "../../helpers/roll.mjs";
 import { CalculateSkillValue } from "../helpers/Calculators.mjs";
 import { MetalSaviorsSkillRollDialog } from "./Dialogs/skillRollDialog.mjs";
+import { MetalSaviorsAbstractItem } from "./abstractItem.mjs";
 
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class MetalSaviorsSkill extends Item {
+export class MetalSaviorsSkill extends MetalSaviorsAbstractItem {
 	/**
 	 * Augment the basic Item data model with additional dynamic data.
 	 */
@@ -24,9 +25,16 @@ export class MetalSaviorsSkill extends Item {
 		if (this.type !== "learnedSkill") return;
 
 		const actor = this.actor ?? {};
-		const { value, cavValue } = CalculateSkillValue(this, actor);
-		this.data.data.value = value;
-		this.data.data.cavValue = cavValue;
+		const value = CalculateSkillValue(this, actor);
+		this.system.value = value;
+	}
+
+	_preCreate(data, options, userId) {
+		super._preCreate(data, options, userId);
+		if (this.type !== "learnedSkill") return;
+		if (!this.actor) return null;
+
+		this.updateSource({ "system.lvlAcquired": this.actor.system.level.value });
 	}
 
 	/**
@@ -37,7 +45,7 @@ export class MetalSaviorsSkill extends Item {
 		// If present, return the actor's roll data.
 		if (!this.actor) return null;
 		const rollData = this.actor.getRollData();
-		rollData.item = foundry.utils.deepClone(this.data.data);
+		rollData.item = foundry.utils.deepClone(this.system);
 
 		return rollData;
 	}
@@ -57,7 +65,10 @@ export class MetalSaviorsSkill extends Item {
 
 		if (!this.actor) return;
 
-		let value = cavId ? this.data.data.cavValue[cavId] : this.data.data.value;
+		const cav = game.actors.get(cavId);
+		const roller = cav ? cav : this.actor;
+
+		let value = this._getRolledSkillValue(roller);
 
 		let data = {
 			name: this.name,
@@ -74,6 +85,14 @@ export class MetalSaviorsSkill extends Item {
 			}
 		}
 
-		await rollSkill(this.actor, data);
+		await rollSkill(roller, data);
+	}
+
+	_getRolledSkillValue(roller) {
+		if (roller.type === "cav") {
+			return roller.system.learnedSkills[this.id].value;
+		}
+
+		return this.system.value;
 	}
 }

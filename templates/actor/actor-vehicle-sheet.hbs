@@ -27,13 +27,13 @@
                         <div>Durability</div>
                         <div class="flexrow">
                             <div><input type="number"
-                                       name="data.durability.value"
-                                       value="{{data.durability.value}}"
+                                       name="system.durability.value"
+                                       value="{{system.durability.value}}"
                                        data-dtype="Number" /></div>
                             <div class="flex-0">/</div>
                             <div><input type="number"
-                                       name="data.durability.max"
-                                       value="{{data.durability.max}}"
+                                       name="system.durability.max"
+                                       value="{{system.durability.max}}"
                                        data-dtype="Number" /></div>
                         </div>
                     </div>
@@ -41,8 +41,8 @@
                         <div>MSR</div>
                         <div class="exit-submit">
                             <div><input type="text"
-                                       name="data.msr"
-                                       value="{{data.msr}}"
+                                       name="system.msr"
+                                       value="{{system.msr}}"
                                        data-dtype="Number" />
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                         <div>Actions/Round</div>
                         {{#if combatTraining}}
                             <div><input type="text"
-                                       value="{{combatTraining.data.actionsPerRound}}"
+                                       value="{{combatTraining.system.actionsPerRound}}"
                                        data-dtype="Number"
                                        disabled="true"> </div>
                         {{else}}
@@ -67,8 +67,8 @@
                         <div>Weight</div>
                         <div>
                             <select class="fill-parent"
-                                    name="data.weight">
-                                {{selectOptions vehicleWeights selected=data.weight nameAttr="name" labelAttr="name"}}
+                                    name="system.weight">
+                                {{selectOptions vehicleWeights selected=system.weight nameAttr="name" labelAttr="name"}}
                             </select>
                         </div>
                     </div>
@@ -76,8 +76,8 @@
                         <div>Designation</div>
                         <div>
                             <select class="fill-parent"
-                                    name="data.designation">
-                                {{selectOptions vehicleDesignations selected=data.designation nameAttr="name" labelAttr="name"}}
+                                    name="system.designation">
+                                {{selectOptions vehicleDesignations selected=system.designation nameAttr="name" labelAttr="name"}}
                             </select>
                         </div>
                     </div>
@@ -85,18 +85,18 @@
                         <div>Combat Readiness</div>
                         <div>
                             <select class="fill-parent"
-                                    name="data.combatReadiness">
-                                {{selectOptions vehicleCombatReadiness selected=data.combatReadiness nameAttr="name" labelAttr="name"}}
+                                    name="system.combatReadiness">
+                                {{selectOptions vehicleCombatReadiness selected=system.combatReadiness nameAttr="name" labelAttr="name"}}
                             </select>
                         </div>
                     </div>
                 </div>
             </div>
-            {{> "systems/metalsaviors/templates/actor/parts/actor-combat-speeds.hbs" combatSpeeds = data.combatSpeeds }}
+            {{> "systems/metalsaviors/templates/actor/parts/actor-combat-speeds.hbs" combatSpeeds = system.combatSpeeds }}
             {{> "systems/metalsaviors/templates/actor/parts/actor-weapons.hbs" }}
             <div class="fill-parent">
                 <h3>Notes</h4>
-                    {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+                    {{editor system.description target="system.description" button=true owner=owner editable=editable}}
             </div>
         </div>
     </div>

@@ -1,8 +1,10 @@
+import { MetalSaviorsAbstractItemSheet } from "./abstract-item-sheet.mjs";
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class MetalSaviorsConceptSheet extends ItemSheet {
+export class MetalSaviorsConceptSheet extends MetalSaviorsAbstractItemSheet {
 	/** @override */
 	get template() {
 		return "systems/metalsaviors/templates/item/concept/concept-sheet.hbs";
@@ -17,9 +19,7 @@ export class MetalSaviorsConceptSheet extends ItemSheet {
 
 	getData() {
 		const context = super.getData();
-
-		const itemData = this.item.data.toObject(false);
-		context.data = itemData.data;
+		context.system = foundry.utils.deepClone(this.item.system);
 
 		return context;
 	}

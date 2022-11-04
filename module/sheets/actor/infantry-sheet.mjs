@@ -1,4 +1,6 @@
-export class MetalSaviorsInfantrySheet extends ActorSheet {
+import { MetalSaviorsActorSheet } from "./actor-sheet.mjs";
+
+export class MetalSaviorsInfantrySheet extends MetalSaviorsActorSheet {
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
 			classes: ["metalsaviors", "sheet", "actor"],
@@ -13,8 +15,8 @@ export class MetalSaviorsInfantrySheet extends ActorSheet {
 	getData() {
 		const context = super.getData();
 
-		const actorData = this.actor.data.toObject(false);
-		context.data = actorData.data;
+		const actorSystem = foundry.utils.deepClone(this.actor.system);
+		context.system = actorSystem;
 
 		context.squadTypes = [
 			{

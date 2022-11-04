@@ -1,11 +1,12 @@
 export class MetalSaviorsChatMessage extends ChatMessage {
 	async _renderRollContent(messageData) {
 		const data = messageData.message;
+		const rolls = this.rolls;
 
 		// Always show a "rolled privately" message if the Roll content is not visible to the current user
 		if (!this.isContentVisible) {
 			data.flavor = game.i18n.format("CHAT.PrivateRollContent", { user: this.user.name });
-			const roll = this.roll ?? new Roll("d6");
+			const roll = rolls[0] ?? new Roll("d6");
 			data.content = await roll.render({ isPrivate: true });
 			messageData.isWhisper = false;
 			messageData.alias = this.user.name;
@@ -14,8 +15,8 @@ export class MetalSaviorsChatMessage extends ChatMessage {
 		// Determine whether a visible roll message has custom HTML content, otherwise render the Roll to HTML
 		else {
 			const hasContent =
-				(this.roll && data.content && Number(data.content) !== this.roll.total) || (!this.roll && data.content);
-			if (!hasContent) data.content = await this.roll.render({ isPrivate: false });
+				(rolls[0] && data.content && Number(data.content) !== rolls[0].total) || (!rolls[0] && data.content);
+			if (!hasContent) data.content = await rolls[0].render({ isPrivate: false });
 		}
 	}
 

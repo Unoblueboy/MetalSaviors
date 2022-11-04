@@ -25,6 +25,38 @@
         <div>No pilot licenses have been added to this character yet</div>
     {{/if}}
 </div>
+<div class="cavs-header">
+    <h3>Cavs</h3>
+</div>
+<div class="cavs">
+    {{#if (gt (len cavs) 0)}}
+        <table class="cav-table">
+            <colgroup>
+                <col style="width:60%">
+                <col style="width:40%">
+            </colgroup>
+            <thead>
+                <tr class="item items-header">
+                    <th class="cav-name">Name</th>
+                    <th class="cav-model">Model</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each cavs as |cav ind|}}
+                    <tr class="cav"
+                        data-cav-id="{{cav.id}}">
+                        <td class="cav-name">
+                            <a class="cav-show">{{cav.name}}</a>
+                        </td>
+                        <td class="cav-model item-prop">{{cav.model}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <div>No Cavs have been added to this character yet</div>
+    {{/if}}
+</div>
 {{> "systems/metalsaviors/templates/actor/parts/actor-weapons.hbs" }}
 <div class="items-header">
     <h3>Items</h3>
@@ -67,7 +99,7 @@
                                 </div>
                             {{/if}}
                         </td>
-                        <td class="item-formula item-prop">{{item.data.formula}}</td>
+                        <td class="item-formula item-prop">{{item.system.formula}}</td>
                     </tr>
                 {{/each}}
             </tbody>

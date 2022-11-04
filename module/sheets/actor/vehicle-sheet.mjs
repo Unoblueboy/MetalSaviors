@@ -1,4 +1,6 @@
-export class MetalSaviorsVehicleSheet extends ActorSheet {
+import { MetalSaviorsActorSheet } from "./actor-sheet.mjs";
+
+export class MetalSaviorsVehicleSheet extends MetalSaviorsActorSheet {
 	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
 			classes: ["metalsaviors", "sheet", "actor"],
@@ -12,13 +14,12 @@ export class MetalSaviorsVehicleSheet extends ActorSheet {
 
 	getData() {
 		const context = super.getData();
-		const actorData = this.actor.data.toObject(false);
 
 		context.vehicleWeights = [{ name: "Light" }, { name: "Medium" }, { name: "Heavy" }];
 		context.vehicleDesignations = [{ name: "Air" }, { name: "Land" }, { name: "Water" }];
 		context.vehicleCombatReadiness = [{ name: "Combat" }, { name: "Non-Combat" }];
-		context.data = actorData.data;
-		context.flags = actorData.flags;
+		context.system = foundry.utils.deepClone(this.actor.system);
+		context.flags = foundry.utils.deepClone(this.actor.flags);
 
 		this._prepareItems(context);
 		this._prepareVehicleData(context);
@@ -79,12 +80,7 @@ export class MetalSaviorsVehicleSheet extends ActorSheet {
 		if (!this.isEditable) return;
 
 		// Delete Inventory Item
-		html.find(".item-delete").click((ev) => {
-			const li = $(ev.currentTarget).closest(".item");
-			const item = this.actor.items.get(li.data("itemId"));
-			item.delete();
-			li.slideUp(200, () => this.render(false));
-		});
+		html.find(".item-delete").click(this._onItemDelete.bind(this));
 
 		html.find(".rollable").click(this._onRoll.bind(this));
 
@@ -98,6 +94,20 @@ export class MetalSaviorsVehicleSheet extends ActorSheet {
 				this.actor.setCurWeapon(weapon);
 			}
 		});
+	}
+
+	async _onItemDelete(event) {
+		const li = $(event.currentTarget).closest(".item");
+		const item = this.actor.items.get(li.data("itemId"));
+		const response = await Dialog.confirm({
+			title: "Delete Item",
+			content: `<p>Do you want to delete the ${item.type} <b>${item.name}</b>?</p>`,
+		});
+
+		if (response) {
+			item.delete();
+		}
+		li.slideUp(200, () => this.render(false));
 	}
 
 	_onRoll(event) {

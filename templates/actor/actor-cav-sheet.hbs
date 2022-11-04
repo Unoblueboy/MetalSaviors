@@ -1,0 +1,263 @@
+<form class="{{cssClass}} {{actor.type}}"
+      autocomplete="off">
+    <div class="cav-sidebar">
+        <div>
+            <img class="profile-img"
+                 src="{{actor.img}}"
+                 data-edit="img"
+                 title="{{actor.name}}" />
+        </div>
+        <table>
+            <colgroup>
+                <col span="1"
+                     style="width: 25%;">
+                <col span="1"
+                     style="width: 25%;">
+                <col span="1"
+                     style="width: 25%;">
+                <col span="1"
+                     style="width: 25%;">
+            </colgroup>
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <div class="flexcol cav-health-section">
+                        <div>Head</div>
+                        <div class="flexrow">
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.head.value"
+                                       value="{{system.health.head.value}}"
+                                       data-dtype="Number" /></div>
+                            <div class="flex-0">/</div>
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.head.max"
+                                       value="{{system.health.head.max}}"
+                                       data-dtype="Number" /></div>
+                        </div>
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="flexcol cav-health-section">
+                        <div>Left Arm</div>
+                        <div class="flexrow">
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.lArm.value"
+                                       value="{{system.health.lArm.value}}"
+                                       data-dtype="Number" /></div>
+                            <div class="flex-0">/</div>
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.lArm.max"
+                                       value="{{system.health.lArm.max}}"
+                                       data-dtype="Number" /></div>
+                        </div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="flexcol cav-health-section">
+                        <div>Right Arm</div>
+                        <div class="flexrow">
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.rArm.value"
+                                       value="{{system.health.rArm.value}}"
+                                       data-dtype="Number" /></div>
+                            <div class="flex-0">/</div>
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.rArm.max"
+                                       value="{{system.health.rArm.max}}"
+                                       data-dtype="Number" /></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <div class="flexcol cav-health-section">
+                        <div>Torso</div>
+                        <div class="flexrow">
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.torso.value"
+                                       value="{{system.health.torso.value}}"
+                                       data-dtype="Number" /></div>
+                            <div class="flex-0">/</div>
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.torso.max"
+                                       value="{{system.health.torso.max}}"
+                                       data-dtype="Number" /></div>
+                        </div>
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <div class="flexcol cav-health-section">
+                        <div>Reactor</div>
+                        <div class="flexrow">
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.reactor.value"
+                                       value="{{system.health.reactor.value}}"
+                                       data-dtype="Number" /></div>
+                            <div class="flex-0">/</div>
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.reactor.max"
+                                       value="{{system.health.reactor.max}}"
+                                       data-dtype="Number" /></div>
+                        </div>
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="flexcol cav-health-section">
+                        <div>Left Leg</div>
+                        <div class="flexrow">
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.lLeg.value"
+                                       value="{{system.health.lLeg.value}}"
+                                       data-dtype="Number" /></div>
+                            <div class="flex-0">/</div>
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.lLeg.max"
+                                       value="{{system.health.lLeg.max}}"
+                                       data-dtype="Number" /></div>
+                        </div>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="flexcol cav-health-section">
+                        <div>Right Leg</div>
+                        <div class="flexrow">
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.rLeg.value"
+                                       value="{{system.health.rLeg.value}}"
+                                       data-dtype="Number" /></div>
+                            <div class="flex-0">/</div>
+                            <div><input class="cav-data flex-1"
+                                       type="text"
+                                       name="system.health.rLeg.max"
+                                       value="{{system.health.rLeg.max}}"
+                                       data-dtype="Number" /></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        {{#if hasPilot}}
+            <div class="attributes">
+                {{> "systems/metalsaviors/templates/actor/parts/actor-attributes.hbs"
+                    attributes=system.attributes
+                    attributeSection="attributes"
+                    attributeLabels = attributeLabels
+                    popup=false
+                    characterType=""}}
+            </div>
+        {{/if}}
+    </div>
+    <div class="main-body">
+        <header>
+            <div class="main-body-header">
+                <div class="sheet-body-group">
+                    {{#if hasPilot}}
+                        <div class="flexcol flex-3">
+                            <div>Cav Name</div>
+                            <div><input name="name"
+                                       type="text"
+                                       value="{{actor.name}}"
+                                       placeholder="Name" /></div>
+                        </div>
+                        <div class="flexcol flex-3">
+                            <div>Model</div>
+                            <div><input name="system.model"
+                                       type="text"
+                                       value="{{system.model}}"
+                                       placeholder="Model" /></div>
+                        </div>
+                        <div class="flexcol flex-2">
+                            <div>Current Owner: {{pilot.name}}</div>
+                            <button class="reset-cav-ownership">Reset Ownership</button>
+                        </div>
+                    {{else}}
+                        {{#if flags.metalsaviors.isBaseModel}}
+                            <div class="flexcol flex-6">
+                                <div>Model</div>
+                                <div><input class="base-model-name"
+                                           name="name"
+                                           type="text"
+                                           value="{{actor.name}}"
+                                           placeholder="Name" /></div>
+                            </div>
+                        {{else}}
+                            <div class="flexcol flex-3">
+                                <div>Cav Name</div>
+                                <div><input name="name"
+                                           type="text"
+                                           value="{{actor.name}}"
+                                           placeholder="Name" /></div>
+                            </div>
+                            <div class="flexcol flex-3">
+                                <div>Model</div>
+                                <div><input name="system.model"
+                                           type="text"
+                                           value="{{system.model}}"
+                                           placeholder="Name" /></div>
+                            </div>
+                        {{/if}}
+                        <div class="flexcol flex-1">
+                            <div>Is Base Model</div>
+                            <div><input type="checkbox"
+                                       name="flags.metalsaviors.isBaseModel"
+                                       {{#checked flags.metalsaviors.isBaseModel}}{{/checked}} /></div>
+                        </div>
+                    {{/if}}
+                </div>
+                <div class="sheet-body-group">
+                    <div class="flex-1">
+                        <div>MSR:</div>
+                        <div><input type="text"
+                                   name="system.MSR"
+                                   value="{{system.MSR}}"
+                                   data-dtype="Number" /></div>
+                    </div>
+                    <div class="flex-1">
+                        <div>Detonation Damage:</div>
+                        <div><input type="text"
+                                   name="system.detonationDamage"
+                                   value="{{system.detonationDamage}}"
+                                   data-dtype="String" /></div>
+                    </div>
+                    <div class="flex-1">
+                        <div>Required License:</div>
+                        <div><input type="text"
+                                   name="system.requiredLicense"
+                                   value="{{system.requiredLicense}}"
+                                   data-dtype="String" /></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="sheet-body">
+            <div>
+                {{> "systems/metalsaviors/templates/actor/parts/actor-cav.hbs" }}
+            </div>
+        </div>
+    </div>
+</form>

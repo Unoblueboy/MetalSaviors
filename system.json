@@ -1,10 +1,13 @@
 {
-	"name": "metalsaviors",
+	"id": "metalsaviors",
 	"title": "Metal Saviors",
 	"description": "The Metal Saviors system for FoundryVTT!",
-	"version": "1.0.24",
-	"minimumCoreVersion": "0.8.6",
-	"compatibleCoreVersion": "9",
+	"version": "2.0.0",
+	"compatibility": {
+		"minimum": 10,
+		"verified": "10.288",
+		"maximum": 10
+	},
 	"author": "Notepad Anon",
 	"esmodules": ["module/metalsaviors.mjs"],
 	"styles": ["css/metalsaviors.css"],
@@ -41,15 +44,15 @@
 			"type": "Item"
 		},
 		{
-			"name": "cavs",
-			"label": "CAVs",
-			"path": "packs/cavs.db",
-			"type": "Item"
-		},
-		{
 			"name": "drones",
 			"label": "Drones",
 			"path": "packs/drones.db",
+			"type": "Actor"
+		},
+		{
+			"name": "cavs",
+			"label": "CAVs",
+			"path": "packs/cavs.db",
 			"type": "Actor"
 		},
 		{
@@ -59,14 +62,19 @@
 			"type": "Item"
 		}
 	],
-	"dependencies": [
-		{
-			"name": "vtta-tokenizer"
-		},
-		{
-			"name": "token-frames"
-		}
-	],
+	"relationships": {
+		"requires": [
+			{
+				"id": "socketlib",
+				"type": "module",
+				"manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-socketlib/v1.0.12/module.json",
+				"compatibility": {
+					"minimum": "1.0.11",
+					"verified": "1.0.12"
+				}
+			}
+		]
+	},
 	"languages": [
 		{
 			"lang": "en",

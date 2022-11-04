@@ -1,4 +1,6 @@
-export class MetalSaviorsWeaponSheet extends ItemSheet {
+import { MetalSaviorsAbstractItemSheet } from "./abstract-item-sheet.mjs";
+
+export class MetalSaviorsWeaponSheet extends MetalSaviorsAbstractItemSheet {
 	constructor(object = {}, options = {}) {
 		super(object, options);
 
@@ -76,30 +78,12 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 	getData() {
 		const context = super.getData();
 
-		const itemData = context.item.data;
-		context.data = foundry.utils.deepClone(itemData.data);
+		context.system = foundry.utils.deepClone(this.item.system);
 		context.weaponTypes = this.weaponTypes;
 		context.tagTypes = this.tagTypes;
 		context.selectedTagTypeKey = this.selectedTagTypeKey;
 		context.fireRateTypes = this.fireRateTypes;
 		context.variantTypes = this.variantTypes;
-
-		if (this.item.actor) {
-			const actor = this.item.actor;
-			context.possibleOwners = {
-				[`${actor.id}`]: {
-					type: "pilot",
-					name: actor.name,
-				},
-			};
-			for (const cav of actor.getCavs()) {
-				context.possibleOwners[cav.id] = {
-					type: "cav",
-					name: cav.name,
-				};
-			}
-			context.weaponOwner = this.item.getOwner();
-		}
 
 		return context;
 	}
@@ -126,21 +110,21 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 			const newTagName = this.tagTypes[newtagKey].hasCustomName
 				? this._getCustomTagName(addWeaponTagInfoEle)
 				: this.tagTypes[newtagKey].name;
-			const tags = Object.keys(this.item.data.data.tags);
+			const tags = Object.keys(this.item.system.tags);
 
 			if (!newTagName || tags.includes(newTagName)) {
 				return;
 			}
 
 			this.item.update({
-				[`data.tags.${newTagName}`]: newValue || null,
+				[`system.tags.${newTagName}`]: newValue || null,
 			});
 		});
 		html.find(".delete-weapon-tag").click((ev) => {
 			const curTarget = $(ev.target).closest(".delete-weapon-tag");
 			const tagName = curTarget.data("tagName");
 			this.item.update({
-				[`data.tags.-=${tagName}`]: null,
+				[`system.tags.-=${tagName}`]: null,
 			});
 		});
 
@@ -162,13 +146,13 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 				return;
 			}
 
-			const rolls = Object.keys(this.item.data.data.rolls);
+			const rolls = Object.keys(this.item.system.rolls);
 			if (rolls.includes(newRollName)) {
 				return;
 			}
 
 			this.item.update({
-				[`data.rolls.${newRollName}`]: {
+				[`system.rolls.${newRollName}`]: {
 					damageRoll: newDamageRoll,
 					toHitBonus: newToHitBonus,
 				},
@@ -178,14 +162,8 @@ export class MetalSaviorsWeaponSheet extends ItemSheet {
 			const curTarget = $(ev.target).closest(".delete-weapon-roll");
 			const name = curTarget.data("name");
 			this.item.update({
-				[`data.rolls.-=${name}`]: null,
+				[`system.rolls.-=${name}`]: null,
 			});
-		});
-
-		html.find(".owner-select").change((ev) => {
-			const curTarget = $(ev.target);
-			const value = curTarget.val();
-			this.item.setOwner(value);
 		});
 	}
 

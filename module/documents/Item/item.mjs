@@ -1,8 +1,10 @@
+import { MetalSaviorsAbstractItem } from "./abstractItem.mjs";
+
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class MetalSaviorsItem extends Item {
+export class MetalSaviorsItem extends MetalSaviorsAbstractItem {
 	/**
 	 * Augment the basic Item data model with additional dynamic data.
 	 */
@@ -19,7 +21,7 @@ export class MetalSaviorsItem extends Item {
 		// If present, return the actor's roll data.
 		if (!this.actor) return null;
 		const rollData = this.actor.getRollData();
-		rollData.item = foundry.utils.deepClone(this.data.data);
+		rollData.item = foundry.utils.deepClone(this.system);
 
 		return rollData;
 	}
@@ -30,20 +32,20 @@ export class MetalSaviorsItem extends Item {
 	 * @private
 	 */
 	async roll() {
-		const item = this.data;
+		const item = this.system;
 
 		// Initialize chat data.
 		const speaker = ChatMessage.getSpeaker({ actor: this.actor });
 		const rollMode = game.settings.get("core", "rollMode");
-		const label = `[${item.type}] ${item.name}`;
+		const label = `[${this.type}] ${this.name}`;
 
 		// If there's no roll data, send a chat message.
-		if (!this.data.data.formula) {
+		if (!this.system.formula) {
 			ChatMessage.create({
 				speaker: speaker,
 				rollMode: rollMode,
 				flavor: label,
-				content: item.data.description ?? "",
+				content: item.description ?? "",
 			});
 		}
 		// Otherwise, create a roll and send a chat message from it.
