@@ -149,4 +149,12 @@ export class MetalSaviorsActor extends Actor {
 	getInitiativeBonus() {
 		return 0;
 	}
+
+	async getToHitPenalty() {
+		return 0;
+	}
+
+	async getToken() {
+		return this.token ?? this.sheet.token ?? this.getActiveTokens(true, false)[0];
+	}
 }

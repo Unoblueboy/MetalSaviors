@@ -1,0 +1,27 @@
+<div class="metalSaviors">
+    <header class="damage-roll-summary">
+        <div class="tooltip">
+            <div>
+                <span><b>Damage Roll</b>: {{total}}</span>
+            </div>
+            <span class="tooltiptext">
+                {{#each terms}}
+                    {{#if (eq this.type "die")}}
+                        <div class="bracket">(</div>
+                        {{#each this.rolls}}
+                            <div class="die">
+                                <label style="color:white">{{{this.result}}}</label>
+                                <img src="../icons/svg/d{{../faces}}-grey.svg">
+                            </div>
+                        {{/each}}
+                        <div class="bracket">)</div>
+                    {{else if (eq this.type "operator")}}
+                        <div class="operator">{{this.value}}</div>
+                    {{else if (eq this.type "number")}}
+                        <div class="number">{{this.value}}</div>
+                    {{/if}}
+                {{/each}}
+            </span>
+        </div>
+    </header>
+</div>

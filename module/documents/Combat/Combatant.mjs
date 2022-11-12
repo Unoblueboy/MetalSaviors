@@ -1,7 +1,7 @@
 import { rollInitiative } from "../../helpers/roll.mjs";
 import { CombatSpeedHelper } from "../../helpers/CombatSpeedHelper.mjs";
 import { MetalSaviorsCombatantRollDialog } from "./Dialogs/CombatantRollDialog.mjs";
-import { ActionType } from "../../types/Combat/Enums.js";
+import { ActionType } from "../../types/Combat/CombatEnums.js";
 
 export class MetalSaviorsCombatant extends Combatant {
 	CombatSpeeds = {

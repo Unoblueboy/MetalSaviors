@@ -1,6 +1,6 @@
 import { rollInitiative } from "../../helpers/roll.mjs";
 import { CombatAction } from "../../types/Combat/CombatAction.js";
-import { ActionType } from "../../types/Combat/Enums.js";
+import { ActionType } from "../../types/Combat/CombatEnums.js";
 import { isExecutingGm } from "../helpers/SocketsHelper.mjs";
 import { MetalSaviorsCombatantMultiRollDialog } from "./Dialogs/CombatantRollDialog.mjs";
 import { MetalSaviorsCombatExcessActionsDialog } from "./Dialogs/CombatExcessActionsDialog.mjs";

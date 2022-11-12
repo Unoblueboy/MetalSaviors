@@ -10,8 +10,6 @@ export class FacingManager extends OverlayManager {
 
 		const d = canvas.dimensions;
 
-		const sin = 1 / 2;
-		const cos = Math.sqrt(3) / 2;
 		const tiles = game.settings.get("metalsaviors", "facingOverlayLength");
 		const opacity = game.settings.get("metalsaviors", "facingOverlayOpacity") / 100;
 
@@ -22,16 +20,20 @@ export class FacingManager extends OverlayManager {
 			magnitude *= Math.sqrt(3) / 2;
 		}
 
-		const x = magnitude * cos;
-		const y = magnitude * sin;
-
-		drawDottedLine(this.overlay, magnitude, 10, Math.PI / 6, this.object._getBorderColor() || 0x000000, opacity);
+		drawDottedLine(
+			this.overlay,
+			magnitude,
+			10,
+			Math.PI / 6,
+			this.object._getBorderColor({ hover: true }) || 0x000000,
+			opacity
+		);
 		drawDottedLine(
 			this.overlay,
 			magnitude,
 			10,
 			(5 * Math.PI) / 6,
-			this.object._getBorderColor() || 0x000000,
+			this.object._getBorderColor({ hover: true }) || 0x000000,
 			opacity
 		);
 		drawDottedLine(
@@ -39,7 +41,7 @@ export class FacingManager extends OverlayManager {
 			magnitude,
 			10,
 			(7 * Math.PI) / 6,
-			this.object._getBorderColor() || 0x000000,
+			this.object._getBorderColor({ hover: true }) || 0x000000,
 			opacity
 		);
 		drawDottedLine(
@@ -47,7 +49,7 @@ export class FacingManager extends OverlayManager {
 			magnitude,
 			10,
 			(11 * Math.PI) / 6,
-			this.object._getBorderColor() || 0x000000,
+			this.object._getBorderColor({ hover: true }) || 0x000000,
 			opacity
 		);
 
@@ -125,7 +127,7 @@ function matrixMultiplication(matrix1, matrix2) {
 	const m = matrix1.length;
 	const n = matrix2[0].length;
 	const p = matrix2.length;
-	const result = new Array(m).fill().map((x) => new Array(n).fill(0));
+	const result = new Array(m).fill().map(() => new Array(n).fill(0));
 
 	for (let i = 0; i < m; i++) {
 		for (let j = 0; j < n; j++) {

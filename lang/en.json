@@ -42,5 +42,7 @@
 	"METALSAVIORS.EffectEdit": "Edit Effect",
 	"METALSAVIORS.EffectDelete": "Delete Effect",
 
-	"METALSAVIORS.Add": "Add"
+	"METALSAVIORS.Add": "Add",
+
+	"METALSAVIORS.EFFECT.StatusScope": "Scope"
 }

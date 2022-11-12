@@ -62,6 +62,13 @@ Hooks.once("init", async function () {
 	CONFIG.time.roundTime = 10;
 	addGridOverlayLayer();
 
+	// Add Status Effect for scoped
+	CONFIG.statusEffects.push({
+		icon: "systems/metalsaviors/images/icons/scoped.svg",
+		id: "scope",
+		label: "METALSAVIORS.EFFECT.StatusScope",
+	});
+
 	// Add new data-dtypes
 	window.Dice = (value) => {
 		if (Roll.validate(value)) {
@@ -310,6 +317,14 @@ Hooks.once("ready", async function () {
 
 	checkModuleRequirements();
 });
+
+/* -------------------------------------------- */
+/*  Render Chat Message Hook                    */
+/* -------------------------------------------- */
+
+Hooks.on("renderChatMessage", (app, html, data) => MetalSaviorsChatMessage.activateListeners(html));
+
+//MetalSaviorsChatMessage
 
 function checkModuleRequirements() {
 	const requiredModules = [...game.system.relationships.requires];

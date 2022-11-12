@@ -1,4 +1,4 @@
-import { ActionType } from "./Enums.js";
+import { ActionType } from "./CombatEnums.js";
 
 export class Action {
 	static AccelerateBrake = new Action({ type: ActionType.AccelerateBrake, cavAction: true });

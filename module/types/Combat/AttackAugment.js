@@ -1,4 +1,4 @@
-import { AttackAugmentType } from "./Enums.js";
+import { AttackAugmentType } from "./CombatEnums.js";
 
 export class AttackAugment {
 	static None = new AttackAugment({ type: AttackAugmentType.None });

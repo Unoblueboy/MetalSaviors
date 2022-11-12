@@ -1,72 +1,81 @@
-{{#if toHitRoll}}
-    <div class="dice-roll">
-        <div class="dice-flavor">To Hit</div>
-        <div class="dice-result">
-            <div class="dice-formula">{{toHitRoll.formula}}</div>
-            <div class="dice-tooltip">
-                {{#each toHitRoll.parts}}
-                    <section class="tooltip-part">
-                        <div class="dice">
-                            <header class="part-header flexrow">
-                                <span class="part-formula">{{this.formula}}</span>
-                                {{#if this.flavor}}<span class="part-flavor">{{this.flavor}}</span>{{/if}}
-                                <span class="part-total">{{this.total}}</span>
-                            </header>
-                            <ol class="dice-rolls">
-                                {{#each this.rolls}}
-                                    <li class="roll {{this.classes}}">{{{this.result}}}</li>
-                                {{/each}}
-                            </ol>
-                        </div>
-                    </section>
-                {{/each}}
+<div class="metalSaviors">
+    {{#if toHitRoll}}
+        <header class="attack-summary">
+            <div class="weapon-img">
+                <img src={{weaponImgPath}}
+                     class="profile-img"
+                     title="Weapon"
+                     height="40"
+                     width="40" />
             </div>
-            <h4 class="dice-total">{{toHitRoll.total}}</h4>
+            <div class="weapon-name"><span><b>Weapon</b>: {{weaponName}}</span></div>
+            <div class="attack-target"><span><b>Target</b>: {{targetName}}</span></div>
+        </header>
+        <div class="roll-summary">
+            <div class="box to-hit-box">
+                <div class="box-header"><span>To Hit</span></div>
+                <div class="box-border {{toHitBoxBorder}} tooltip">
+                    <div>
+                        <span>{{toHitRoll.total}}</span>
+                    </div>
+                    <span class="tooltiptext">
+                        {{#each toHitRoll.terms}}
+                            {{#if (eq this.type "die")}}
+                                {{#each this.rolls}}
+                                    <div class="die">
+                                        <label style="color:white">{{{this.result}}}</label>
+                                        <img src="../icons/svg/d{{../faces}}-grey.svg">
+                                    </div>
+                                {{/each}}
+                            {{else if (eq this.type "operator")}}
+                                <div class="operator">{{this.value}}</div>
+                            {{else if (eq this.type "number")}}
+                                <div class="number">{{this.value}}</div>
+                            {{/if}}
+                        {{/each}}
+                    </span>
+                </div>
+            </div>
+            <div class="box vs-box">
+                <span>VS</span>
+            </div>
+            <div class="box defense-box">
+                <div class="box-header"><span>NSR/ MSR</span></div>
+                <div class="box-border {{defenseBoxBorder}}">
+                    <div><span>10</span></div>
+                </div>
+            </div>
         </div>
-    </div>
-{{/if}}
-{{#if damageRoll}}
-    <div class="dice-roll">
-        <div class="dice-flavor">Damage</div>
-        <div class="dice-result">
-            <div class="dice-formula">{{damageRoll.formula}}{{#if critRoll}} (+ {{critRoll.formula}}){{/if}}</div>
-            <div class="dice-tooltip">
-                {{#each damageRoll.parts}}
-                    <section class="tooltip-part">
-                        <div class="dice">
-                            <header class="part-header flexrow">
-                                <span class="part-formula">{{this.formula}}</span>
-                                {{#if ../critRoll}}<span class="part-flavor">Base Damage</span>{{/if}}
-                                <span class="part-total">{{this.total}}</span>
-                            </header>
-                            <ol class="dice-rolls">
-                                {{#each this.rolls}}
-                                    <li class="roll {{this.classes}}">{{{this.result}}}</li>
-                                {{/each}}
-                            </ol>
-                        </div>
-                    </section>
-                {{/each}}
-            </div>
-            <div class="dice-tooltip">
-                {{#each critRoll.parts}}
-                    <section class="tooltip-part">
-                        <div class="dice">
-                            <header class="part-header flexrow">
-                                <span class="part-formula">{{this.formula}}</span>
-                                <span class="part-flavor">Critical Damage</span>
-                                <span class="part-total">{{this.total}}</span>
-                            </header>
-                            <ol class="dice-rolls">
-                                {{#each this.rolls}}
-                                    <li class="roll {{this.classes}}">{{{this.result}}}</li>
-                                {{/each}}
-                            </ol>
-                        </div>
-                    </section>
-                {{/each}}
-            </div>
-            <h4 class="dice-total">{{damageRoll.total}}{{#if critRoll}} (+ {{critRoll.total}}){{/if}}</h4>
+        <div class="roll-breakdown">
+            {{#if (gt (len toHitBonuses) 0)}}
+                <div class="to-hit-bonuses">
+                    <p>To Hit Bonuses</p>
+                    <ul>
+                        {{#each toHitBonuses}}
+                            <li>{{this.value}} ({{this.description}})</li>
+                        {{/each}}
+                    </ul>
+                </div>
+            {{/if}}
+            {{#if (gt (len damageBonuses) 0)}}
+                <div class="damage-bonuses">
+                    <p>Damage Bonuses</p>
+                    <ul>
+                        {{#each damageBonuses}}
+                            <li>{{this.value}} ({{this.description}})</li>
+                        {{/each}}
+                    </ul>
+                </div>
+            {{/if}}
         </div>
-    </div>
-{{/if}}
+    {{/if}}
+    <hr />
+    {{#each damageRolls}}
+        <div class="damage-roll">
+            <div data-formula="{{this.formula}}"
+                 data-damageType="{{this.damageType}}">{{this.damageType}} {{this.description}} Damage
+                ({{this.formula}})
+            </div>
+        </div>
+    {{/each}}
+</div>

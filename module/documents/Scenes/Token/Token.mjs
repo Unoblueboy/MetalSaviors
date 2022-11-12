@@ -88,23 +88,6 @@ export class MetalSaviorsToken extends Token {
 		this.bars.visible = this._canViewMode(this.document.displayBars);
 	}
 
-	_drawBar(number, bar, data) {
-		const val = Number(data.value);
-		const pct = Math.clamped(val, 0, data.max) / data.max;
-
-		// Determine the color to use
-		let color;
-		if (number === 0) color = PIXI.utils.rgb2hex([1 - pct / 2, pct, 0]);
-		else color = PIXI.utils.rgb2hex([0.5 * pct, 0.7 * pct, 0.5 + pct / 2]);
-
-		// Draw the bar
-		const [h] = this._drawSingleBar(color, bar, data);
-
-		// Set position
-		let posY = number === 0 ? this.h - h : 0;
-		bar.position.set(0, posY);
-	}
-
 	_drawCavBar(limb, bar, data) {
 		const val = Number(data.value);
 		const pct = Math.clamped(val, 0, data.max) / data.max;

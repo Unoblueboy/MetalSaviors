@@ -161,4 +161,29 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 
 		return this.pilot.getActionsPerRound();
 	}
+
+	async _getCurMovementSpeedDetails() {
+		const token = await this.getToken();
+		if (!token) {
+			return null;
+		}
+
+		const combatant = token.combatant;
+		if (!combatant) {
+			return null;
+		}
+
+		const movementSpeedKey = combatant.getCurMovementSpeedKey();
+		return this.system.speed.combatSpeeds[movementSpeedKey];
+	}
+
+	async getToHitPenalty() {
+		const curMovementSpeedDetails = await this._getCurMovementSpeedDetails();
+
+		if (!curMovementSpeedDetails) {
+			return super.getToHitPenalty();
+		}
+
+		return curMovementSpeedDetails.hitBonus ?? 0;
+	}
 }

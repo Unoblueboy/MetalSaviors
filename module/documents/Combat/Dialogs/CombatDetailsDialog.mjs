@@ -2,7 +2,7 @@ import { CombatSpeedHelper } from "../../../helpers/CombatSpeedHelper.mjs";
 import { Action } from "../../../types/Combat/Action.js";
 import { CombatAction } from "../../../types/Combat/CombatAction.js";
 import { AttackAugment } from "../../../types/Combat/AttackAugment.js";
-import { ActionType, AttackAugmentType } from "../../../types/Combat/Enums.js";
+import { ActionType, AttackAugmentType } from "../../../types/Combat/CombatEnums.js";
 
 export class MetalSaviorsCombatDetailsDialog extends Dialog {
 	constructor(data, options) {
