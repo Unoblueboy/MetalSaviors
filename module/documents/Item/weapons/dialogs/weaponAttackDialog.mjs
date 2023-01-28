@@ -15,6 +15,7 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 
 		this.weapon = data.weapon;
 		this.rollData = this.weapon.getAllAttackRollData();
+		this.weaponRollData = data.weaponRollData;
 		this.includeToHit = data.includeToHit;
 		this.includeDamage = data.includeDamage;
 	}
@@ -29,7 +30,7 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 		return this.data.title || "Roll Attack";
 	}
 
-	static async getAttackRollData(weapon, { includeToHit = true, includeDamage = true } = {}) {
+	static async getAttackRollData(weapon, { includeToHit = true, includeDamage = true, weaponRollData = {} } = {}) {
 		return new Promise((resolve) => {
 			new MetalSaviorsWeaponAttackDialog(
 				{
@@ -41,6 +42,7 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 					weapon: weapon,
 					includeToHit: includeToHit,
 					includeDamage: includeDamage,
+					weaponRollData: weaponRollData,
 				},
 				null
 			).render(true);
@@ -53,6 +55,7 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 		for (const [name, data] of Object.entries(rollData)) {
 			data.label = name;
 		}
+		console.log(rollData);
 		rollData[""] = { label: "Other" };
 		context.rollData = rollData;
 		context.weaponName = this.weapon.name;
@@ -60,6 +63,7 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 
 		context.includeToHit = this.includeToHit;
 		context.includeDamage = this.includeDamage;
+		context.weaponRollData = this.weaponRollData;
 
 		return context;
 	}
@@ -100,7 +104,10 @@ export class MetalSaviorsWeaponAttackDialog extends Dialog {
 	static _processAttackRollData(form, includeToHit, includeDamage) {
 		const data = {
 			weaponName: form.weaponName.value,
+			weaponType: form.weaponType.value,
 			attackerName: form.attackerName.value,
+			targetName: form.targetName.value || null,
+			targetDefence: form.targetDefence.value || null,
 		};
 		data.includeToHit = includeToHit;
 		if (includeToHit) {

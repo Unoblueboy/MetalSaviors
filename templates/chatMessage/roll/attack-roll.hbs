@@ -1,16 +1,17 @@
-<div class="metalSaviors">
+<div class="metalSaviors"
+     data-actor-id="{{actorId}}">
+    <header class="attack-summary">
+        <div class="weapon-img">
+            <img src={{weaponImgPath}}
+                 class="profile-img"
+                 title="Weapon"
+                 height="40"
+                 width="40" />
+        </div>
+        <div class="weapon-name"><span><b>Weapon</b>: {{weaponName}}</span></div>
+        <div class="attack-target"><span><b>Target</b>: {{targetName}}</span></div>
+    </header>
     {{#if toHitRoll}}
-        <header class="attack-summary">
-            <div class="weapon-img">
-                <img src={{weaponImgPath}}
-                     class="profile-img"
-                     title="Weapon"
-                     height="40"
-                     width="40" />
-            </div>
-            <div class="weapon-name"><span><b>Weapon</b>: {{weaponName}}</span></div>
-            <div class="attack-target"><span><b>Target</b>: {{targetName}}</span></div>
-        </header>
         <div class="roll-summary">
             <div class="box to-hit-box">
                 <div class="box-header"><span>To Hit</span></div>
@@ -42,33 +43,43 @@
             <div class="box defense-box">
                 <div class="box-header"><span>NSR/ MSR</span></div>
                 <div class="box-border {{defenseBoxBorder}}">
-                    <div><span>10</span></div>
+                    <div><span>{{targetDefence}}</span></div>
                 </div>
             </div>
         </div>
-        <div class="roll-breakdown">
-            {{#if (gt (len toHitBonuses) 0)}}
-                <div class="to-hit-bonuses">
-                    <p>To Hit Bonuses</p>
-                    <ul>
-                        {{#each toHitBonuses}}
-                            <li>{{this.value}} ({{this.description}})</li>
-                        {{/each}}
-                    </ul>
-                </div>
-            {{/if}}
-            {{#if (gt (len damageBonuses) 0)}}
-                <div class="damage-bonuses">
-                    <p>Damage Bonuses</p>
-                    <ul>
-                        {{#each damageBonuses}}
-                            <li>{{this.value}} ({{this.description}})</li>
-                        {{/each}}
-                    </ul>
-                </div>
-            {{/if}}
-        </div>
     {{/if}}
+    <div class="roll-breakdown">
+        {{#if (and toHitRoll (gt (len toHitBonuses) 0))}}
+            <div class="to-hit-bonuses">
+                <p>To Hit Bonuses</p>
+                <ul>
+                    {{#each toHitBonuses}}
+                        <li>{{this.value}} ({{this.description}})</li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/if}}
+        {{#if (gt (len damageBonuses) 0)}}
+            <div class="damage-bonuses">
+                <p>Damage Bonuses</p>
+                <ul>
+                    {{#each damageBonuses}}
+                        <li>{{this.value}} ({{this.description}})</li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/if}}
+        {{#if (gt (len attackModifiers) 0)}}
+            <div class="attack-modifiers">
+                <p>Attack Modifiers</p>
+                <ul>
+                    {{#each attackModifiers}}
+                        <li>{{this.description}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/if}}
+    </div>
     <hr />
     {{#each damageRolls}}
         <div class="damage-roll">

@@ -38,7 +38,10 @@
 		"Dialog": "readonly",
 		"CONST": "readonly",
 		"renderTemplate": "readonly",
-		"Combat": "readonly"
+		"Combat": "readonly",
+		"Die": "readonly",
+		"OperatorTerm": "readonly",
+		"NumericTerm": "readonly"
 	},
 	"rules": {}
 }

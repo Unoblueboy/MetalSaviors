@@ -157,4 +157,12 @@ export class MetalSaviorsActor extends Actor {
 	async getToken() {
 		return this.token ?? this.sheet.token ?? this.getActiveTokens(true, false)[0];
 	}
+
+	async getDefence() {
+		return null;
+	}
+
+	getCombatSpeeds() {
+		return {};
+	}
 }

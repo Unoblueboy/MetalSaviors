@@ -39,14 +39,17 @@ export class MetalSaviorsWeapon extends Item {
 		return WeaponRange.Extreme;
 	}
 
-	async getWeaponData() {
+	async getWeaponData(defaultData = {}) {
 		switch (this.weaponType) {
 			case "missile":
 				return await MetalSaviorsWeaponAttackDialog.getAttackRollData(this, {
 					includeToHit: false,
+					weaponRollData: defaultData,
 				});
 			default:
-				return await MetalSaviorsWeaponAttackDialog.getAttackRollData(this);
+				return await MetalSaviorsWeaponAttackDialog.getAttackRollData(this, {
+					weaponRollData: defaultData,
+				});
 		}
 	}
 
@@ -108,6 +111,20 @@ export class MetalSaviorsWeapon extends Item {
 		return await actor.getToHitPenalty();
 	}
 
+	async _getTargetDefence(target) {
+		if (!target.document) {
+			return null;
+		}
+
+		const actor = target.document.actor;
+
+		if (!actor) {
+			return null;
+		}
+
+		return await actor.getDefence();
+	}
+
 	async roll(event) {
 		const getOptions = event.shiftKey;
 		const targets = game.user.targets;
@@ -121,21 +138,30 @@ export class MetalSaviorsWeapon extends Item {
 	}
 
 	async _rollWithOptions(targets) {
-		const data = await this.getWeaponData();
+		const weaponRollData = await this.getRollWeaponData(targets);
+		for (const defaultData of weaponRollData) {
+			const data = await this.getWeaponData(defaultData);
 
-		if (data.cancelled) {
-			return;
+			if (data.cancelled) {
+				return;
+			}
+
+			// TODO Consider indirect Shots
+			rollAttack(this.actor, data);
 		}
-
-		// TODO Consider indirect Shots
-		rollAttack(this.actor, data);
 	}
 
 	async _rollWithoutOptions(targets) {
+		const rollWeaponData = await this.getRollWeaponData(targets);
+
+		for (const data of rollWeaponData) {
+			rollAttack(this.actor, data);
+		}
+	}
+
+	async getRollWeaponData(targets) {
 		const itemSystem = this.system;
 		let data;
-
-		console.log(this.weaponType, itemSystem);
 
 		switch (this.weaponType) {
 			case "missile":
@@ -159,6 +185,18 @@ export class MetalSaviorsWeapon extends Item {
 					augments: await this._getAugments(),
 				};
 				break;
+			case "melee":
+				data = {
+					weaponName: this.name,
+					weaponType: this.weaponType,
+					attackerName: this.actor?.name,
+					weaponToHitBonus: itemSystem.rolls.Normal.toHitBonus,
+					weaponDamageRoll: itemSystem.rolls.Normal.damageRoll,
+					tags: this._getTags(),
+					augments: await this._getAugments(),
+					curActorMomentum: await this._getActorMomentum(),
+				};
+				break;
 			default:
 				data = {
 					weaponName: this.name,
@@ -171,10 +209,10 @@ export class MetalSaviorsWeapon extends Item {
 		}
 
 		if (targets.size === 0) {
-			rollAttack(this.actor, data);
-			return;
+			return [data];
 		}
 
+		const allData = [];
 		for (const target of targets) {
 			const targetData = foundry.utils.deepClone(data);
 
@@ -183,10 +221,14 @@ export class MetalSaviorsWeapon extends Item {
 				targetData.actorToHitPenalty = await this._getActorToHitPenalty();
 				targetData.targetToHitPenalty = await this._getTargetToHitPenalty(target);
 				targetData.elevationDif = await this._getElevationDif(target);
+				targetData.targetCover = await this._getTargetCover(target);
 			}
 			targetData.targetName = target.document.name;
-			rollAttack(this.actor, targetData);
+			targetData.targetDefence = await this._getTargetDefence(target);
+			allData.push(targetData);
 		}
+
+		return allData;
 	}
 
 	_getTags() {
@@ -216,5 +258,50 @@ export class MetalSaviorsWeapon extends Item {
 		};
 
 		return augments;
+	}
+
+	async _getTargetCover(target) {
+		const token = target.document;
+
+		if (!token) {
+			return "none";
+		}
+
+		if (token.hasStatusEffect("fullCover")) {
+			return "Full";
+		}
+
+		if (token.hasStatusEffect("halfCover")) {
+			return "Half";
+		}
+
+		return "none";
+	}
+
+	async _getActorMomentum() {
+		if (!this.actor) {
+			return null;
+		}
+
+		const token = await this.actor.getToken();
+
+		if (!token) {
+			return null;
+		}
+
+		const combatant = token.combatant;
+
+		if (!combatant) {
+			return null;
+		}
+
+		const curMovementSpeedKey = combatant.getCurMovementSpeedKey();
+		const curSpeedData = this.actor.getCombatSpeeds()[curMovementSpeedKey];
+
+		if (!curSpeedData) {
+			return null;
+		}
+
+		return curSpeedData.momentum ?? null;
 	}
 }

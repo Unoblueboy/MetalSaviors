@@ -186,4 +186,12 @@ export class MetalSaviorsCav extends MetalSaviorsActor {
 
 		return curMovementSpeedDetails.hitBonus ?? 0;
 	}
+
+	async getDefence() {
+		return this.system.MSR;
+	}
+
+	getCombatSpeeds() {
+		return this.system.speed.combatSpeeds;
+	}
 }

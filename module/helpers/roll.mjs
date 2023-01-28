@@ -30,9 +30,10 @@ export async function rollInitiative(combatant, { bonus = 0, makeSound = true, m
 export async function rollAttack(
 	actor = null,
 	{
-		attackerName = null,
 		targetName = null,
 		targetDefence = null,
+		targetCover = "none",
+		weaponType = null,
 		weaponName = null,
 		weaponImgPath = "icons/weapons/swords/greatsword-crossguard-steel.webp",
 		includeToHit = true,
@@ -40,8 +41,8 @@ export async function rollAttack(
 		otherToHitBonus = null,
 		includeDamage = true,
 		weaponDamageRoll = "0",
+		curActorMomentum = null,
 		otherDamageBonuses = null,
-		damageType = null,
 		rangeIncrement = null,
 		actorToHitPenalty = null,
 		targetToHitPenalty = null,
@@ -52,6 +53,8 @@ export async function rollAttack(
 ) {
 	var toHitRoll = null;
 	var toHitBonuses = [];
+	var toHitBoxBorder = "";
+	var attackModifiers = [];
 	if (includeToHit) {
 		let toHitRollString = "d20";
 
@@ -64,55 +67,67 @@ export async function rollAttack(
 			});
 		}
 
-		if (actorToHitPenalty !== null) {
-			toHitRollString += _getBonusString(actorToHitPenalty);
-
-			toHitBonuses.push({
-				value: _getBonusString(actorToHitPenalty),
-				description: "Actor Speed",
-			});
-		}
-
-		if (targetToHitPenalty !== null) {
-			toHitRollString += _getBonusString(targetToHitPenalty);
-
-			toHitBonuses.push({
-				value: _getBonusString(targetToHitPenalty),
-				description: "Target Speed",
-			});
-		}
-
-		if (rangeIncrement !== null) {
-			const rangeIncrementPenalty = _getRangeIncrementPenalty(rangeIncrement, tags.ranged);
-			toHitRollString += _getBonusString(rangeIncrementPenalty);
-
-			toHitBonuses.push({
-				value: _getBonusString(rangeIncrementPenalty),
-				description: tags.ranged ? "Range [Ranged]" : "Range",
-			});
-		}
-
-		if (elevationDif !== null) {
-			const elevationBonus = Math.max(elevationDif, 0);
-
-			if (elevationBonus) {
-				toHitRollString += _getBonusString(elevationBonus);
+		if (weaponType === "ranged") {
+			if (actorToHitPenalty !== null) {
+				toHitRollString += _getBonusString(actorToHitPenalty);
 
 				toHitBonuses.push({
-					value: _getBonusString(elevationBonus),
-					description: "Elevation",
+					value: _getBonusString(actorToHitPenalty),
+					description: "Actor Speed",
 				});
 			}
-		}
 
-		if (augments.aimDownSights) {
-			const aimDownSightsBonus = _getAimDownSightsBonus(tags.scoped);
-			toHitRollString += _getBonusString(aimDownSightsBonus);
+			if (targetToHitPenalty !== null) {
+				toHitRollString += _getBonusString(targetToHitPenalty);
 
-			toHitBonuses.push({
-				value: _getBonusString(aimDownSightsBonus),
-				description: tags.scoped ? "Aim Down Sights [Scoped]" : "Aim Down Sights",
-			});
+				toHitBonuses.push({
+					value: _getBonusString(targetToHitPenalty),
+					description: "Target Speed",
+				});
+			}
+
+			if (rangeIncrement !== null) {
+				const rangeIncrementPenalty = _getRangeIncrementPenalty(rangeIncrement, tags.ranged);
+				toHitRollString += _getBonusString(rangeIncrementPenalty);
+
+				toHitBonuses.push({
+					value: _getBonusString(rangeIncrementPenalty),
+					description: tags.ranged ? "Range [Ranged]" : "Range",
+				});
+			}
+
+			if (elevationDif !== null) {
+				const elevationBonus = Math.max(elevationDif, 0);
+
+				if (elevationBonus) {
+					toHitRollString += _getBonusString(elevationBonus);
+
+					toHitBonuses.push({
+						value: _getBonusString(elevationBonus),
+						description: "Elevation",
+					});
+				}
+			}
+
+			if (augments.aimDownSights) {
+				const aimDownSightsBonus = _getAimDownSightsBonus(tags.scoped);
+				toHitRollString += _getBonusString(aimDownSightsBonus);
+
+				toHitBonuses.push({
+					value: _getBonusString(aimDownSightsBonus),
+					description: tags.scoped ? "Aim Down Sights [Scoped]" : "Aim Down Sights",
+				});
+			}
+
+			if (targetCover !== "none") {
+				const targetCoverPenalty = _getTargetCoverPenalty(targetCover);
+				toHitRollString += _getBonusString(targetCoverPenalty);
+
+				toHitBonuses.push({
+					value: _getBonusString(targetCoverPenalty),
+					description: `${targetCover} cover penalty`,
+				});
+			}
 		}
 
 		if (otherToHitBonus) {
@@ -125,11 +140,22 @@ export async function rollAttack(
 		}
 
 		toHitRoll = await new Roll(toHitRollString).evaluate({ async: true });
+
+		if (targetDefence !== null) {
+			var toHitTotal = toHitRoll.total;
+
+			toHitBoxBorder = toHitTotal >= targetDefence ? "success" : "failure";
+		}
+
+		var isCrit = includeToHit && toHitRoll.terms[0].results[0].result === 20;
+		if (isCrit) {
+			attackModifiers.push({
+				description: "Critical Hit",
+			});
+		}
 	}
 
-	var damageRoll = null;
 	var damageRolls = [];
-	var critRoll = null;
 	var damageBonuses = [];
 	if (includeDamage) {
 		let baseDamageRollString = weaponDamageRoll;
@@ -142,6 +168,18 @@ export async function rollAttack(
 				damageBonuses.push({
 					value: _getBonusString(shotgunDamageBonus),
 					description: "Shotgun Range",
+				});
+			}
+		}
+
+		if (weaponType === "melee") {
+			const momentumBonus = curActorMomentum;
+			if (momentumBonus !== null) {
+				baseDamageRollString += _getBonusString(momentumBonus);
+
+				damageBonuses.push({
+					value: _getBonusString(momentumBonus),
+					description: "Momentum Bonus",
 				});
 			}
 		}
@@ -164,31 +202,25 @@ export async function rollAttack(
 		if (tags.piercing) {
 			damageRolls.push(getPierceDamageRoll(baseDamageRollString));
 		}
-
-		console.log(damageRolls);
-
-		damageRoll = await new Roll(baseDamageRollString).evaluate({ async: true });
-
-		var isCrit = includeToHit && toHitRoll.terms[0].results[0].result === 20;
-		if (isCrit) {
-			critRoll = await damageRoll.clone().evaluate({ async: true });
-		}
 	}
 
 	const template = "/systems/metalsaviors/templates/chatMessage/roll/attack-roll.hbs";
 	const templateData = {
+		actorId: actor?.id,
 		weaponName: weaponName ?? "",
 		targetName: targetName ?? "",
 		weaponImgPath: weaponImgPath,
 		toHitBonuses: toHitBonuses,
 		damageBonuses: damageBonuses,
 		targetDefence: targetDefence ?? "",
+		toHitBoxBorder: toHitBoxBorder,
 		toHitRoll: includeToHit
 			? {
 					terms: toHitRoll.terms.map((term) => getTemplateData(term)),
 					total: toHitRoll.total,
 			  }
 			: null,
+		attackModifiers: attackModifiers,
 		damageRolls: damageRolls,
 	};
 	const content = await renderTemplate(template, templateData);
@@ -205,10 +237,11 @@ export async function rollAttack(
 	});
 }
 
-export async function rollDamage({ formula = "", damageType = "" } = {}) {
+export async function rollDamage(actor = null, { formula = "", damageType = "" } = {}) {
 	var damageRoll = await new Roll(formula).evaluate();
 
 	const templateData = {
+		actorId: actor?.id,
 		damageType: damageType,
 		terms: damageRoll.terms.map((term) => getTemplateData(term)),
 		total: damageRoll.total,
@@ -216,10 +249,11 @@ export async function rollDamage({ formula = "", damageType = "" } = {}) {
 	const template = "/systems/metalsaviors/templates/chatMessage/roll/damage-roll.hbs";
 	const content = await renderTemplate(template, templateData);
 
+	const speaker = ChatMessage.getSpeaker({ actor: actor });
 	const rollMode = game.settings.get("core", "rollMode");
 	MetalSaviorsChatMessage.create({
 		user: game.user.id,
-		// speaker: speaker,
+		speaker: speaker,
 		rollMode: rollMode,
 		type: CONST.CHAT_MESSAGE_TYPES.ROLL,
 		content: content,
@@ -454,4 +488,15 @@ function getPierceDamageRoll(baseDamageRollString) {
 		description: "Piercing",
 		formula: newRoll.formula,
 	};
+}
+
+function _getTargetCoverPenalty(targetCover) {
+	switch (targetCover.toLowerCase()) {
+		case "half":
+			return -5;
+		case "full":
+			return -10;
+		default:
+			return 0;
+	}
 }

@@ -247,6 +247,10 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 		return this.system.derivedAttributes.initiativeModifier.value;
 	}
 
+	async getDefence() {
+		return this.system.nsr;
+	}
+
 	async rollAttribute(event) {
 		const element = event.currentTarget;
 		const dataset = element.dataset;
@@ -270,5 +274,9 @@ export class MetalSaviorsCharacter extends MetalSaviorsActor {
 			getOptions,
 			rollAsSkill,
 		});
+	}
+
+	getCombatSpeeds() {
+		return this.system.speed.combatSpeeds;
 	}
 }

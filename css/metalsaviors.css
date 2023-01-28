@@ -630,6 +630,24 @@ img.profile-img {
   font-weight: bold;
 }
 
+.chat-message .metalSaviors .roll-summary .box .box-border.success {
+  border: 3px solid #4f8a10;
+  border-radius: 3px;
+}
+
+.chat-message .metalSaviors .roll-summary .box .box-border.success div {
+  margin-top: 8px;
+}
+
+.chat-message .metalSaviors .roll-summary .box .box-border.failure {
+  border: 3px solid #d8000c;
+  border-radius: 3px;
+}
+
+.chat-message .metalSaviors .roll-summary .box .box-border.failure div {
+  margin-top: 8px;
+}
+
 .chat-message .metalSaviors .roll-summary .to-hit-box {
   grid-column: 1;
 }
@@ -762,12 +780,4 @@ img.profile-img {
 .chat-message .metalSaviors .damage-roll-summary .tooltip:hover .tooltiptext {
   display: block;
   visibility: visible;
-}
-
-.dice-total.critical.success {
-  background-color: #002000;
-}
-
-.dice-total.critical.failure {
-  background-color: #200000;
 }

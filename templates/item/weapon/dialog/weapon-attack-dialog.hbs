@@ -1,25 +1,62 @@
+{{log this}}
 <div class="dialog-content">
     <form>
-        <div class="form-group">
-            <label>Weapon Name</label>
-            <input type="text"
-                   name="weaponName"
-                   value="{{weaponName}}"
-                   data-dtype="String" />
+        <div class="attacker-summary-form">
+            <div class="form-group">
+                <label>Weapon Name</label>
+                <input type="text"
+                       name="weaponName"
+                       value="{{weaponName}}"
+                       data-dtype="String" />
+            </div>
+            <div class="form-group">
+                <label>Attacker Name</label>
+                <input type="text"
+                       name="attackerName"
+                       value="{{attackerName}}"
+                       data-dtype="String" />
+            </div>
+            <div class="form-group">
+                <label>Roll Name</label>
+                <select class="roll-name-select"
+                        name="rollName">
+                    {{selectOptions rollData labelAttr="label"}}
+                </select>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Attacker Name</label>
-            <input type="text"
-                   name="attackerName"
-                   value="{{attackerName}}"
-                   data-dtype="String" />
-        </div>
-        <div class="form-group">
-            <label>Roll Name</label>
-            <select class="roll-name-select"
-                    name="rollName">
-                {{selectOptions rollData labelAttr="label"}}
-            </select>
+        <hr />
+        <div class="target-summary-form">
+            <div class="form-group">
+                <label>Target Name</label>
+                <input type="text"
+                       name="targetName"
+                       value="{{weaponRollData.targetName}}"
+                       data-dtype="String" />
+            </div>
+            <div class="form-group">
+                <label>Target Defence</label>
+                <input type="text"
+                       name="targetDefence"
+                       value="{{weaponRollData.targetDefence}}"
+                       data-dtype="Number" />
+            </div>
+            <div class="form-group">
+                <label>Target Cover</label>
+                <select name="targetCover">
+                    <option value="none"
+                            {{#if (eq weaponRollData.targetCover "none")}}selected{{/if}}>
+                        None
+                    </option>
+                    <option value="half"
+                            {{#if (eq weaponRollData.targetCover "half")}}selected{{/if}}>
+                        Half
+                    </option>
+                    <option value="full"
+                            {{#if (eq weaponRollData.targetCover "full")}}selected{{/if}}>
+                        Full
+                    </option>
+                </select>
+            </div>
         </div>
         {{#if includeToHit}}
             <hr>

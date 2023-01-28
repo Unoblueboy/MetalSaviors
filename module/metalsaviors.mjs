@@ -68,6 +68,16 @@ Hooks.once("init", async function () {
 		id: "scope",
 		label: "METALSAVIORS.EFFECT.StatusScope",
 	});
+	CONFIG.statusEffects.push({
+		icon: "systems/metalsaviors/images/icons/half-cover.svg",
+		id: "halfCover",
+		label: "METALSAVIORS.EFFECT.StatusHalfCover",
+	});
+	CONFIG.statusEffects.push({
+		icon: "systems/metalsaviors/images/icons/full-cover.svg",
+		id: "fullCover",
+		label: "METALSAVIORS.EFFECT.StatusFullCover",
+	});
 
 	// Add new data-dtypes
 	window.Dice = (value) => {

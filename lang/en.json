@@ -44,5 +44,7 @@
 
 	"METALSAVIORS.Add": "Add",
 
-	"METALSAVIORS.EFFECT.StatusScope": "Scope"
+	"METALSAVIORS.EFFECT.StatusScope": "Scope",
+	"METALSAVIORS.EFFECT.StatusHalfCover": "Half Cover",
+	"METALSAVIORS.EFFECT.StatusFullCover": "Full Cover"
 }
